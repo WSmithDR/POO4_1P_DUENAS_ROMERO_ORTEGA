@@ -1,5 +1,3 @@
-package com.example;
-
 import Demo1.Demo1;
 
 public class Main {
