@@ -1,0 +1,5 @@
+CódigoÚnico|Cédula|Nombres|Apellidos|Usuario|Contraseña|Correo|Rol
+C001|0923456789|Ana|Torres|atorres|cliente123|ana.torres@email.com|C
+C002|0911122233|David|Vélez|dvelez|davepass|david.velez@email.com|C
+R001|0956677889|Camila|Ríos|crios|ruta321|camila.rios@email.com|R
+R002|0967788990|Luis|Medina|lmedina|entrega654|luis.medina@email.com|R
