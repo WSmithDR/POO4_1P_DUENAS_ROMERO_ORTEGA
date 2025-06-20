@@ -1,4 +1,5 @@
-import 
+import Enums.CategoriaProducto;
+import Enums.Rol;
 public class Producto {
  private String nombre;
     private double precio;
@@ -54,11 +55,11 @@ public class Producto {
         this.categoria = categoria;
     }
    
-    public mostrarCategoria(){
-        System.out.println(categoria.getNombre());
+    public void mostrarCategoria(){
+        System.out.println(categoria);
     }
 
-    public elegirCategoria(Rol rol){
+    public void elegirCategoria(Rol rol){
         
     }
     
