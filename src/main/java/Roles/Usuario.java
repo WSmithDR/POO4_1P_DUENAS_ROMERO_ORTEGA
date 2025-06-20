@@ -15,12 +15,23 @@ public class Usuario {
     protected String correo;
     protected Rol rol;
 
-    public Usuario(){
+    public Usuario(Rol rol,String cedula, String user_name, ArrayList<String> nombres, ArrayList<String> apellidos, String correo,String contrasenia) {
+        this.rol = rol;
+        this.cedula = cedula;
+        this.user_name = user_name;
+        /*para las validaciones, no se si esto este bien */
+        setNombres(nombres);
+        setApellidos(apellidos);
+        setCorreo(correo);
+        setContrasenia(contrasenia);
+        this.codigoUnico = generarCodigoUnico(cedula, nombres, apellidos);
     }
 
-    /*private String generarCodigoUnico(String cedula, ArrayList<String> nombres, ArrayList<String> apellidos){
-        String codigo = String.format("%s-%s-%s", cedula.substring(0,4),String.valueOf(nombres),String.valueOf(apellidos));
-    }*/
+    private String generarCodigoUnico(String cedula, ArrayList<String> nombres, ArrayList<String> apellidos){
+        String nombreCode = (nombres != null && !nombres.isEmpty()) ? nombres.get(0) : "";
+        String apellidoCode = (apellidos != null && !apellidos.isEmpty()) ? apellidos.get(0) : "";
+        return String.format("%s-%s-%s", cedula.substring(0, 4), nombreCode, apellidoCode);
+    }
 
     
 
