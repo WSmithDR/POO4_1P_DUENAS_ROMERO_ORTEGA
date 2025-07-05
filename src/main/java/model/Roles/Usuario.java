@@ -37,52 +37,52 @@ public abstract class Usuario {
     
 
     // Getters
-    protected String getCodigoUnico() {
+    public String getCodigoUnico() {
         return this.codigoUnico;
     }
 
-    protected String getCedula() {
+    public String getCedula() {
         return this.cedula;
     }
 
-    protected String getUser_name() {
+    public String getUser_name() {
         return this.user_name;
     }
 
-    protected ArrayList<String> getNombres() {
+    public ArrayList<String> getNombres() {
         return this.nombres;
     }
 
-    protected ArrayList<String> getApellidos() {
+    public ArrayList<String> getApellidos() {
         return this.apellidos;
     }
 
-    protected String getContrasenia() {
+    public String getContrasenia() {
         return this.contrasenia;
     }
 
-    protected String getCorreo() {
+    public String getCorreo() {
         return this.correo;
     }
 
-    protected Rol getRol() {
+    public Rol getRol() {
         return rol;
     }
 
     // Setters
-    protected void setCodigoUnico(String codigoUnico) {
+    public void setCodigoUnico(String codigoUnico) {
         this.codigoUnico = codigoUnico;
     }
 
-    protected void setCedula(String cedula) {
+    public void setCedula(String cedula) {
         this.cedula = cedula;
     }
 
-    protected void setUser_name(String user_name) {
+    public void setUser_name(String user_name) {
         this.user_name = user_name;
     }
 
-    protected void setNombres(ArrayList<String> nombres) {
+    public void setNombres(ArrayList<String> nombres) {
         if(nombres.size()>2){
             System.out.println("No se pueden poner mas de 2 nombres...");
         }else{
@@ -91,7 +91,7 @@ public abstract class Usuario {
         }
     }
     
-    protected void setApellidos(ArrayList<String> apellidos) {
+    public void setApellidos(ArrayList<String> apellidos) {
         if(apellidos.size()>2){
             System.out.println("No se pueden poner mas de 2 apellidos...");
         }else{
@@ -119,7 +119,7 @@ public abstract class Usuario {
         }
     }
 
-    protected void setRol(Rol rol) {
+    public void setRol(Rol rol) {
         this.rol = rol;
     }
 }
