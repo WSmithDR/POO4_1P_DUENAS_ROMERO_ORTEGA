@@ -5,15 +5,15 @@ import Enums.Rol;
 import Roles.Repartidor;
 
 public class Pedido {
-    private Date fecha;
+    private Date fechaPedido;
     private String codigoProducto;
-    private double precio;
-    private int stock;
+    private double totalPagado;
+    private int cantidadProducto;
     private CategoriaProducto categoria;
-    private Repartidor repartidor;
+    private Repartidor codRepartidor;
     private String estado;
     private String codigoPedido;
-    private int contadorPedido;
+    private static int contadorPedido;
 
     
     public void cambiarEstado (String nuevoEstado){
@@ -24,32 +24,32 @@ public class Pedido {
 
 
     //Getters
-    public Date getFecha (){
-        return this.fecha;
+    public Date getFechaPedido (){
+        return this.fechaPedido;
     }
 
     public String getCodigoProduto (){
         return this.codigoProducto;
     }
 
-    public double getPrecio (){
-        return this.precio;
+    public double getTotalPagado (){
+        return this.totalPagado;
     }
 
-    public int getStock (){
-        return this.stock;
+    public int getCantidadProducto (){
+        return this.cantidadProducto;
     }
 
     public CategoriaProducto getcategoria (){
         return this.categoria;
     }
 
-    public Repartidor getRepartidor (){
-        return this.repartidor;
+    public String getCodRepartidor (){
+        return this.codRepartidor;
     }
 
-    public String getEstado (){
-        return this.estado;
+    public String getEstadoPedido (){
+        return this.estadoPedido;
     }
 
     public String codigoPedido (){
@@ -62,32 +62,32 @@ public class Pedido {
 
 
     //Setters
-    public void setFecha (Date fecha){
-        this.fecha=fecha;
+    public void setFechaPedido (Date fechaPedido){
+        this.fecha=fechaPedido;
     }
 
     public void setCodigoProducto (String codigoProducto){
         this.codigoProducto=codigoProducto;
     }
 
-    public void setPrecio (double precio){
-        this.precio=precio;
+    public void setTotalPagado (double totalPagado){
+        this.totalPagado=totalPagado;
     }
 
-    public void setStock (int stock){
-        this.stock=stock;
+    public void setCantidadProducto (int cantidadProducto){
+        this.cantidadProducto=cantidadProducto;
     }
 
     public void setCategoria (CategoriaProducto categoria){
         this.categoria=categoria;
     }
 
-    public void setRepartidor (Repartidor repartidor){
-        this.repartidor=repartidor;
+    public void setCodRepartidor (String codRepartidor){
+        this.codRepartidor=codRepartidor;
     }
 
-    public void setEstado (String estado){
-        this.estado=estado;
+    public void setEstadoPedido (String estadoPedido){
+        this.estadoPedido=estadoPedido;
     }
 
     public void setCodigoPedido (String codigoPedido){
