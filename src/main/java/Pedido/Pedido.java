@@ -10,10 +10,21 @@ public class Pedido {
     private double totalPagado;
     private int cantidadProducto;
     private CategoriaProducto categoria;
-    private Repartidor codRepartidor;
-    private String estado;
+    private String codRepartidor;
+    private String estadoPedido;
     private String codigoPedido;
     private static int contadorPedido;
+
+    
+    public void Pedido (Date fechaPedido, String codigoProducto, double totalPagado, int cantidadProducto, CategoriaProducto categoria,
+                        String codRepartidor, String estadoPedido, String codigoPedido, int contadorPedido)
+        this.fechaPedido=fechaPedido;
+        this.codigoProducto=codigoProducto;
+        this.totalPagado=totalPagado;
+        this.cantidadProducto=cantidadProducto;
+        this.categoria=categoria;
+        this.codRepartidor=codRepartidor;
+        this.estadoPedido=
 
     
     public void cambiarEstado (String nuevoEstado){
