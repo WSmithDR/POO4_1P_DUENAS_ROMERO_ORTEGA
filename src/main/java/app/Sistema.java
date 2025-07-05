@@ -1,108 +1,39 @@
 package app;
 
-import model.Enums.Rol;
+
 import model.Roles.Cliente;
 import model.Roles.Repartidor;
 import model.Roles.Usuario;
 
-import java.io.*;
+import java.util.Scanner;
+
+
 import java.util.*;
+import services.ManejadorUsuario;
 
 public class Sistema {
-    private List<Usuario> usuarios;
-    private Scanner scanner;
-    public final String USUARIOS_FILE = "resources/Usuarios.txt";
-    public final String CLIENTES_FILE = "resources/Clientes.txt";
-    public final String REPARTIDORES_FILE = "resources/Repartidores.txt";
+    private static ArrayList<Usuario> usuarios= new ArrayList<>();
+    private static Scanner scanner= new Scanner(System.in);
 
-    
 
-    public Sistema() {
-        usuarios = new ArrayList<>();
-        scanner = new Scanner(System.in);
+    public static void iniciar() {
+        usuarios = ManejadorUsuario.cargarUsuarios(usuarios);
+        
+        iniciarSesion(scanner);
     }
 
-    public void iniciar() {
-        cargarUsuarios();
-        iniciarSesion();
-    }
-
-    private void cargarUsuarios() {
-        try (BufferedReader br = new BufferedReader(new FileReader(USUARIOS_FILE))) {
-            String linea;
-            while ((linea = br.readLine()) != null) {
-                String[] partes = linea.split("|");
-                String cedula = partes[0];
-                String username = partes[1];
-                ArrayList<String> nombres = new ArrayList<>();
-                if (!partes[2].isEmpty()) nombres.add(partes[2]);
-                if (!partes[3].isEmpty()) nombres.add(partes[3]);
-
-                ArrayList<String> apellidos = new ArrayList<>();
-                if (!partes[4].isEmpty()) apellidos.add(partes[4]);
-                if (!partes[5].isEmpty()) apellidos.add(partes[5]);
-
-                String correo = partes[6];
-                String contrasenia = partes[7];
-                Rol rol = Rol.valueOf(partes[8].toUpperCase());
-
-                if (rol == Rol.CLIENTE) {
-                    Cliente cliente = cargarDatosCliente(cedula, username, nombres, apellidos, correo, contrasenia);
-                    if (cliente != null) usuarios.add(cliente);
-                } else if (rol == Rol.REPARTIDOR) {
-                    Repartidor repartidor = cargarDatosRepartidor(cedula, username, nombres, apellidos, correo, contrasenia);
-                    if (repartidor != null) usuarios.add(repartidor);
-                }
-            }
-        } catch (IOException e) {
-            System.out.println("Error leyendo usuarios.txt: " + e.getMessage());
-        }
-    }
-
-    private Cliente cargarDatosCliente(String cedula, String username, ArrayList<String> nombres, ArrayList<String> apellidos,
-                                       String correo, String contrasenia) {
-        try (BufferedReader br = new BufferedReader(new FileReader(CLIENTES_FILE))) {
-            String linea;
-            while ((linea = br.readLine()) != null) {
-                String[] partes = linea.split("|");
-                if (partes[0].equals(cedula)) {
-                    String celular = partes[1];
-                    String direccion = partes[2];
-                    return new Cliente(cedula, username, nombres, apellidos, correo, contrasenia, celular, direccion);
-                }
-            }
-        } catch (IOException e) {
-            System.out.println("Error leyendo clientes.txt: " + e.getMessage());
-        }
-        return null;
-    }
-
-    private Repartidor cargarDatosRepartidor(String cedula, String username, ArrayList<String> nombres, ArrayList<String> apellidos,
-                                             String correo, String contrasenia) {
-        try (BufferedReader br = new BufferedReader(new FileReader(REPARTIDORES_FILE))) {
-            String linea;
-            while ((linea = br.readLine()) != null) {
-                String[] partes = linea.split(",");
-                if (partes[0].equals(cedula)) {
-                    String empresa = partes[1];
-                    return new Repartidor(cedula, username, nombres, apellidos, correo, contrasenia, empresa);
-                }
-            }
-        } catch (IOException e) {
-            System.out.println("Error leyendo repartidores.txt: " + e.getMessage());
-        }
-        return null;
-    }
-
-    private void iniciarSesion() {
+    private static void iniciarSesion(Scanner scanner) {
         System.out.println("===== INICIO DE SESIÓN =====");
         System.out.print("Usuario: ");
         String userInput = scanner.nextLine();
         System.out.print("Contraseña: ");
         String passInput = scanner.nextLine();
 
+        boolean usuarioEncontrado = false;
+        
         for (Usuario u : usuarios) {
             if (u.getUser_name().equals(userInput) && u.getContrasenia().equals(passInput)) {
+                usuarioEncontrado = true;
                 System.out.println("Usuario autenticado correctamente.");
                 if (u instanceof Cliente c) {
                     System.out.println("Rol detectado: CLIENTE");
@@ -127,27 +58,70 @@ public class Sistema {
                         System.out.println("Verificación fallida. Cerrando sesión.");
                     }
                 }
-                return;
+                break; // Salir del bucle una vez que se encuentra el usuario
             }
         }
-
-        System.out.println("Usuario o contraseña incorrectos.");
+        
+        if (!usuarioEncontrado) {
+            System.out.println("Usuario o contraseña incorrectos. Intente nuevamente.");
+        }
     }
 
-    private void mostrarMenuCliente(Cliente cliente) {
-        System.out.println("=== Menú Cliente ===");
-        System.out.println("1. Comprar");
-        System.out.println("2. Gestionar pedido");
-        System.out.println("3. Salir");
-        
+    private static void mostrarMenuCliente(Cliente cliente) {
+        boolean continuar = true;
+        while (continuar) {
+            System.out.println("\n=== Menú Cliente ===");
+            System.out.println("1. Comprar");
+            System.out.println("2. Gestionar pedido");
+            System.out.println("3. Salir");
+            System.out.print("Seleccione una opción: ");
+            
+            String opcion = scanner.nextLine();
+            
+            switch (opcion) {
+                case "1":
+                    System.out.println("Función de compra en desarrollo...");
+                    break;
+                case "2":
+                    System.out.println("Función de gestión de pedido en desarrollo...");
+                    break;
+                case "3":
+                    System.out.println("Cerrando sesión...");
+                    continuar = false;
+                    break;
+                default:
+                    System.out.println("Opción no válida. Intente nuevamente.");
+                    break;
+            }
+        }
     }
 
-    private void mostrarMenuRepartidor(Repartidor repartidor) {
-        System.out.println("=== Menú Repartidor ===");
-        System.out.println("1. Gestionar pedido");
-        System.out.println("2. Consultar pedidos asignados");
-        System.out.println("3. Salir");
-        
+    private static void mostrarMenuRepartidor(Repartidor repartidor) {
+        boolean continuar = true;
+        while (continuar) {
+            System.out.println("\n=== Menú Repartidor ===");
+            System.out.println("1. Gestionar pedido");
+            System.out.println("2. Consultar pedidos asignados");
+            System.out.println("3. Salir");
+            System.out.print("Seleccione una opción: ");
+            
+            String opcion = scanner.nextLine();
+            
+            switch (opcion) {
+                case "1":
+                    System.out.println("Función de gestión de pedido en desarrollo...");
+                    break;
+                case "2":
+                    System.out.println("Función de consulta de pedidos en desarrollo...");
+                    break;
+                case "3":
+                    System.out.println("Cerrando sesión...");
+                    continuar = false;
+                    break;
+                default:
+                    System.out.println("Opción no válida. Intente nuevamente.");
+                    break;
+            }
+        }
     }
 }
-

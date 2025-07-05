@@ -84,25 +84,25 @@ public abstract class Usuario {
 
     public void setNombres(ArrayList<String> nombres) {
         if(nombres.size()>2){
-            System.out.println("No se pueden poner mas de 2 nombres...");
+            // System.out.println("No se pueden poner mas de 2 nombres...");
         }else{
-            System.out.println("Nombres establecidos exitosamente.");
+            // System.out.println("Nombres establecidos exitosamente.");
             this.nombres = nombres;
         }
     }
     
     public void setApellidos(ArrayList<String> apellidos) {
         if(apellidos.size()>2){
-            System.out.println("No se pueden poner mas de 2 apellidos...");
+            // System.out.println("No se pueden poner mas de 2 apellidos...");
         }else{
-            System.out.println("Apellidos establecidos exitosamente.");
+            // System.out.println("Apellidos establecidos exitosamente.");
             this.apellidos = apellidos;
         }
     }
 
     protected void setContrasenia(String contrasenia) {
         if(contrasenia.length()<8 || contrasenia.length()>12){
-            System.out.println("La contraseña debe poseer entre 8 y 12 caracteres");
+            // System.out.println("La contraseña debe poseer entre 8 y 12 caracteres");
         }else{
             this.contrasenia = contrasenia;
         }
@@ -113,9 +113,9 @@ public abstract class Usuario {
 
         if(correo.matches(regexCorreo)){
             this.correo = correo;
-            System.out.println("Correo establecido exitosamente.");
+            // System.out.println("Correo establecido exitosamente.");
         }else{
-            System.out.println("Formato de correo inválido.");
+            // System.out.println("Formato de correo inválido.");
         }
     }
 
