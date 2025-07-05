@@ -24,7 +24,9 @@ public class Pedido {
         this.cantidadProducto=cantidadProducto;
         this.categoria=categoria;
         this.codRepartidor=codRepartidor;
-        this.estadoPedido=
+        this.estadoPedido=estadoPedido;
+        this.codigoPedido=codigoPedido;
+        this.contadorPedido=contadorPedido;
 
     
     public void cambiarEstado (String nuevoEstado){
