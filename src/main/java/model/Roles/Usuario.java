@@ -1,11 +1,12 @@
-package Roles;
+package model.Roles;
 
 import java.util.ArrayList;
-import Enums.Rol;
+
+import model.Enums.Rol;
 
 
 
-public class Usuario {
+public abstract class Usuario {
     protected String codigoUnico;
     protected String cedula;
     protected String user_name;

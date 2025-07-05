@@ -1,4 +1,4 @@
-package Enums;
+package model.Enums;
 
 public enum CategoriaProducto {
 
