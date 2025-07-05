@@ -18,7 +18,7 @@ public class Pedido {
     
     public Pedido (Date fechaPedido, String codigoProducto, double totalPagado, int cantidadProducto, CategoriaProducto categoria,
                         String codRepartidor, String estadoPedido, String codigoPedido) {
-        this.fechaPedido=new Date();
+        this.fechaPedido=fechaPedido;
         this.codigoProducto=codigoProducto;
         this.totalPagado=totalPagado;
         this.cantidadProducto=cantidadProducto;

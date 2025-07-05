@@ -1,10 +1,8 @@
 package model.Roles;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import model.Pedido;
 import model.Enums.Rol;
 import persistence.ManejoArchivos;
 
@@ -38,7 +36,6 @@ public class Cliente extends Usuario {
       this.direccion = direccion;
    }
 
-   @Override
    public void gestionarPedido () {
       String archivo="Pedidos.txt";
       ArrayList<String> pedidos = ManejoArchivos.LeeFichero(archivo);
@@ -53,8 +50,16 @@ public class Cliente extends Usuario {
          String[] datos=linea.split(",");
 
          if(datos[0].equalsIgnoreCase(codPedido)){
+            System.out.println(" ");
             System.out.println("Fecha del pedido: "+datos[1]);
-            System.out.println("Producto comprado: "+datos[]+ " (Código: "+);
+            System.out.println("Producto comprado: "+datos[2]);
+            System.out.println("Cantidad: "+datos[3]);
+            System.out.println("Valor pagado: "+datos[4]);
+            System.out.println("Estado actual: "+datos[5]);
+            System.out.println("Repartidor: "+datos[6]);
+            System.out.println(" ");
+            System.out.println(" ");
+            System.out.println("Su pedido está siendo preparado para su envío.");
 
          }
       }
