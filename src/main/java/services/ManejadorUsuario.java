@@ -100,7 +100,7 @@ public class ManejadorUsuario {
             String correo, String contrasenia) {
             ArrayList<String> lineas = ManejoArchivos.LeeFichero(REPARTIDORES_FILE);
             Repartidor repartidorEncontrado = null;
-            // Saltar la primera línea (encabezado)
+            
             for (int i = 1; i < lineas.size(); i++) {
                 String linea = lineas.get(i);
                 String[] partes = linea.split("\\|");
