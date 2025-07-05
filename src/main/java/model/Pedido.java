@@ -3,8 +3,6 @@ package model;
 import java.util.Date;
 
 import model.Enums.CategoriaProducto;
-import model.Enums.Rol;
-import model.Roles.Repartidor;
 
 public class Pedido {
     private Date fechaPedido;
@@ -18,20 +16,20 @@ public class Pedido {
     private static int contadorPedido;
 
     
-    public void Pedido (Date fechaPedido, String codigoProducto, double totalPagado, int cantidadProducto, CategoriaProducto categoria,
-                        String codRepartidor, String estadoPedido, String codigoPedido, int contadorPedido)
-        this.fechaPedido=fechaPedido;
+    public Pedido (Date fechaPedido, String codigoProducto, double totalPagado, int cantidadProducto, CategoriaProducto categoria,
+                        String codRepartidor, String estadoPedido, String codigoPedido) {
+        this.fechaPedido=new Date();
         this.codigoProducto=codigoProducto;
         this.totalPagado=totalPagado;
         this.cantidadProducto=cantidadProducto;
         this.categoria=categoria;
         this.codRepartidor=codRepartidor;
         this.estadoPedido=estadoPedido;
-        this.codigoPedido=codigoPedido;
-        this.contadorPedido=contadorPedido;
-
+        this.codigoPedido="PED"+String.valueOf(contadorPedido);
+    }
     
     public void cambiarEstado (String nuevoEstado){
+        this.estadoPedido=nuevoEstado;
     }
 
     public void generarCodigo (){
@@ -71,14 +69,10 @@ public class Pedido {
         return this.codigoPedido;
     }
 
-    public int getContadorPedido (){
-        return this.contadorPedido;
-    }
-
 
     //Setters
     public void setFechaPedido (Date fechaPedido){
-        this.fecha=fechaPedido;
+        this.fechaPedido=fechaPedido;
     }
 
     public void setCodigoProducto (String codigoProducto){
@@ -109,8 +103,5 @@ public class Pedido {
         this.codigoPedido=codigoPedido;
     }
 
-    public void setContadorPedido (int contadorPedido){
-        this.contadorPedido=contadorPedido;
-    }
 
 }
