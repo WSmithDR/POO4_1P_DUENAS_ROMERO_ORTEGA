@@ -1,8 +1,10 @@
-package Pedido;
+package model;
 
 import java.util.Date;
-import Enums.Rol;
-import Roles.Repartidor;
+
+import model.Enums.CategoriaProducto;
+import model.Enums.Rol;
+import model.Roles.Repartidor;
 
 public class Pedido {
     private Date fechaPedido;

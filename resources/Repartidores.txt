@@ -1,0 +1,3 @@
+CódigoÚnico|Cédula|Nombres|Apellidos|Empresa
+R001|0956677889|Camila|Ríos|Envíos Express
+R002|0967788990|Luis|Medina|RápidoYA

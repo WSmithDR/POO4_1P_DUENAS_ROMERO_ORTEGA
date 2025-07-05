@@ -1,0 +1,9 @@
+Código|Categoría|Nombre|Precio|Stock
+P001|Tecnología|Audífonos Bluetooth|35.99|20
+P002|Tecnología|Mouse Inalámbrico|18.50|15
+P003|Ropa|Camiseta Deportiva Hombre|22.99|30
+P004|Ropa|Pantalón Deportivo Mujer|32.75|25
+P005|Hogar|Lámpara LED Recargable|12.00|40
+P006|Deportes|Balón de Fútbol|25.00|10
+P007|Hogar|Taza Térmica Acero|9.99|50
+P008|Tecnología|Teclado Mecánico|45.00|8

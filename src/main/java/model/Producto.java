@@ -1,5 +1,6 @@
-import Enums.CategoriaProducto;
-import Enums.Rol;
+package model;
+import model.Enums.CategoriaProducto;
+import model.Enums.Rol;
 public class Producto {
  private String nombre;
     private double precio;

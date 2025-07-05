@@ -1,7 +1,8 @@
-package Roles;
+package model.Roles;
 
-import Enums.Rol;
 import java.util.ArrayList;
+
+import model.Enums.Rol;
 
 public class Cliente extends Usuario {
  private String numero_celular;   

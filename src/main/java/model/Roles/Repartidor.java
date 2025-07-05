@@ -1,7 +1,8 @@
-package Roles;
+package model.Roles;
 
-import Enums.Rol;
 import java.util.ArrayList;
+
+import model.Enums.Rol;
 
 public class Repartidor extends Usuario {
     private String nombreEmpresa;
