@@ -1,8 +1,8 @@
-import Demo1.Demo1;
+package app;
 
-public class Main {
+
+public class Sistema {
     public static void main(String[] args) {
         System.out.println("Hello world!");
-        Demo1 dm1 = new Demo1();
     }
 }

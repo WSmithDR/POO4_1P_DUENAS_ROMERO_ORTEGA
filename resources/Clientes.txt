@@ -1,0 +1,3 @@
+CódigoÚnico|Cédula|Nombres|Apellidos|Celular|Dirección
+C001|0923456789|Ana|Torres|0991234567|Av. Principal y Calle 10
+C002|0911122233|David|Vélez|0987654321|Calle Falsa 123
