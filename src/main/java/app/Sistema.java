@@ -107,7 +107,7 @@ public class Sistema {
                     cliente.realizarCompra(productos, usuarios, pedidos, scanner);
                     break;
                 case "2":
-                    System.out.println("Función de gestión de pedido en desarrollo...");
+                    cliente.gestionarPedido(scanner);
                     break;
                 case "3":
                     System.out.println("Cerrando sesión...");
@@ -143,7 +143,7 @@ public class Sistema {
                     System.out.println("Función de gestión de pedido en desarrollo...");
                     break;
                 case "2":
-                    System.out.println("Función de consulta de pedidos en desarrollo...");
+                    repartidor.consultarPedidosAsignados(pedidos);
                     break;
                 case "3":
                     System.out.println("Cerrando sesión...");
@@ -172,7 +172,7 @@ public class Sistema {
             "Estado inicial: %s\n\n" +
             "Gracias por su compra. Recibirá actualizaciones del estado de su pedido por este medio.",
             cliente.getNombres(), cliente.getApellidos(),
-            pedidoRealizado.codigoPedido(),
+            pedidoRealizado.getCodigoPedido(),
             pedidoRealizado.getFechaPedido(),
             pedidoRealizado.getCodigoProducto(),
             pedidoRealizado.getCantidadProducto(),
@@ -216,9 +216,9 @@ public class Sistema {
             "Repartidor asignado: %s\n\n" +
             "Gracias por confiar en nosotros.",
             cliente.getNombres(), cliente.getApellidos(),
-            pedido.codigoPedido(), nuevoEstado,
+            pedido.getCodigoPedido(), nuevoEstado,
             pedido.getFechaPedido(),
-            pedido.getCodigoProduto(),
+            pedido.getCodigoProducto(),
             pedido.getCodRepartidor()
         );
 
