@@ -1,4 +1,4 @@
-package services;
+package services.archivos;
 
 import model.Pedido;
 import model.Producto;
@@ -6,7 +6,10 @@ import model.Roles.Cliente;
 import model.Roles.Repartidor;
 import model.Roles.Usuario;
 import persistence.ManejoArchivos;
+import utils.ManejoFechas;
 import model.Enums.EstadoPedido;
+import services.email.ManejadorEmail;
+import app.Sistema;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -65,7 +68,7 @@ public class ManejadorPedido {
                 
                 // Buscar cliente y repartidor por cédula
                 Cliente cliente = buscarClientePorCedula(usuarios, partes[1]);
-                Repartidor repartidor = buscarRepartidorPorCedula(usuarios, partes[2]);
+                Repartidor repartidor = buscarRepartidorPorCodigoUnico(usuarios, partes[2]);
                 Producto producto = buscarProductoPorCodigo(productos, partes[3]);
                 
                 if (cliente != null && repartidor != null && producto != null) {
@@ -100,14 +103,14 @@ public class ManejadorPedido {
     }
 
     /**
-     * Busca un repartidor por cédula
+     * Busca un repartidor por código único
      * @param usuarios Lista de usuarios
-     * @param cedula Cédula del repartidor
+     * @param codigoUnico Código único del repartidor
      * @return Repartidor encontrado o null
      */
-    private static Repartidor buscarRepartidorPorCedula(ArrayList<Usuario> usuarios, String cedula) {
+    private static Repartidor buscarRepartidorPorCodigoUnico(ArrayList<Usuario> usuarios, String codigoUnico) {
         for (Usuario usuario : usuarios) {
-            if (usuario instanceof Repartidor && usuario.getCedula().equals(cedula)) {
+            if (usuario instanceof Repartidor && usuario.getCodigoUnico().equals(codigoUnico)) {
                 return (Repartidor) usuario;
             }
         }
@@ -164,32 +167,32 @@ public class ManejadorPedido {
     
     /**
      * Obtiene el nombre de un repartidor por su cédula
-     * @param cedulaRepartidor Cédula del repartidor
+     * @param codUnico codigo unico del reapartidor
      * @return Nombre del repartidor o "Repartidor no encontrado" si no existe
      */
-    private static String obtenerNombreRepartidor(String cedulaRepartidor) {
+    private static String obtenerNombreRepartidor(String codUnico) {
         String archivoUsuarios = "resources/Usuarios.txt";
-        ArrayList<String> usuarios = ManejoArchivos.LeeFichero(archivoUsuarios);
+        ArrayList<String> lineas = ManejoArchivos.LeeFichero(archivoUsuarios);
 
-        if (usuarios == null || usuarios.isEmpty()) {
+        if (lineas == null || lineas.isEmpty()) {
             return "Error al leer archivo de usuarios";
-        }
+        } else {
+            for (String linea : lineas) {
+                if (linea.trim().isEmpty()) {
+                    continue;
+                }
 
-        for (String linea : usuarios) {
-            if (linea.trim().isEmpty()) {
-                continue;
-            }
+                String[] datosU = linea.split("\\|");
 
-            String[] datosU = linea.split("\\|");
+                // Validar que el array tenga suficientes elementos
+                if (datosU.length < 8) {
+                    continue;
+                }
 
-            // Validar que el array tenga suficientes elementos
-            if (datosU.length < 8) {
-                continue;
-            }
-
-            // Verificar que sea un repartidor (R) y que la cédula coincida
-            if (datosU[7].equals("R") && datosU[1].equals(cedulaRepartidor)) {
-                return datosU[2] + " " + datosU[3]; // nombres + apellidos
+                // Verificar que sea un repartidor (R) y que el codUnico coincidan
+                if (datosU[7].equals("R") && datosU[0].equals(codUnico)) {
+                    return datosU[2] + " " + datosU[3]; // nombres + apellidos
+                }
             }
         }
         return "Repartidor no encontrado";
@@ -238,7 +241,7 @@ public class ManejadorPedido {
      */
     private static void gestionarPedidoRepartidor(Repartidor repartidor, ArrayList<Pedido> pedidos, Scanner scanner) {
         System.out.println("\n===== GESTIÓN DE PEDIDOS - REPARTIDOR =====");
-        System.out.println("Repartidor: " + repartidor.getNombres().get(0) + " " + repartidor.getApellidos().get(0));
+        System.out.println("Repartidor: " + repartidor.getNombre() + " " + repartidor.getApellido());
         System.out.println("Empresa: " + repartidor.getNombreEmpresa());
         
         consultarPedidosAsignados(repartidor, pedidos);
@@ -287,7 +290,7 @@ public class ManejadorPedido {
         
         // Buscar pedidos asignados a este repartidor que no estén entregados
         for (Pedido pedido : pedidos) {
-            if (pedido.getCodRepartidor().equals(repartidor.getCedula()) && 
+            if (pedido.getRepartidor().getCodigoUnico().equals(repartidor.getCodigoUnico()) && 
                 !(pedido.getEstadoPedido() == EstadoPedido.ENTREGADO) &&
                 !(pedido.getEstadoPedido().equals(EstadoPedido.CANCELADO))) {
                 pedidosAsignados.add(pedido);
@@ -305,7 +308,7 @@ public class ManejadorPedido {
         for (int i = 0; i < pedidosAsignados.size(); i++) {
             Pedido pedido = pedidosAsignados.get(i);
             System.out.println((i + 1) + ". Código: " + pedido.getCodigoPedido());
-            System.out.println("   Fecha del pedido: " + pedido.getFechaSimple());
+            System.out.println("   Fecha del pedido: " + ManejoFechas.setFechaSimple(pedido.getFechaPedido()));
             System.out.println("   Estado actual: " + pedido.getEstadoPedido());
             System.out.println();
         }
@@ -320,13 +323,13 @@ public class ManejadorPedido {
      */
     private static void mostrarInformacionPedido(Pedido pedido) {
         // Obtener nombre del producto
-        String nombreProducto = obtenerNombreProducto(pedido.getCodigoProducto());
+        String nombreProducto = obtenerNombreProducto(pedido.getProducto().getCodigo());
         
         // Obtener nombre del repartidor
-        String nombreRepartidor = obtenerNombreRepartidor(pedido.getCodRepartidor());
+        String nombreRepartidor = obtenerNombreRepartidor(pedido.getRepartidor().getCodigoUnico());
         
-        System.out.println("Fecha del pedido: " + pedido.getFechaSimple());
-        System.out.println("Producto comprado: " + nombreProducto + " (Código: " + pedido.getCodigoProducto() + ") Cantidad: " + pedido.getCantidadProducto());
+        System.out.println("Fecha del pedido: " + ManejoFechas.setFechaSimple(pedido.getFechaPedido()));
+        System.out.println("Producto comprado: " + nombreProducto + " (Código: " + pedido.getProducto().getCodigo() + ") Cantidad: " + pedido.getCantidadProducto());
         System.out.println("Valor pagado: $" + String.format("%.2f", pedido.getTotalPagado()));
         System.out.println("Estado actual: " + pedido.getEstadoPedido());
         System.out.println("Repartidor: " + nombreRepartidor);
@@ -377,7 +380,7 @@ public class ManejadorPedido {
         Pedido pedidoAModificar = null;
         for (Pedido pedido : pedidos) {
             if (pedido.getCodigoPedido().equals(codigoPedido) && 
-                pedido.getCodRepartidor().equals(repartidor.getCedula())) {
+                pedido.getRepartidor().getCodigoUnico().equals(repartidor.getCodigoUnico())) {
                 pedidoAModificar = pedido;
                 break;
             }
@@ -389,8 +392,8 @@ public class ManejadorPedido {
         }
         
         System.out.println("\nPedido encontrado:");
-        System.out.println("Fecha del pedido: " + pedidoAModificar.getFechaSimple() + 
-                          " Código del producto: " + pedidoAModificar.getCodigoProducto() + 
+        System.out.println("Fecha del pedido: " + ManejoFechas.setFechaSimple(pedidoAModificar.getFechaPedido()) + 
+                          " Código del producto: " + pedidoAModificar.getProducto().getCodigo() + 
                           " Estado actual: " + pedidoAModificar.getEstadoPedido());
         
         // Mostrar opciones según el estado actual
@@ -404,18 +407,17 @@ public class ManejadorPedido {
      */
     private static void mostrarOpcionesEstado(Pedido pedido, Scanner scanner) {
         EstadoPedido estadoActual = pedido.getEstadoPedido();
-        
+        ManejadorEmail manejadorEmail = new ManejadorEmail();
         if (estadoActual == EstadoPedido.EN_PREPARACION) {
             System.out.println("\nSeleccione el nuevo estado:");
             System.out.println("1. EN CAMINO");
             System.out.println("2. ENTREGADO");
-            
             System.out.print("Opción: ");
             int opcion = Integer.parseInt(scanner.nextLine());
-            
             if (opcion == 1) {
                 pedido.setEstadoPedido(EstadoPedido.EN_CAMINO);
                 System.out.println("Estado actualizado correctamente a EN CAMINO.");
+                Sistema.notificar(pedido.getCliente(), pedido, EstadoPedido.EN_CAMINO, manejadorEmail);
             } else if (opcion == 2) {
                 System.out.println("\nError: No puede cambiar directamente de EN PREPARACIÓN a ENTREGADO. Debe cambiar primero a EN CAMINO.");
                 mostrarOpcionesEstado(pedido, scanner); // Mostrar opciones nuevamente
@@ -425,13 +427,12 @@ public class ManejadorPedido {
         } else if (estadoActual == EstadoPedido.EN_CAMINO) {
             System.out.println("\nSeleccione el nuevo estado:");
             System.out.println("1. ENTREGADO");
-            
             System.out.print("Opción: ");
             int opcion = Integer.parseInt(scanner.nextLine());
-            
             if (opcion == 1) {
                 pedido.setEstadoPedido(EstadoPedido.ENTREGADO);
                 System.out.println("Estado actualizado correctamente a ENTREGADO.");
+                Sistema.notificar(pedido.getCliente(), pedido, EstadoPedido.ENTREGADO, manejadorEmail);
             } else {
                 System.out.println("Opción inválida.");
             }

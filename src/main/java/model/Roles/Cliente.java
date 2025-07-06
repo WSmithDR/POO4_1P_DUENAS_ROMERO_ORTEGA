@@ -2,21 +2,41 @@ package model.Roles;
 
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import app.Sistema;
 import model.Enums.Rol;
 import model.Enums.CategoriaProducto;
 import model.Producto;
 import model.Pedido;
-import services.ManejadorProducto;
-import services.ManejadorPedido;
+import services.archivos.ManejadorPedido;
+import services.archivos.ManejadorProducto;
+import services.email.ManejadorEmail;
 import java.util.Random;
 
 public class Cliente extends Usuario {
    private String numero_celular;
    private String direccion;
 
-   public Cliente(String cedula, String user_name, ArrayList<String> nombres, ArrayList<String> apellidos,
-         String correo, String contrasenia, String numero_celular, String direccion) {
-      super(Rol.CLIENTE, cedula, user_name, nombres, apellidos, correo, contrasenia);
+   public Cliente(
+         String codigoUnico,
+         String cedula,
+         String nombre,
+         String apellido,
+         String user_name,
+         String correo,
+         String contrasenia,
+         String numero_celular,
+         String direccion) {
+      super(
+            codigoUnico,
+            cedula,
+            nombre,
+            apellido,
+            user_name,
+            correo,
+            contrasenia,
+            Rol.CLIENTE
+            );
       this.numero_celular = numero_celular;
       this.direccion = direccion;
    }
@@ -45,105 +65,118 @@ public class Cliente extends Usuario {
     * @param pedidos Lista de pedidos disponibles para consultar
     */
    @Override
-   public void gestionarPedido(ArrayList<Pedido> pedidos) {
-      Scanner scanner = new Scanner(System.in);
-      services.ManejadorPedido.gestionarPedido(this, pedidos, scanner);
-      // No cerrar el scanner aquí ya que podría estar en uso en otros lugares
+   public void gestionarPedido(ArrayList<Pedido> pedidos, Scanner scanner) {
+      ManejadorPedido.gestionarPedido(this, pedidos, scanner);
    }
 
    /**
     * Realiza el proceso de compra para el cliente
+    * 
     * @param productos Lista de productos disponibles
-    * @param usuarios Lista de usuarios para buscar repartidores
-    * @param pedidos Lista de pedidos para agregar el nuevo pedido
-    * @param scanner Scanner para leer entrada del usuario
+    * @param usuarios  Lista de usuarios para buscar repartidores
+    * @param pedidos   Lista de pedidos para agregar el nuevo pedido
+    * @param scanner   Scanner para leer entrada del usuario
     */
-   public void realizarCompra(ArrayList<Producto> productos, ArrayList<Usuario> usuarios, ArrayList<Pedido> pedidos, Scanner scanner) {
+   public void realizarCompra(ArrayList<Producto> productos, ArrayList<Usuario> usuarios, ArrayList<Pedido> pedidos,
+         Scanner scanner) {
       System.out.println("\n=== COMPRAR PRODUCTO ===");
-      
-      // 1. Mostrar categorías
-      System.out.println("\nCategorías disponibles:");
-      CategoriaProducto[] categorias = CategoriaProducto.values();
-      for (int i = 0; i < categorias.length; i++) {
-          System.out.println((i + 1) + ". " + categorias[i]);
-      }
-      
+
+      // 1. Mostrar categorías de productos que estan disponibles
+      ArrayList<CategoriaProducto> catProdDisponibles = 
+      ManejadorProducto.mostrarCategoriasDisponibles();   
       // 2. Seleccionar categoría
-      System.out.print("Elige una categoría (1-" + categorias.length + "): ");
+      System.out.print("Elige una categoría (1-" + catProdDisponibles.size() + "): ");
       int opcionCategoria = Integer.parseInt(scanner.nextLine()) - 1;
-      if (opcionCategoria < 0 || opcionCategoria >= categorias.length) {
-          System.out.println("Opción inválida");
-          return;
+      if (opcionCategoria < 0 || opcionCategoria >= catProdDisponibles.size()) {
+         System.out.println("Opción inválida");
+         return;
       }
-      
+
       // 3. Mostrar productos de esa categoría
-      ArrayList<Producto> productosCategoria = ManejadorProducto.obtenerProductosPorCategoria(productos, categorias[opcionCategoria]);
+      ArrayList<Producto> productosCategoria = 
+      ManejadorProducto.
+      obtenerProductosPorCategoria(
+         productos,
+         catProdDisponibles.get(opcionCategoria)
+         );
       if (productosCategoria.isEmpty()) {
-          System.out.println("No hay productos en esta categoría");
-          return;
+         System.out.println("No hay productos en esta categoría");
+         return;
       }
-      
+
       System.out.println("\nProductos disponibles:");
       for (int i = 0; i < productosCategoria.size(); i++) {
-          Producto p = productosCategoria.get(i);
-          System.out.println((i + 1) + ". " + p.getNombre() + " - $" + p.getPrecio() + " (Stock: " + p.getStock() + ")");
+         Producto p = productosCategoria.get(i);
+         System.out.println((i + 1) + ". " + p.getNombre() + " - $" + p.getPrecio() + " (Stock: " + p.getStock() + ")");
       }
-      
+
       // 4. Seleccionar producto
       System.out.print("Elige un producto (1-" + productosCategoria.size() + "): ");
       int opcionProducto = Integer.parseInt(scanner.nextLine()) - 1;
       if (opcionProducto < 0 || opcionProducto >= productosCategoria.size()) {
-          System.out.println("Opción inválida");
-          return;
+         System.out.println("Opción inválida");
+         return;
       }
-      
+
       Producto productoElegido = productosCategoria.get(opcionProducto);
-      
+
       // 5. Pedir cantidad
       System.out.print("¿Cuántos quieres comprar? (máximo " + productoElegido.getStock() + "): ");
       int cantidad = Integer.parseInt(scanner.nextLine());
       if (cantidad <= 0 || cantidad > productoElegido.getStock()) {
-          System.out.println("Cantidad inválida");
-          return;
+         System.out.println("Cantidad inválida");
+         return;
       }
-      
+
       // 6. Calcular total
       double total = productoElegido.getPrecio() * cantidad;
       System.out.println("\nTotal a pagar: $" + total);
-      
+
       // 7. Confirmar compra
       System.out.print("¿Confirmar compra? (s/n): ");
       String confirmar = scanner.nextLine().toLowerCase();
       if (!confirmar.equals("s") && !confirmar.equals("si")) {
-          System.out.println("Compra cancelada");
-          return;
+         System.out.println("Compra cancelada");
+         return;
       }
-      
-      // 8. Buscar repartidor
+
+      // 8. Buscar/Asginar repartidor
       ArrayList<Repartidor> repartidores = new ArrayList<>();
       for (Usuario u : usuarios) {
-          if (u instanceof Repartidor) {
-              repartidores.add((Repartidor) u);
-          }
+         if (u instanceof Repartidor) {
+            Repartidor repartidor = (Repartidor) u;
+            repartidores.add(repartidor);
+         }
       }
-      
+
       if (repartidores.isEmpty()) {
-          System.out.println("No hay repartidores disponibles");
-          return;
+         System.out.println("No hay repartidores disponibles");
+         return;
+      } else {
+         // 9. Elegir repartidor al azar
+         Random random = new Random();
+         Repartidor repartidorElegido = repartidores.get(random.nextInt(repartidores.size()));
+         // 10. Crear pedido
+         Pedido nuevoPedido = new Pedido(this, repartidorElegido, productoElegido, cantidad, total);
+         productoElegido.reducirStock(cantidad);
+         ManejadorProducto.actualizarStockProductoEnArchivo(productoElegido);
+         ManejadorPedido.guardarPedido(nuevoPedido);
+         pedidos.add(nuevoPedido);
+
+         ManejadorEmail manejadorEmail = new ManejadorEmail();
+         if (repartidorElegido != null && nuevoPedido != null) {
+            Sistema.notificar(repartidorElegido, nuevoPedido, manejadorEmail);
+            Sistema.notificar(this, nuevoPedido, manejadorEmail);
+            System.out.println("¡Compra exitosa!");
+            System.out.println(
+                  "Repartidor: " + repartidorElegido.getNombre() + " " + repartidorElegido.getApellido());
+            System.out.println("Código de pedido: " + nuevoPedido.getCodigoPedido());
+            return;
+         } else {
+            System.out.println("Error al procesar la compra.");
+            return;
+         }
       }
-      
-      // 9. Elegir repartidor al azar
-      Random random = new Random();
-      Repartidor repartidorElegido = repartidores.get(random.nextInt(repartidores.size()));
-      
-      // 10. Crear pedido
-      Pedido nuevoPedido = new Pedido(this, repartidorElegido, productoElegido, cantidad, total);
-      productoElegido.reducirStock(cantidad);
-      ManejadorPedido.guardarPedido(nuevoPedido);
-      pedidos.add(nuevoPedido);
-      
-      System.out.println("¡Compra exitosa!");
-      System.out.println("Repartidor: " + repartidorElegido.getNombres().get(0) + " " + repartidorElegido.getApellidos().get(0));
-      System.out.println("Código de pedido: " + nuevoPedido.getCodigoPedido());
    }
+
 }

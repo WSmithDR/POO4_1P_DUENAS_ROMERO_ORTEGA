@@ -1,41 +1,40 @@
 package model.Roles;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import model.Enums.Rol;
 import model.Pedido;
-
-
 
 public abstract class Usuario {
     protected String codigoUnico;
     protected String cedula;
     protected String user_name;
-    protected ArrayList<String> nombres;
-    protected ArrayList<String> apellidos;
+    protected String nombre;
+    protected String apellido;
     protected String contrasenia;
     protected String correo;
     protected Rol rol;
 
-    public Usuario(Rol rol,String cedula, String user_name, ArrayList<String> nombres, ArrayList<String> apellidos, String correo,String contrasenia) {
-        this.rol = rol;
+    public Usuario(
+        String codigoUnico,
+        String cedula,
+        String nombre,
+        String apellido,
+        String user_name,
+        String correo,
+        String contrasenia,
+        Rol rol
+        ) {
+        this.codigoUnico = codigoUnico;
         this.cedula = cedula;
+        this.nombre = nombre;
+        this.apellido = apellido;
         this.user_name = user_name;
-        /*para las validaciones, no se si esto este bien */
-        setNombres(nombres);
-        setApellidos(apellidos);
-        setCorreo(correo);
-        setContrasenia(contrasenia);
-        this.codigoUnico = generarCodigoUnico(cedula, nombres, apellidos);
+        this.correo = correo;
+        this.contrasenia = contrasenia;
+        this.rol = rol;
     }
-
-    private String generarCodigoUnico(String cedula, ArrayList<String> nombres, ArrayList<String> apellidos){
-        String nombreCode = (nombres != null && !nombres.isEmpty()) ? nombres.get(0) : "";
-        String apellidoCode = (apellidos != null && !apellidos.isEmpty()) ? apellidos.get(0) : "";
-        return String.format("%s-%s-%s", cedula.substring(0, 4), nombreCode, apellidoCode);
-    }
-
-    
 
     // Getters
     public String getCodigoUnico() {
@@ -50,12 +49,12 @@ public abstract class Usuario {
         return this.user_name;
     }
 
-    public ArrayList<String> getNombres() {
-        return this.nombres;
+    public String getNombre() {
+        return this.nombre;
     }
 
-    public ArrayList<String> getApellidos() {
-        return this.apellidos;
+    public String getApellido() {
+        return this.apellido;
     }
 
     public String getContrasenia() {
@@ -83,16 +82,15 @@ public abstract class Usuario {
         this.user_name = user_name;
     }
 
-    public void setNombres(ArrayList<String> nombres) {
-        this.nombres = nombres;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
-    
-    public void setApellidos(ArrayList<String> apellidos) {
-            this.apellidos = apellidos;
-        }
-    
 
-    protected void setContrasenia(String contrasenia){
+    public void setApellidos(String apellido) {
+        this.apellido = apellido;
+    }
+
+    protected void setContrasenia(String contrasenia) {
         this.contrasenia = contrasenia;
     }
 
@@ -103,10 +101,12 @@ public abstract class Usuario {
     public void setRol(Rol rol) {
         this.rol = rol;
     }
-    
+
     /**
      * Método abstracto para gestionar pedidos según el rol del usuario
+     * 
      * @param pedidos Lista de pedidos disponibles para gestionar
+     * @param scanner scanner para poder intereacturar con la consola
      */
-    public abstract void gestionarPedido(ArrayList<Pedido> pedidos);
+    public abstract void gestionarPedido(ArrayList<Pedido> pedidos, Scanner scanner);
 }

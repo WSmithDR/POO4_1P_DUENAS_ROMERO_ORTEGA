@@ -9,7 +9,7 @@ public class ManejoFechas {
      * Obtiene la fecha del pedido en formato yyyy-MM-dd
      * @return String con la fecha formateada
      */
-    public static String getFechaSimple(Date fecha) {
+    public static String setFechaSimple(Date fecha) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         return sdf.format(fecha);
     }

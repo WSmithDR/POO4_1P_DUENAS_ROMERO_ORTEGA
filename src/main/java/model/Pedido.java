@@ -1,7 +1,6 @@
 package model;
 
 import java.util.Date;
-import model.Enums.CategoriaProducto;
 import model.Enums.EstadoPedido;
 import model.Roles.Cliente;
 import model.Roles.Repartidor;
@@ -12,11 +11,10 @@ import utils.ManejoFechas;
  */
 public class Pedido {
     private Date fechaPedido;
-    private String codigoProducto;
+    private Producto producto;
     private double totalPagado;
     private int cantidadProducto;
-    private CategoriaProducto categoria;
-    private String codRepartidor;
+    private Repartidor repartidor;
     private EstadoPedido estadoPedido;
     private String codigoPedido;
     private Cliente cliente;
@@ -37,13 +35,12 @@ public class Pedido {
      */
     public Pedido(Cliente cliente, Repartidor repartidor, Producto producto, int cantidad, double total) {
         this.fechaPedido = new Date();
-        this.codigoProducto = producto.getCodigo();
+        this.producto = producto;
         this.totalPagado = total;
         this.cantidadProducto = cantidad;
-        this.categoria = producto.getCategoria();
-        this.codRepartidor = repartidor.getCedula();
+        this.repartidor = repartidor;
         this.estadoPedido = EstadoPedido.EN_PREPARACION;
-        this.codigoPedido = generarCodigo();
+        this.codigoPedido = generarCodigoPedido();
         this.cliente = cliente;
     }
 
@@ -53,7 +50,7 @@ public class Pedido {
      * 
      * @return Código único del pedido en formato String
      */
-    public String generarCodigo() {
+    public String generarCodigoPedido() {
         contadorPedido++;
         return String.format("PED%d", contadorPedido);
     }
@@ -72,17 +69,13 @@ public class Pedido {
      * 
      * @return Fecha del pedido en formato String
      */
-    public String getFechaSimple() {
+    /*public String getFechaSimple() {
         return ManejoFechas.getFechaSimple(this.fechaPedido);
-    }
+    }*/
 
     //Getters
     public Date getFechaPedido() {
         return this.fechaPedido;
-    }
-
-    public String getCodigoProducto() {
-        return this.codigoProducto;
     }
 
     public double getTotalPagado() {
@@ -91,14 +84,6 @@ public class Pedido {
 
     public int getCantidadProducto() {
         return this.cantidadProducto;
-    }
-
-    public CategoriaProducto getCategoria() {
-        return this.categoria;
-    }
-
-    public String getCodRepartidor() {
-        return this.codRepartidor;
     }
 
     public EstadoPedido getEstadoPedido() {
@@ -113,13 +98,17 @@ public class Pedido {
         return this.cliente;
     }
 
+    public Repartidor getRepartidor(){
+        return this.repartidor;
+    }
+
+    public Producto getProducto(){
+        return this.producto;
+    }
+
     //Setters
     public void setFechaPedido(Date fechaPedido) {
         this.fechaPedido = fechaPedido;
-    }
-
-    public void setCodigoProducto(String codigoProducto) {
-        this.codigoProducto = codigoProducto;
     }
 
     public void setTotalPagado(double totalPagado) {
@@ -128,14 +117,6 @@ public class Pedido {
 
     public void setCantidadProducto(int cantidadProducto) {
         this.cantidadProducto = cantidadProducto;
-    }
-
-    public void setCategoria(CategoriaProducto categoria) {
-        this.categoria = categoria;
-    }
-
-    public void setCodRepartidor(String codRepartidor) {
-        this.codRepartidor = codRepartidor;
     }
 
     public void setEstadoPedido(EstadoPedido estadoPedido) {
@@ -157,11 +138,11 @@ public class Pedido {
         return String.join("|",
             codigoPedido,
             cliente.getCedula(),
-            codRepartidor,
-            codigoProducto,
+            repartidor.getCodigoUnico(),
+            producto.getCodigo(),
             String.valueOf(cantidadProducto),
             String.valueOf(totalPagado),
-            ManejoFechas.getFechaSimple(fechaPedido),
+            ManejoFechas.setFechaSimple(fechaPedido),
             String.valueOf(estadoPedido)
         );
     }

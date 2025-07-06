@@ -27,3 +27,9 @@ replay_pid*
 
 commits.txt
 diffs.txt
+
+#env
+.env
+
+#Resources
+resources/

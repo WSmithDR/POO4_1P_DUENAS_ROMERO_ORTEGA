@@ -1,14 +1,34 @@
 package model.Roles;
 
 import java.util.ArrayList;
+import java.util.Scanner;
+
 import model.Enums.Rol;
+import services.archivos.ManejadorPedido;
 import model.Pedido;
 
 public class Repartidor extends Usuario {
     private String nombreEmpresa;
 
-    public Repartidor(String cedula, String user_name, ArrayList<String> nombres, ArrayList<String> apellidos, String correo, String contrasenia, String nombreEmpresa){
-        super(Rol.REPARTIDOR, cedula, user_name, nombres, apellidos, correo, contrasenia);
+    public Repartidor(
+        String codigoUnico,
+        String cedula,
+        String nombre,
+        String apellido,
+        String user_name,
+        String correo,
+        String contrasenia,
+        String nombreEmpresa
+        ){
+        super(
+            codigoUnico,
+            cedula,
+            nombre,
+            apellido,
+            user_name,
+            correo,
+            contrasenia,
+            Rol.REPARTIDOR);
         this.nombreEmpresa = nombreEmpresa;
     }
 
@@ -27,7 +47,7 @@ public class Repartidor extends Usuario {
      * @param pedidos Lista de todos los pedidos del sistema
      */
     public void consultarPedidosAsignados(ArrayList<Pedido> pedidos) {
-        services.ManejadorPedido.consultarPedidosAsignados(this, pedidos);
+        ManejadorPedido.consultarPedidosAsignados(this, pedidos);
     }
 
     /**
@@ -36,9 +56,7 @@ public class Repartidor extends Usuario {
      * @param pedidos Lista de todos los pedidos del sistema
      */
     @Override
-    public void gestionarPedido(ArrayList<Pedido> pedidos) {
-        java.util.Scanner scanner = new java.util.Scanner(System.in);
-        services.ManejadorPedido.gestionarPedido(this, pedidos, scanner);
-        // No cerrar el scanner aquí ya que podría estar en uso en otros lugares
+    public void gestionarPedido(ArrayList<Pedido> pedidos, Scanner scanner) {
+        ManejadorPedido.gestionarPedido(this, pedidos, scanner);
     }
 }
