@@ -5,6 +5,7 @@ import java.util.Date;
 
 import model.Enums.CategoriaProducto;
 import model.Roles.Cliente;
+import model.Roles.Repartidor;
 import utils.ManejoFechas;
 
 /**
@@ -41,6 +42,21 @@ public class Pedido {
         this.codRepartidor = codRepartidor;
         this.estadoPedido = estadoPedido;
         this.codigoPedido = generarCodigo();
+        this.cliente = cliente;
+
+        contadorPedido++;
+    }
+    
+    public Pedido(Cliente cliente, Repartidor repartidor, Producto producto, int cantidad, double total) {
+        this.fechaPedido = new Date();
+        this.codigoProducto = producto.getCodigo();
+        this.totalPagado = total;
+        this.cantidadProducto = cantidad;
+        this.categoria = producto.getCategoria();
+        this.codRepartidor = repartidor.getCedula();
+        this.estadoPedido = "En Preparación";
+        this.codigoPedido = generarCodigo();
+        this.cliente = cliente;
 
         contadorPedido++;
     }
