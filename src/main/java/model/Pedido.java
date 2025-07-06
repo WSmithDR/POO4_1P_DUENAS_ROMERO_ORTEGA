@@ -13,95 +13,113 @@ public class Pedido {
     private String codRepartidor;
     private String estadoPedido;
     private String codigoPedido;
-    private static int contadorPedido;
+    private static int contadorPedido = 0;
 
     
-    public Pedido (Date fechaPedido, String codigoProducto, double totalPagado, int cantidadProducto, CategoriaProducto categoria,
-                        String codRepartidor, String estadoPedido, String codigoPedido) {
-        this.fechaPedido=fechaPedido;
-        this.codigoProducto=codigoProducto;
-        this.totalPagado=totalPagado;
-        this.cantidadProducto=cantidadProducto;
-        this.categoria=categoria;
-        this.codRepartidor=codRepartidor;
-        this.estadoPedido=estadoPedido;
-        this.codigoPedido="PED"+String.valueOf(contadorPedido);
+    public Pedido(Date fechaPedido, String codigoProducto, double totalPagado, int cantidadProducto, CategoriaProducto categoria,
+                        String codRepartidor, String estadoPedido) {
+        this.fechaPedido = fechaPedido;
+        this.codigoProducto = codigoProducto;
+        this.totalPagado = totalPagado;
+        this.cantidadProducto = cantidadProducto;
+        this.categoria = categoria;
+        this.codRepartidor = codRepartidor;
+        this.estadoPedido = estadoPedido;
+        this.codigoPedido = generarCodigo();
     }
     
-    public void cambiarEstado (String nuevoEstado){
-        this.estadoPedido=nuevoEstado;
+    public void cambiarEstado(String nuevoEstado) {
+        this.estadoPedido = nuevoEstado;
     }
 
-    public void generarCodigo (){
+    public String generarCodigo() {
+        contadorPedido++;
+        return "PED" + String.format("%04d", contadorPedido);
     }
 
-
-    //Getters
-    public Date getFechaPedido (){
-        return this.fechaPedido;
-    }
-
-    public String getCodigoProduto (){
-        return this.codigoProducto;
-    }
-
-    public double getTotalPagado (){
-        return this.totalPagado;
-    }
-
-    public int getCantidadProducto (){
-        return this.cantidadProducto;
-    }
-
-    public CategoriaProducto getcategoria (){
-        return this.categoria;
-    }
-
-    public String getCodRepartidor (){
-        return this.codRepartidor;
-    }
-
-    public String getEstadoPedido (){
-        return this.estadoPedido;
-    }
-
-    public String codigoPedido (){
+    // Método para obtener el código actual sin generar uno nuevo
+    public String obtenerCodigo() {
         return this.codigoPedido;
     }
 
+    //Getters
+    public Date getFechaPedido() {
+        return this.fechaPedido;
+    }
+
+    public String getCodigoProducto() {
+        return this.codigoProducto;
+    }
+
+    public double getTotalPagado() {
+        return this.totalPagado;
+    }
+
+    public int getCantidadProducto() {
+        return this.cantidadProducto;
+    }
+
+    public CategoriaProducto getCategoria() {
+        return this.categoria;
+    }
+
+    public String getCodRepartidor() {
+        return this.codRepartidor;
+    }
+
+    public String getEstadoPedido() {
+        return this.estadoPedido;
+    }
+
+    public String getCodigoPedido() {
+        return this.codigoPedido;
+    }
 
     //Setters
-    public void setFechaPedido (Date fechaPedido){
-        this.fechaPedido=fechaPedido;
+    public void setFechaPedido(Date fechaPedido) {
+        this.fechaPedido = fechaPedido;
     }
 
-    public void setCodigoProducto (String codigoProducto){
-        this.codigoProducto=codigoProducto;
+    public void setCodigoProducto(String codigoProducto) {
+        this.codigoProducto = codigoProducto;
     }
 
-    public void setTotalPagado (double totalPagado){
-        this.totalPagado=totalPagado;
+    public void setTotalPagado(double totalPagado) {
+        this.totalPagado = totalPagado;
     }
 
-    public void setCantidadProducto (int cantidadProducto){
-        this.cantidadProducto=cantidadProducto;
+    public void setCantidadProducto(int cantidadProducto) {
+        this.cantidadProducto = cantidadProducto;
     }
 
-    public void setCategoria (CategoriaProducto categoria){
-        this.categoria=categoria;
+    public void setCategoria(CategoriaProducto categoria) {
+        this.categoria = categoria;
     }
 
-    public void setCodRepartidor (String codRepartidor){
-        this.codRepartidor=codRepartidor;
+    public void setCodRepartidor(String codRepartidor) {
+        this.codRepartidor = codRepartidor;
     }
 
-    public void setEstadoPedido (String estadoPedido){
-        this.estadoPedido=estadoPedido;
+    public void setEstadoPedido(String estadoPedido) {
+        this.estadoPedido = estadoPedido;
     }
 
-    public void setCodigoPedido (String codigoPedido){
-        this.codigoPedido=codigoPedido;
+    public void setCodigoPedido(String codigoPedido) {
+        this.codigoPedido = codigoPedido;
     }
 
-
+    // Método toString para mostrar información del pedido
+    @Override
+    public String toString() {
+        return "Pedido{" +
+                "codigoPedido='" + codigoPedido + '\'' +
+                ", fechaPedido=" + fechaPedido +
+                ", codigoProducto='" + codigoProducto + '\'' +
+                ", cantidadProducto=" + cantidadProducto +
+                ", totalPagado=" + totalPagado +
+                ", categoria=" + categoria +
+                ", estadoPedido='" + estadoPedido + '\'' +
+                ", codRepartidor='" + codRepartidor + '\'' +
+                '}';
+    }
 }
