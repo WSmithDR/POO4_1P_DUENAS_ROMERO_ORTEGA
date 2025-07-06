@@ -19,7 +19,7 @@ public class Pedido {
 
     
     public void Pedido (Date fechaPedido, String codigoProducto, double totalPagado, int cantidadProducto, CategoriaProducto categoria,
-                        String codRepartidor, String estadoPedido, String codigoPedido, int contadorPedido)
+                        String codRepartidor, String estadoPedido, String codigoPedido, int contadorPedido){
         this.fechaPedido=fechaPedido;
         this.codigoProducto=codigoProducto;
         this.totalPagado=totalPagado;
@@ -29,7 +29,7 @@ public class Pedido {
         this.estadoPedido=estadoPedido;
         this.codigoPedido=codigoPedido;
         this.contadorPedido=contadorPedido;
-
+                        }
     
     public void cambiarEstado (String nuevoEstado){
     }
@@ -78,7 +78,7 @@ public class Pedido {
 
     //Setters
     public void setFechaPedido (Date fechaPedido){
-        this.fecha=fechaPedido;
+        this.fechaPedido=fechaPedido;
     }
 
     public void setCodigoProducto (String codigoProducto){
