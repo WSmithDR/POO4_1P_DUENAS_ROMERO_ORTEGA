@@ -174,7 +174,7 @@ public class Sistema {
             cliente.getNombres(), cliente.getApellidos(),
             pedidoRealizado.codigoPedido(),
             pedidoRealizado.getFechaPedido(),
-            pedidoRealizado.getCodigoProduto(),
+            pedidoRealizado.getCodigoProducto(),
             pedidoRealizado.getCantidadProducto(),
             pedidoRealizado.getTotalPagado(),
             pedidoRealizado.getEstadoPedido()
