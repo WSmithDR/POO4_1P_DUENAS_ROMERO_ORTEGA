@@ -11,24 +11,24 @@ public class Repartidor extends Usuario {
     private String nombreEmpresa;
 
     public Repartidor(
-        String cedula, 
-        String user_name, 
-        String nombre, 
-        String apellido, 
-        String correo, 
-        String contrasenia, 
-        String nombreEmpresa,
-        String codigoUnico
+        String codigoUnico,
+        String cedula,
+        String nombre,
+        String apellido,
+        String user_name,
+        String correo,
+        String contrasenia,
+        String nombreEmpresa
         ){
         super(
-            Rol.REPARTIDOR, 
-            cedula, 
-            user_name, 
-            nombre, 
-            apellido, 
-            correo, 
+            codigoUnico,
+            cedula,
+            nombre,
+            apellido,
+            user_name,
+            correo,
             contrasenia,
-            codigoUnico);
+            Rol.REPARTIDOR);
         this.nombreEmpresa = nombreEmpresa;
     }
 

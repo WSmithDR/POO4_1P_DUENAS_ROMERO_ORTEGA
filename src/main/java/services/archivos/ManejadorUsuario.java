@@ -53,7 +53,7 @@ public class ManejadorUsuario {
                 }
                 if (partes[7].equals(Rol.CLIENTE.toString())) {
 
-                    Cliente cliente = cargarDatosCliente(codigoUnico, cedula, username, nombre, apellido, correo,
+                    Cliente cliente = cargarDatosCliente(codigoUnico, cedula, nombre, apellido, username, correo,
                             contrasenia);
                     if (cliente != null) {
 
@@ -62,7 +62,7 @@ public class ManejadorUsuario {
                     }
                 } else if (partes[7].equals(Rol.REPARTIDOR.toString())) {
 
-                    Repartidor repartidor = cargarDatosRepartidor(codigoUnico, username, nombre, apellido, correo,
+                    Repartidor repartidor = cargarDatosRepartidor(codigoUnico, cedula, nombre, apellido, username, correo,
                             contrasenia);
                     if (repartidor != null) {
 
@@ -83,9 +83,9 @@ public class ManejadorUsuario {
     public static Cliente cargarDatosCliente(
             String codigoUnico,
             String cedula,
-            String username,
             String nombre,
             String apellido,
+            String username,
             String correo,
             String contrasenia) {
 
@@ -97,8 +97,8 @@ public class ManejadorUsuario {
             if (partes[1].equals(cedula)) {
                 String celular = partes[4];
                 String direccion = partes[5];
-                clienteEncontrado = new Cliente(cedula, username, nombre, apellido, correo, contrasenia, celular,
-                        direccion, codigoUnico);
+                clienteEncontrado = new Cliente(codigoUnico, cedula, nombre, apellido, username, correo, contrasenia, celular,
+                        direccion);
             }
         }
         return clienteEncontrado;
@@ -108,10 +108,11 @@ public class ManejadorUsuario {
      * Lectura de datos del archivo repartidor
      **/
     public static Repartidor cargarDatosRepartidor(
-            String codUnico,
-            String username,
+            String codigoUnico,
+            String cedula,
             String nombre,
             String apellido,
+            String username,
             String correo, String contrasenia) {
         ArrayList<String> lineas = ManejoArchivos.LeeFichero(REPARTIDORES_FILE);
         Repartidor repartidorEncontrado = null;
@@ -119,11 +120,10 @@ public class ManejadorUsuario {
         for (int i = 1; i < lineas.size(); i++) {
             String linea = lineas.get(i);
             String[] partes = linea.split("\\|");
-            if (partes[0].equals(codUnico)) {
+            if (partes[0].equals(codigoUnico)) {
                 String empresa = partes[4];
-                String cedula = partes[1];
-                repartidorEncontrado = new Repartidor(cedula, username, nombre, apellido, correo, contrasenia, empresa,
-                        codUnico);
+                String cedulaArchivo = partes[1];
+                repartidorEncontrado = new Repartidor(codigoUnico, cedulaArchivo, nombre, apellido, username, correo, contrasenia, empresa);
             }
         }
         return repartidorEncontrado;

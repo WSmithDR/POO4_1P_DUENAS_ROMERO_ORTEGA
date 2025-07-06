@@ -18,24 +18,24 @@ public class Cliente extends Usuario {
    private String direccion;
 
    public Cliente(
+         String codigoUnico,
          String cedula,
-         String user_name,
          String nombre,
          String apellido,
+         String user_name,
          String correo,
          String contrasenia,
          String numero_celular,
-         String direccion,
-         String codigoUnico) {
+         String direccion) {
       super(
-            Rol.CLIENTE,
+            codigoUnico,
             cedula,
-            user_name,
             nombre,
             apellido,
+            user_name,
             correo,
             contrasenia,
-            codigoUnico
+            Rol.CLIENTE
             );
       this.numero_celular = numero_celular;
       this.direccion = direccion;

@@ -377,7 +377,6 @@ public class ManejadorPedido {
         // Buscar el pedido
         Pedido pedidoAModificar = null;
         for (Pedido pedido : pedidos) {
-            //TODO: Sobreescribir metodo equals a partir de esto
             if (pedido.getCodigoPedido().equals(codigoPedido) && 
                 pedido.getRepartidor().getCodigoUnico().equals(repartidor.getCodigoUnico())) {
                 pedidoAModificar = pedido;

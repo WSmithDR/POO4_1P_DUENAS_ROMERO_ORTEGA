@@ -17,23 +17,23 @@ public abstract class Usuario {
     protected Rol rol;
 
     public Usuario(
-        Rol rol, 
-        String cedula, 
-        String user_name, 
+        String codigoUnico,
+        String cedula,
         String nombre,
         String apellido,
-        String correo, 
+        String user_name,
+        String correo,
         String contrasenia,
-        String codigoUnico
+        Rol rol
         ) {
-        this.rol = rol;
+        this.codigoUnico = codigoUnico;
         this.cedula = cedula;
-        this.user_name = user_name;
         this.nombre = nombre;
         this.apellido = apellido;
+        this.user_name = user_name;
         this.correo = correo;
         this.contrasenia = contrasenia;
-        this.codigoUnico = codigoUnico;
+        this.rol = rol;
     }
 
     // Getters
