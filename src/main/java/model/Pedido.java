@@ -1,10 +1,15 @@
 package model;
 
-import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 import model.Enums.CategoriaProducto;
+import model.Roles.Cliente;
+import utils.ManejoFechas;
 
+/**
+ * Clase que representa un pedido en el sistema
+ */
 public class Pedido {
     private Date fechaPedido;
     private String codigoProducto;
@@ -14,25 +19,30 @@ public class Pedido {
     private String codRepartidor;
     private String estadoPedido;
     private String codigoPedido;
-    private static int contadorPedido = 0;
+    private Cliente cliente;
+
+    public static int contadorPedido = 0;
 
     
-    public Pedido(Date fechaPedido, String codigoProducto, double totalPagado, int cantidadProducto, CategoriaProducto categoria,
-                        String codRepartidor, String estadoPedido) {
+    public Pedido(
+        Date fechaPedido, 
+        String codigoProducto, 
+        double totalPagado, 
+        int cantidadProducto, 
+        CategoriaProducto categoriaProducto,
+        String codRepartidor, 
+        Cliente cliente,
+        String estadoPedido) {
         this.fechaPedido = fechaPedido;
         this.codigoProducto = codigoProducto;
         this.totalPagado = totalPagado;
         this.cantidadProducto = cantidadProducto;
-        this.categoria = categoria;
+        this.categoria = categoriaProducto;
         this.codRepartidor = codRepartidor;
         this.estadoPedido = estadoPedido;
         this.codigoPedido = generarCodigo();
 
         contadorPedido++;
-    }
-    
-    public void cambiarEstado(String nuevoEstado) {
-        this.estadoPedido = nuevoEstado;
     }
 
     public String generarCodigo() {
@@ -112,4 +122,17 @@ public class Pedido {
         this.codigoPedido = codigoPedido;
     }
 
+    public String toFileFormat() {
+        return String.join("|",
+            codigoPedido,
+            cliente.getCedula(),
+            codRepartidor,
+            codigoPedido,
+            String.valueOf(cantidadProducto),
+            String.valueOf(totalPagado),
+            ManejoFechas.getFechaSimple(fechaPedido),
+            estadoPedido
+        );
+    }
+        
 }
