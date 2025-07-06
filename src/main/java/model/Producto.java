@@ -1,7 +1,6 @@
 package model;
 
 import model.Enums.CategoriaProducto;
-import model.Enums.Rol;
 
 /**
  * Clase que representa un producto en el sistema
@@ -10,7 +9,7 @@ public class Producto {
     private String codigo;
     private String nombre;
     private double precio;
-    private CategoriaProducto categoria;
+    private CategoriaProducto categoriaProducto;
     private int stock;
 
     /**
@@ -21,11 +20,11 @@ public class Producto {
      * @param categoria Categoría del producto
      * @param stock Cantidad disponible en stock
      */
-    public Producto(String codigo, String nombre, double precio, CategoriaProducto categoria, int stock) {
+    public Producto(String codigo, String nombre, double precio, CategoriaProducto categoriaProducto, int stock) {
         this.codigo = codigo;
         this.nombre = nombre;
         this.precio = precio;
-        this.categoria = categoria;
+        this.categoriaProducto = categoriaProducto;
         this.stock = stock;
     }
 
@@ -42,8 +41,8 @@ public class Producto {
         return precio;
     }
 
-    public CategoriaProducto getCategoria() {
-        return categoria;
+    public CategoriaProducto getCategoriaProducto() {
+        return categoriaProducto;
     }
 
     public int getStock() {
@@ -63,8 +62,8 @@ public class Producto {
         this.precio = precio;
     }
 
-    public void setCategoria(CategoriaProducto categoria) {
-        this.categoria = categoria;
+    public void setCategoriaProducto(CategoriaProducto categoria) {
+        this.categoriaProducto = categoria;
     }
 
     public void setStock(int stock) {
@@ -89,12 +88,19 @@ public class Producto {
         return codigo + " - " + nombre + " - $" + precio + " - Stock: " + stock;
     }
 
-    public void mostrarCategoria(){
-        System.out.println(categoria);
+    /*public void mostrarCategoriaProducto(){
+        System.out.println(categoriaProducto);
+    }*/
+
+    public static CategoriaProducto[] mostrarCategoriasDisponibles(){
+        System.out.println("\nCategorías disponibles:");
+     CategoriaProducto[] categorias = CategoriaProducto.values();
+     for (int i = 0; i < categorias.length; i++) {
+         System.out.println((i + 1) + ". " + categorias[i]);
+     }
+     return categorias;
     }
 
-    public void elegirCategoria(Rol rol){
-        
-    }
+    
 }
 

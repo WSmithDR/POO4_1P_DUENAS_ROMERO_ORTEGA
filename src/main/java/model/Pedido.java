@@ -2,7 +2,6 @@ package model;
 
 import java.util.Date;
 
-import model.Enums.CategoriaProducto;
 import model.Enums.EstadoPedido;
 import model.Roles.Cliente;
 import model.Roles.Repartidor;
@@ -13,42 +12,47 @@ import utils.ManejoFechas;
  */
 public class Pedido {
     private Date fechaPedido;
-    private String codigoProducto;
+    private Producto producto;
     private double totalPagado;
     private int cantidadProducto;
-    private CategoriaProducto categoria;
-    private String codRepartidor;
+    private Repartidor repartidor;
     private EstadoPedido estadoPedido;
     private String codigoPedido;
     private Cliente cliente;
 
     public static int contadorPedido = 0;
     
-    public Pedido(Cliente cliente, Repartidor repartidor, Producto producto, int cantidad, double total) {
+    public Pedido(
+        Cliente cliente, 
+        Repartidor repartidor, 
+        Producto producto, 
+        int cantidad, 
+        double totalPagado) {
         this.fechaPedido = new Date();
-        this.codigoProducto = producto.getCodigo();
-        this.totalPagado = total;
+        this.producto = producto;
+        this.totalPagado = totalPagado;
         this.cantidadProducto = cantidad;
-        this.categoria = producto.getCategoria();
-        this.codRepartidor = repartidor.getCedula();
+        this.repartidor = repartidor;
         this.estadoPedido = EstadoPedido.EN_PREPARACION;
-        this.codigoPedido = generarCodigo();
+        this.codigoPedido = generarCodigoPedido();
         this.cliente = cliente;
 
         contadorPedido++;
     }
 
-    public String generarCodigo() {
+    /**
+     * Genera un código único para el pedido basado en el contador de pedidos actual.
+     * El formato del código es "PED" seguido del número de pedido.
+     * 
+     * @return String con el código único del pedido en formato "PED{número}"
+     */
+    private String generarCodigoPedido() {
         return String.format("PED%d", contadorPedido);
     }
     
     //Getters
     public Date getFechaPedido() {
         return this.fechaPedido;
-    }
-
-    public String getCodigoProducto() {
-        return this.codigoProducto;
     }
 
     public double getTotalPagado() {
@@ -59,14 +63,6 @@ public class Pedido {
         return this.cantidadProducto;
     }
 
-    public CategoriaProducto getCategoria() {
-        return this.categoria;
-    }
-
-    public String getCodRepartidor() {
-        return this.codRepartidor;
-    }
-
     public EstadoPedido getEstadoPedido() {
         return this.estadoPedido;
     }
@@ -75,13 +71,21 @@ public class Pedido {
         return this.codigoPedido;
     }
 
+    public Cliente getCliente(){
+        return this.cliente;
+    }
+
+    public Producto getProducto(){
+        return this.producto;
+    };
+
+    public Repartidor getRepartidor(){
+        return this.repartidor;
+    }
+
     //Setters
     public void setFechaPedido(Date fechaPedido) {
         this.fechaPedido = fechaPedido;
-    }
-
-    public void setCodigoProducto(String codigoProducto) {
-        this.codigoProducto = codigoProducto;
     }
 
     public void setTotalPagado(double totalPagado) {
@@ -90,14 +94,6 @@ public class Pedido {
 
     public void setCantidadProducto(int cantidadProducto) {
         this.cantidadProducto = cantidadProducto;
-    }
-
-    public void setCategoria(CategoriaProducto categoria) {
-        this.categoria = categoria;
-    }
-
-    public void setCodRepartidor(String codRepartidor) {
-        this.codRepartidor = codRepartidor;
     }
 
     public void setEstadoPedido(EstadoPedido estadoPedido) {
@@ -111,12 +107,12 @@ public class Pedido {
     public String toFileFormat() {
         return String.join("|",
             codigoPedido,
-            cliente.getCedula(),
-            codRepartidor,
+            cliente.getCodigoUnico(),
+            repartidor.getCodigoUnico(),
             codigoPedido,
             String.valueOf(cantidadProducto),
             String.valueOf(totalPagado),
-            ManejoFechas.getFechaSimple(fechaPedido),
+            ManejoFechas.setFechaSimple(fechaPedido),
             String.valueOf(estadoPedido)
         );
     }

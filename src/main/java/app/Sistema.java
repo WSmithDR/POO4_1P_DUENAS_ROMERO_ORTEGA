@@ -9,9 +9,9 @@ import model.Roles.Usuario;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import services.ManejadorEmail;
 import services.ManejadorUsuario;
 import services.ManejadorProducto;
+import services.ManejadorEmail;
 import services.ManejadorPedido;
 import model.Producto;
 
@@ -156,12 +156,12 @@ public class Sistema {
         }
     }
 
-    /**
+     /**
      * Notifica al cliente cuando este realiza un pedido
      * @param cliente El objeto Cliente que realiza el pedido
      * @param pedidoRealizado Contiene la informacion del pedido que realizo el cliente
      */
-    public void notificar(Cliente cliente, Pedido pedidoRealizado) {
+    public static void notificar(Cliente cliente, Pedido pedidoRealizado) {
         ManejadorEmail manejadorEmail = new ManejadorEmail();
         String asunto = "Pedido realizado";
         String cuerpo = String.format(
@@ -171,10 +171,11 @@ public class Sistema {
             "Valor pagado: $%.2f\n" +
             "Estado inicial: %s\n\n" +
             "Gracias por su compra. Recibirá actualizaciones del estado de su pedido por este medio.",
-            cliente.getNombres(), cliente.getApellidos(),
+            cliente.getNombres(), 
+            cliente.getApellidos(),
             pedidoRealizado.getCodigoPedido(),
             pedidoRealizado.getFechaPedido(),
-            pedidoRealizado.getCodigoProducto(),
+            pedidoRealizado.getProducto().getCodigo(),
             pedidoRealizado.getCantidadProducto(),
             pedidoRealizado.getTotalPagado(),
             pedidoRealizado.getEstadoPedido()
@@ -218,12 +219,10 @@ public class Sistema {
             cliente.getNombres(), cliente.getApellidos(),
             pedido.getCodigoPedido(), nuevoEstado,
             pedido.getFechaPedido(),
-            pedido.getCodigoProducto(),
-            pedido.getCodRepartidor()
+            pedido.getProducto().getCodigo(),
+            pedido.getRepartidor().getCodigoUnico()
         );
 
         manejadorEmail.enviarCorreo(cliente.getCorreo(), asunto, cuerpo);
     }
-
-    
 }

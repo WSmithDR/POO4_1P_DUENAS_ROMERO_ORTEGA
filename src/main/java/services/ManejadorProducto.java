@@ -53,7 +53,7 @@ public class ManejadorProducto {
         ArrayList<Producto> productosFiltrados = new ArrayList<>();
         
         for (Producto producto : productos) {
-            if (producto.getCategoria() == categoria) {
+            if (producto.getCategoriaProducto() == categoria) {
                 productosFiltrados.add(producto);
             }
         }
