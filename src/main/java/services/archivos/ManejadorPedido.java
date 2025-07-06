@@ -68,7 +68,7 @@ public class ManejadorPedido {
                 
                 // Buscar cliente y repartidor por cédula
                 Cliente cliente = buscarClientePorCedula(usuarios, partes[1]);
-                Repartidor repartidor = buscarRepartidorPorCedula(usuarios, partes[2]);
+                Repartidor repartidor = buscarRepartidorPorCodigoUnico(usuarios, partes[2]);
                 Producto producto = buscarProductoPorCodigo(productos, partes[3]);
                 
                 if (cliente != null && repartidor != null && producto != null) {
@@ -103,14 +103,14 @@ public class ManejadorPedido {
     }
 
     /**
-     * Busca un repartidor por cédula
+     * Busca un repartidor por código único
      * @param usuarios Lista de usuarios
-     * @param cedula Cédula del repartidor
+     * @param codigoUnico Código único del repartidor
      * @return Repartidor encontrado o null
      */
-    private static Repartidor buscarRepartidorPorCedula(ArrayList<Usuario> usuarios, String cedula) {
+    private static Repartidor buscarRepartidorPorCodigoUnico(ArrayList<Usuario> usuarios, String codigoUnico) {
         for (Usuario usuario : usuarios) {
-            if (usuario instanceof Repartidor && usuario.getCedula().equals(cedula)) {
+            if (usuario instanceof Repartidor && usuario.getCodigoUnico().equals(codigoUnico)) {
                 return (Repartidor) usuario;
             }
         }
