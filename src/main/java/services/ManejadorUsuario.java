@@ -14,6 +14,11 @@ public class ManejadorUsuario {
     private static final String CLIENTES_FILE = "resources/Clientes.txt";
     private static final String REPARTIDORES_FILE = "resources/Repartidores.txt";
 
+    /**
+     * Carga los usuarios desde el archivo de usuarios
+     * @param usuarios ArrayList de usuarios
+     * @return ArrayList de usuarios
+     */
     public static ArrayList<Usuario> cargarUsuarios(ArrayList<Usuario> usuarios) {
 
         try {
@@ -74,14 +79,15 @@ public class ManejadorUsuario {
         }
         return usuarios;
     }
-
+    /**
+     * Lectura de datos del archivo cliente
+     **/
     public static Cliente cargarDatosCliente(String cedula, String username, ArrayList<String> nombres,
             ArrayList<String> apellidos,
             String correo, String contrasenia) {
 
         ArrayList<String> lineas = ManejoArchivos.LeeFichero(CLIENTES_FILE);
         Cliente clienteEncontrado = null;
-        // Saltar la primera línea (encabezado)
         for (int i = 1; i < lineas.size(); i++) {
             String linea = lineas.get(i);
             String[] partes = linea.split("\\|");
@@ -95,6 +101,9 @@ public class ManejadorUsuario {
         return clienteEncontrado;
     }
 
+    /**
+     * Lectura de datos del archivo repartidor
+     **/
     public static Repartidor cargarDatosRepartidor(String cedula, String username, ArrayList<String> nombres,
             ArrayList<String> apellidos,
             String correo, String contrasenia) {

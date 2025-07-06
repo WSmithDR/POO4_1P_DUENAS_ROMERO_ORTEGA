@@ -1,16 +1,17 @@
 package model.Enums;
 
-import java.util.ArrayList;
-
-public enum CategoriaProducto {
-    ROPA("Ropa y Vestimenta"),
-    TECNOLOGIA("Tecnología"),
-    DEPORTE("Deportes"),
-    HOGAR("Hogar y Jardín");
+/**
+ * Enum que representa los estados posibles de un pedido
+ */
+public enum EstadoPedido {
+    EN_PREPARACION("En Preparación"),
+    EN_CAMINO("En Camino"),
+    ENTREGADO("Entregado"),
+    CANCELADO("Cancelado");
 
     private final String descripcion;
 
-    CategoriaProducto(String descripcion) {
+    EstadoPedido(String descripcion) {
         this.descripcion = descripcion;
     }
 
@@ -22,4 +23,4 @@ public enum CategoriaProducto {
     public String toString() {
         return descripcion;
     }
-}
+} 
