@@ -1,7 +1,5 @@
 package model.Enums;
 
-import java.util.ArrayList;
-
 public enum CategoriaProducto {
     ROPA("Ropa y Vestimenta"),
     TECNOLOGIA("Tecnología"),

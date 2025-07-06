@@ -36,8 +36,8 @@ public class Repartidor extends Usuario {
         // Buscar pedidos asignados a este repartidor que no estén entregados
         for (Pedido pedido : pedidos) {
             if (pedido.getCodRepartidor().equals(this.getCedula()) && 
-                !pedido.getEstadoPedido().equals("ENTREGADO") &&
-                !pedido.getEstadoPedido().equals("CANCELADO")) {
+                !(pedido.getEstadoPedido()==EstadoPedido.ENTREGADO) &&
+                !(pedido.getEstadoPedido().equals(EstadoPedido.CANCELADO))) {
                 pedidosAsignados.add(pedido);
             }
         }
