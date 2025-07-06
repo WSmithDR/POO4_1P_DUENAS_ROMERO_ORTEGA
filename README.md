@@ -20,3 +20,25 @@ https://www.youtube.com/watch?v=Ngpe7LyELIY
 ## ¡OJO! Carpeta resources
 
 Para que el sistema funcione bien, tienes que copiar la carpeta `resources para copiar` que está dentro de `PROYECTO 1P/resources` y pegarla en la raíz de este proyecto como `resources`.
+
+## Cómo habilitar el envío de correos desde Gmail
+
+Para que el sistema pueda enviar correos electrónicos usando una cuenta de Gmail, necesitas crear una contraseña de aplicación en tu cuenta de Google. Puedes hacerlo fácilmente desde el siguiente enlace:
+
+[Crear contraseña de aplicación de Gmail](https://accounts.google.com/v3/signin/challenge/pwd?TL=ALgCv6wYqI2pvXzCzSMvA8TCqDlJN2hpvgbP4vSkPmpbRbysl9XginHyFFv-csQT&authuser=0&cid=2&continue=https%3A%2F%2Fmyaccount.google.com%2Fapppasswords%3Fhl%3Des%26utm_source%3DOGB%26utm_medium%3Dact%26gar%3DWzEyMF0%26pli%3D1%26rapt%3DAEjHL4O6V4IV1xuY5N8PtS0WMBq8Ty1pIQkjKT3JdQ9fCoeUIcc9GSxJghgHAvXVU61U7dTQKgjAXTn-UbNfEnIJyTKjsupLUp4ysL_HeR211XvKZ_jYMOs&flowName=GlifWebSignIn&followup=https%3A%2F%2Fmyaccount.google.com%2Fapppasswords%3Fhl%3Des%26utm_source%3DOGB%26utm_medium%3Dact%26gar%3DWzEyMF0%26pli%3D1%26rapt%3DAEjHL4O6V4IV1xuY5N8PtS0WMBq8Ty1pIQkjKT3JdQ9fCoeUIcc9GSxJghgHAvXVU61U7dTQKgjAXTn-UbNfEnIJyTKjsupLUp4ysL_HeR211XvKZ_jYMOs&hl=es&ifkv=AdBytiP0bGRtCDq0i2D1KjrSgMY8CCOfhDuQJqzMb-IBIj_zbELVIHO-w1qKYcTF_BBDq9sCGLIhaw&osid=1&rart=ANgoxcfISvuKN4vQeI4DBiWmbB1JL08lSRfkxULb5em_XGiMwg-f9pohaFBST1NzapK4UsCvW60QLat7Y_oeSryzpHrg4R3jvDlRs3hX3cJZMeHRGUpWhuQ&rpbg=1&service=accountsettings)
+
+Sigue los pasos que te indica Google y usa la contraseña generada en tu archivo `.env` o configuración del sistema.
+
+## Configuración del archivo .env para envío de correos
+
+Debes crear un archivo llamado `.env` en la raíz del proyecto con la siguiente información (reemplaza los valores por los de tu cuenta):
+
+```
+EMAIL_SYSTEM=tu_correo@gmail.com
+PASSWORD_SYSTEM=tu_contraseña_de_aplicacion
+```
+
+- `EMAIL_SYSTEM`: El correo de Gmail desde el que se enviarán los mensajes.
+- `PASSWORD_SYSTEM`: La contraseña de aplicación generada en Google (no tu contraseña normal, sino la especial para apps).
+
+Asegúrate de que este archivo **no** se suba a git (ya está en el .gitignore por seguridad).
