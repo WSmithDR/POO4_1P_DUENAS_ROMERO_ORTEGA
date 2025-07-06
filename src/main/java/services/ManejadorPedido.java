@@ -6,9 +6,11 @@ import model.Roles.Cliente;
 import model.Roles.Repartidor;
 import model.Roles.Usuario;
 import persistence.ManejoArchivos;
+import model.Enums.EstadoPedido;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Scanner;
 
 /**
  * Clase que maneja la gestión de pedidos
@@ -125,5 +127,316 @@ public class ManejadorPedido {
             }
         }
         return null;
+    }
+    
+    /**
+     * Obtiene el nombre de un producto por su código
+     * @param codigoProducto Código del producto
+     * @return Nombre del producto o "Producto no encontrado" si no existe
+     */
+    private static String obtenerNombreProducto(String codigoProducto) {
+        String archivoProductos = "resources/Productos.txt";
+        ArrayList<String> productos = ManejoArchivos.LeeFichero(archivoProductos);
+
+        if (productos == null || productos.isEmpty()) {
+            return "Error al leer archivo de productos";
+        }
+
+        for (String linea : productos) {
+            if (linea.trim().isEmpty()) {
+                continue;
+            }
+
+            String[] datosP = linea.split("\\|");
+
+            // Validar que el array tenga suficientes elementos
+            if (datosP.length < 5 || datosP.length > 5) {
+                continue;
+            }
+
+            // Verificar que el código coincida y retornar la posición 2 del array (nombre)
+            if (datosP[0].equalsIgnoreCase(codigoProducto)) {
+                return datosP[2];
+            }
+        }
+        return "Producto no encontrado";
+    }
+    
+    /**
+     * Obtiene el nombre de un repartidor por su cédula
+     * @param cedulaRepartidor Cédula del repartidor
+     * @return Nombre del repartidor o "Repartidor no encontrado" si no existe
+     */
+    private static String obtenerNombreRepartidor(String cedulaRepartidor) {
+        String archivoUsuarios = "resources/Usuarios.txt";
+        ArrayList<String> usuarios = ManejoArchivos.LeeFichero(archivoUsuarios);
+
+        if (usuarios == null || usuarios.isEmpty()) {
+            return "Error al leer archivo de usuarios";
+        }
+
+        for (String linea : usuarios) {
+            if (linea.trim().isEmpty()) {
+                continue;
+            }
+
+            String[] datosU = linea.split("\\|");
+
+            // Validar que el array tenga suficientes elementos
+            if (datosU.length < 8) {
+                continue;
+            }
+
+            // Verificar que sea un repartidor (R) y que la cédula coincida
+            if (datosU[7].equals("R") && datosU[1].equals(cedulaRepartidor)) {
+                return datosU[2] + " " + datosU[3]; // nombres + apellidos
+            }
+        }
+        return "Repartidor no encontrado";
+    }
+    
+    /**
+     * Método general para gestionar pedidos según el tipo de usuario
+     * @param usuario Usuario que gestiona los pedidos (Cliente o Repartidor)
+     * @param pedidos Lista de pedidos disponibles
+     * @param scanner Scanner para leer entrada del usuario
+     */
+    public static void gestionarPedido(Usuario usuario, ArrayList<Pedido> pedidos, Scanner scanner) {
+        if (usuario instanceof Cliente) {
+            gestionarPedidoCliente((Cliente) usuario, pedidos, scanner);
+        } else if (usuario instanceof Repartidor) {
+            gestionarPedidoRepartidor((Repartidor) usuario, pedidos, scanner);
+        } else {
+            System.out.println("Tipo de usuario no soportado para gestión de pedidos.");
+        }
+    }
+    
+    /**
+     * Gestiona pedidos específicamente para clientes
+     * @param cliente Cliente que gestiona sus pedidos
+     * @param pedidos Lista de todos los pedidos
+     * @param scanner Scanner para leer entrada del usuario
+     */
+    private static void gestionarPedidoCliente(Cliente cliente, ArrayList<Pedido> pedidos, Scanner scanner) {
+        System.out.println("===== CONSULTA DE ESTADO DE PEDIDO =====");
+        System.out.println("Ingrese el código del pedido:");
+        String codPedido = scanner.nextLine().trim();
+
+        if (codPedido.isEmpty()) {
+            System.out.println("El código del pedido no puede estar vacío.");
+            return;
+        }
+
+        consultarPedidoCliente(cliente, pedidos, codPedido);
+    }
+    
+    /**
+     * Gestiona pedidos específicamente para repartidores
+     * @param repartidor Repartidor que gestiona sus pedidos
+     * @param pedidos Lista de todos los pedidos
+     * @param scanner Scanner para leer entrada del usuario
+     */
+    private static void gestionarPedidoRepartidor(Repartidor repartidor, ArrayList<Pedido> pedidos, Scanner scanner) {
+        System.out.println("\n===== GESTIÓN DE PEDIDOS - REPARTIDOR =====");
+        System.out.println("Repartidor: " + repartidor.getNombres().get(0) + " " + repartidor.getApellidos().get(0));
+        System.out.println("Empresa: " + repartidor.getNombreEmpresa());
+        
+        consultarPedidosAsignados(repartidor, pedidos);
+        
+        // Opción para cambiar estado de pedidos
+        System.out.println("\n¿Desea cambiar el estado de algún pedido? (s/n): ");
+        String respuesta = scanner.nextLine().toLowerCase();
+        if (respuesta.equals("s") || respuesta.equals("si")) {
+            cambiarEstadoPedido(repartidor, pedidos, scanner);
+        }
+    }
+    
+    /**
+     * Consulta un pedido específico para un cliente
+     * @param cliente Cliente que consulta
+     * @param pedidos Lista de pedidos
+     * @param codPedido Código del pedido a consultar
+     */
+    private static void consultarPedidoCliente(Cliente cliente, ArrayList<Pedido> pedidos, String codPedido) {
+        boolean pedidoEncontrado = false;
+
+        for (Pedido pedido : pedidos) {
+            if (pedido.getCodigoPedido().equalsIgnoreCase(codPedido) && 
+                pedido.getCliente().getCedula().equals(cliente.getCedula())) {
+                pedidoEncontrado = true;
+                mostrarInformacionPedido(pedido);
+                break;
+            }
+        }
+
+        if (!pedidoEncontrado) {
+            System.out.println("No se encontró ningún pedido con el código: " + codPedido + " para este cliente.");
+        }
+    }
+    
+    /**
+     * Consulta los pedidos asignados a un repartidor
+     * @param repartidor Repartidor que consulta
+     * @param pedidos Lista de todos los pedidos
+     */
+    public static void consultarPedidosAsignados(Repartidor repartidor, ArrayList<Pedido> pedidos) {
+        System.out.println("\n===== PEDIDOS ASIGNADOS =====");
+        System.out.println("Buscando pedidos asignados no entregados...\n");
+        
+        ArrayList<Pedido> pedidosAsignados = new ArrayList<>();
+        
+        // Buscar pedidos asignados a este repartidor que no estén entregados
+        for (Pedido pedido : pedidos) {
+            if (pedido.getCodRepartidor().equals(repartidor.getCedula()) && 
+                !(pedido.getEstadoPedido() == EstadoPedido.ENTREGADO) &&
+                !(pedido.getEstadoPedido().equals(EstadoPedido.CANCELADO))) {
+                pedidosAsignados.add(pedido);
+            }
+        }
+        
+        if (pedidosAsignados.isEmpty()) {
+            System.out.println("No tienes pedidos asignados pendientes.");
+            return;
+        }
+        
+        System.out.println("Pedidos encontrados:\n");
+        
+        // Mostrar cada pedido
+        for (int i = 0; i < pedidosAsignados.size(); i++) {
+            Pedido pedido = pedidosAsignados.get(i);
+            System.out.println((i + 1) + ". Código: " + pedido.getCodigoPedido());
+            System.out.println("   Fecha del pedido: " + pedido.getFechaSimple());
+            System.out.println("   Estado actual: " + pedido.getEstadoPedido());
+            System.out.println();
+        }
+        
+        System.out.println("Total de pedidos pendientes: " + pedidosAsignados.size());
+        System.out.println("Recuerde que solo puede gestionar los pedidos que se encuentren EN PREPARACIÓN o EN RUTA.");
+    }
+    
+    /**
+     * Muestra la información detallada de un pedido
+     * @param pedido Pedido a mostrar
+     */
+    private static void mostrarInformacionPedido(Pedido pedido) {
+        // Obtener nombre del producto
+        String nombreProducto = obtenerNombreProducto(pedido.getCodigoProducto());
+        
+        // Obtener nombre del repartidor
+        String nombreRepartidor = obtenerNombreRepartidor(pedido.getCodRepartidor());
+        
+        System.out.println("Fecha del pedido: " + pedido.getFechaSimple());
+        System.out.println("Producto comprado: " + nombreProducto + " (Código: " + pedido.getCodigoProducto() + ") Cantidad: " + pedido.getCantidadProducto());
+        System.out.println("Valor pagado: $" + String.format("%.2f", pedido.getTotalPagado()));
+        System.out.println("Estado actual: " + pedido.getEstadoPedido());
+        System.out.println("Repartidor: " + nombreRepartidor);
+        System.out.println();
+
+        // Mostrar mensaje según el estado del pedido
+        mostrarMensajeSegunEstado(pedido.getEstadoPedido());
+    }
+    
+    /**
+     * Muestra un mensaje personalizado según el estado del pedido
+     * @param estado Estado actual del pedido
+     */
+    private static void mostrarMensajeSegunEstado(EstadoPedido estado) {
+        if (estado == null) {
+            System.out.println("Estado del pedido: No disponible");
+            return;
+        }
+
+        switch (estado) {
+            case EN_PREPARACION:
+                System.out.println("Su pedido está siendo preparado para su envío.");
+                break;
+            case EN_CAMINO:
+                System.out.println("Su pedido está en camino hacia su dirección.");
+                break;
+            case ENTREGADO:
+                System.out.println("Su pedido ha sido entregado exitosamente.");
+                break;
+            case CANCELADO:
+                System.out.println("Su pedido ha sido cancelado.");
+                break;
+        }
+    }
+    
+    /**
+     * Permite al repartidor cambiar el estado de un pedido
+     * @param repartidor Repartidor que cambia el estado
+     * @param pedidos Lista de pedidos
+     * @param scanner Scanner para leer entrada
+     */
+    private static void cambiarEstadoPedido(Repartidor repartidor, ArrayList<Pedido> pedidos, Scanner scanner) {
+        System.out.println("===== GESTIONAR ESTADO DE PEDIDO =====");
+        System.out.println("Ingrese el código del pedido que desea gestionar: ");
+        String codigoPedido = scanner.nextLine().trim();
+        
+        // Buscar el pedido
+        Pedido pedidoAModificar = null;
+        for (Pedido pedido : pedidos) {
+            if (pedido.getCodigoPedido().equals(codigoPedido) && 
+                pedido.getCodRepartidor().equals(repartidor.getCedula())) {
+                pedidoAModificar = pedido;
+                break;
+            }
+        }
+        
+        if (pedidoAModificar == null) {
+            System.out.println("Pedido no encontrado o no asignado a este repartidor.");
+            return;
+        }
+        
+        System.out.println("\nPedido encontrado:");
+        System.out.println("Fecha del pedido: " + pedidoAModificar.getFechaSimple() + 
+                          " Código del producto: " + pedidoAModificar.getCodigoProducto() + 
+                          " Estado actual: " + pedidoAModificar.getEstadoPedido());
+        
+        // Mostrar opciones según el estado actual
+        mostrarOpcionesEstado(pedidoAModificar, scanner);
+    }
+    
+    /**
+     * Muestra las opciones de estado disponibles según el estado actual
+     * @param pedido Pedido a modificar
+     * @param scanner Scanner para leer entrada
+     */
+    private static void mostrarOpcionesEstado(Pedido pedido, Scanner scanner) {
+        EstadoPedido estadoActual = pedido.getEstadoPedido();
+        
+        if (estadoActual == EstadoPedido.EN_PREPARACION) {
+            System.out.println("\nSeleccione el nuevo estado:");
+            System.out.println("1. EN CAMINO");
+            System.out.println("2. ENTREGADO");
+            
+            System.out.print("Opción: ");
+            int opcion = Integer.parseInt(scanner.nextLine());
+            
+            if (opcion == 1) {
+                pedido.setEstadoPedido(EstadoPedido.EN_CAMINO);
+                System.out.println("Estado actualizado correctamente a EN CAMINO.");
+            } else if (opcion == 2) {
+                System.out.println("\nError: No puede cambiar directamente de EN PREPARACIÓN a ENTREGADO. Debe cambiar primero a EN CAMINO.");
+                mostrarOpcionesEstado(pedido, scanner); // Mostrar opciones nuevamente
+            } else {
+                System.out.println("Opción inválida.");
+            }
+        } else if (estadoActual == EstadoPedido.EN_CAMINO) {
+            System.out.println("\nSeleccione el nuevo estado:");
+            System.out.println("1. ENTREGADO");
+            
+            System.out.print("Opción: ");
+            int opcion = Integer.parseInt(scanner.nextLine());
+            
+            if (opcion == 1) {
+                pedido.setEstadoPedido(EstadoPedido.ENTREGADO);
+                System.out.println("Estado actualizado correctamente a ENTREGADO.");
+            } else {
+                System.out.println("Opción inválida.");
+            }
+        } else {
+            System.out.println("No se pueden realizar cambios en el estado actual: " + estadoActual);
+        }
     }
 } 
