@@ -27,7 +27,7 @@ public class ManejoArchivos {
             // Lectura del fichero
             String linea;
             while ((linea = br.readLine()) != null) {
-                // System.out.println(linea);
+                //System.out.println(linea);
                 lineas.add(linea);
 
             }

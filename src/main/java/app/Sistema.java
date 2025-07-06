@@ -107,7 +107,7 @@ public class Sistema {
                     cliente.realizarCompra(productos, usuarios, pedidos, scanner);
                     break;
                 case "2":
-                    System.out.println("Función de gestión de pedido en desarrollo...");
+                    cliente.gestionarPedido(scanner);
                     break;
                 case "3":
                     System.out.println("Cerrando sesión...");

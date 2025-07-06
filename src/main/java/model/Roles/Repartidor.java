@@ -35,9 +35,9 @@ public class Repartidor extends Usuario {
         
         // Buscar pedidos asignados a este repartidor que no estén entregados
         for (Pedido pedido : pedidos) {
-            if (pedido.getRepartidor().getCedula().equals(this.getCedula()) && 
-                pedido.getEstado() != EstadoPedido.ENTREGADO &&
-                pedido.getEstado() != EstadoPedido.CANCELADO) {
+            if (pedido.getCodRepartidor().equals(this.getCedula()) && 
+                !pedido.getEstadoPedido().equals("ENTREGADO") &&
+                !pedido.getEstadoPedido().equals("CANCELADO")) {
                 pedidosAsignados.add(pedido);
             }
         }
@@ -53,12 +53,16 @@ public class Repartidor extends Usuario {
         for (int i = 0; i < pedidosAsignados.size(); i++) {
             Pedido pedido = pedidosAsignados.get(i);
             System.out.println((i + 1) + ". Código: " + pedido.getCodigoPedido());
-            System.out.println("   Fecha del pedido: " + pedido.getFechaPedido().toLocalDate());
-            System.out.println("   Estado actual: " + pedido.getEstado());
+            System.out.println("   Fecha del pedido: " + pedido.getFechaPedido());
+            System.out.println("   Estado actual: " + pedido.getEstadoPedido());
             System.out.println();
         }
         
         System.out.println("Total de pedidos pendientes: " + pedidosAsignados.size());
         System.out.println("Recuerde que solo puede gestionar los pedidos que se encuentren EN PREPARACIÓN o EN RUTA.");
+    }
+
+    public void gestionarPedido(){
+        
     }
 }

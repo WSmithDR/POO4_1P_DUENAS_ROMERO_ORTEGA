@@ -1,142 +1,154 @@
 package model;
 
-import model.Enums.EstadoPedido;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+
+import model.Enums.CategoriaProducto;
 import model.Roles.Cliente;
 import model.Roles.Repartidor;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import utils.ManejoFechas;
 
 /**
  * Clase que representa un pedido en el sistema
  */
 public class Pedido {
+    private Date fechaPedido;
+    private String codigoProducto;
+    private double totalPagado;
+    private int cantidadProducto;
+    private CategoriaProducto categoria;
+    private String codRepartidor;
+    private String estadoPedido;
     private String codigoPedido;
     private Cliente cliente;
-    private Repartidor repartidor;
-    private Producto producto;
-    private int cantidad;
-    private double valorPagado;
-    private LocalDateTime fechaPedido;
-    private EstadoPedido estado;
 
-    /**
-     * Constructor de la clase Pedido
-     * @param cliente Cliente que realiza el pedido
-     * @param repartidor Repartidor asignado al pedido
-     * @param producto Producto comprado
-     * @param cantidad Cantidad comprada
-     * @param valorPagado Valor total pagado
-     */
-    public Pedido(Cliente cliente, Repartidor repartidor, Producto producto, int cantidad, double valorPagado) {
-        this.codigoPedido = generarCodigoPedido();
+    public static int contadorPedido = 0;
+
+    
+    public Pedido(
+        Date fechaPedido, 
+        String codigoProducto, 
+        double totalPagado, 
+        int cantidadProducto, 
+        CategoriaProducto categoriaProducto,
+        String codRepartidor, 
+        Cliente cliente,
+        String estadoPedido) {
+        this.fechaPedido = fechaPedido;
+        this.codigoProducto = codigoProducto;
+        this.totalPagado = totalPagado;
+        this.cantidadProducto = cantidadProducto;
+        this.categoria = categoriaProducto;
+        this.codRepartidor = codRepartidor;
+        this.estadoPedido = estadoPedido;
+        this.codigoPedido = generarCodigo();
         this.cliente = cliente;
-        this.repartidor = repartidor;
-        this.producto = producto;
-        this.cantidad = cantidad;
-        this.valorPagado = valorPagado;
-        this.fechaPedido = LocalDateTime.now();
-        this.estado = EstadoPedido.EN_PREPARACION;
+
+        contadorPedido++;
+    }
+    
+    public Pedido(Cliente cliente, Repartidor repartidor, Producto producto, int cantidad, double total) {
+        this.fechaPedido = new Date();
+        this.codigoProducto = producto.getCodigo();
+        this.totalPagado = total;
+        this.cantidadProducto = cantidad;
+        this.categoria = producto.getCategoria();
+        this.codRepartidor = repartidor.getCedula();
+        this.estadoPedido = "En Preparación";
+        this.codigoPedido = generarCodigo();
+        this.cliente = cliente;
+
+        contadorPedido++;
     }
 
-    /**
-     * Genera un código único para el pedido
-     * @return Código del pedido
-     */
-    private String generarCodigoPedido() {
-        return "PED" + System.currentTimeMillis();
+    public String generarCodigo() {
+        return String.format("PED%d", contadorPedido);
+    }
+    
+    
+
+    // Método para obtener el código actual sin generar uno nuevo
+    public String obtenerCodigo() {
+        return this.codigoPedido;
     }
 
-    // Getters
+    //Getters
+    public Date getFechaPedido() {
+        return this.fechaPedido;
+    }
+
+    public String getCodigoProducto() {
+        return this.codigoProducto;
+    }
+
+    public double getTotalPagado() {
+        return this.totalPagado;
+    }
+
+    public int getCantidadProducto() {
+        return this.cantidadProducto;
+    }
+
+    public CategoriaProducto getCategoria() {
+        return this.categoria;
+    }
+
+    public String getCodRepartidor() {
+        return this.codRepartidor;
+    }
+
+    public String getEstadoPedido() {
+        return this.estadoPedido;
+    }
+
     public String getCodigoPedido() {
-        return codigoPedido;
+        return this.codigoPedido;
     }
 
-    public Cliente getCliente() {
-        return cliente;
+    //Setters
+    public void setFechaPedido(Date fechaPedido) {
+        this.fechaPedido = fechaPedido;
     }
 
-    public Repartidor getRepartidor() {
-        return repartidor;
+    public void setCodigoProducto(String codigoProducto) {
+        this.codigoProducto = codigoProducto;
     }
 
-    public Producto getProducto() {
-        return producto;
+    public void setTotalPagado(double totalPagado) {
+        this.totalPagado = totalPagado;
     }
 
-    public int getCantidad() {
-        return cantidad;
+    public void setCantidadProducto(int cantidadProducto) {
+        this.cantidadProducto = cantidadProducto;
     }
 
-    public double getValorPagado() {
-        return valorPagado;
+    public void setCategoria(CategoriaProducto categoria) {
+        this.categoria = categoria;
     }
 
-    public LocalDateTime getFechaPedido() {
-        return fechaPedido;
+    public void setCodRepartidor(String codRepartidor) {
+        this.codRepartidor = codRepartidor;
     }
 
-    public EstadoPedido getEstado() {
-        return estado;
+    public void setEstadoPedido(String estadoPedido) {
+        this.estadoPedido = estadoPedido;
     }
 
-    // Setters
     public void setCodigoPedido(String codigoPedido) {
         this.codigoPedido = codigoPedido;
     }
 
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
-    }
-
-    public void setRepartidor(Repartidor repartidor) {
-        this.repartidor = repartidor;
-    }
-
-    public void setProducto(Producto producto) {
-        this.producto = producto;
-    }
-
-    public void setCantidad(int cantidad) {
-        this.cantidad = cantidad;
-    }
-
-    public void setValorPagado(double valorPagado) {
-        this.valorPagado = valorPagado;
-    }
-
-    public void setFechaPedido(LocalDateTime fechaPedido) {
-        this.fechaPedido = fechaPedido;
-    }
-
-    public void setEstado(EstadoPedido estado) {
-        this.estado = estado;
-    }
-
-    /**
-     * Convierte el pedido a formato de archivo
-     * @return String con formato para guardar en archivo
-     */
     public String toFileFormat() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        return codigoPedido + "|" + 
-               cliente.getCedula() + "|" + 
-               repartidor.getCedula() + "|" + 
-               producto.getCodigo() + "|" + 
-               cantidad + "|" + 
-               valorPagado + "|" + 
-               fechaPedido.format(formatter) + "|" + 
-               estado.toString();
+        return String.join("|",
+            codigoPedido,
+            cliente.getCedula(),
+            codRepartidor,
+            codigoPedido,
+            String.valueOf(cantidadProducto),
+            String.valueOf(totalPagado),
+            ManejoFechas.getFechaSimple(fechaPedido),
+            estadoPedido
+        );
     }
-
-    @Override
-    public String toString() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-        return "Pedido #" + codigoPedido + 
-               " - " + producto.getNombre() + 
-               " x" + cantidad + 
-               " - $" + valorPagado + 
-               " - " + estado + 
-               " - " + fechaPedido.format(formatter);
-    }
+        
 }
