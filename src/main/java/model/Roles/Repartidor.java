@@ -21,4 +21,8 @@ public class Repartidor extends Usuario {
     public void setNombreEmpresa(String nombreEmpresa){
         this.nombreEmpresa = nombreEmpresa;
     }
+
+    public void gestionarPedido(){
+        
+    }
 }

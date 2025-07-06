@@ -1,5 +1,6 @@
 package model;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import model.Enums.CategoriaProducto;
@@ -26,6 +27,8 @@ public class Pedido {
         this.codRepartidor = codRepartidor;
         this.estadoPedido = estadoPedido;
         this.codigoPedido = generarCodigo();
+
+        contadorPedido++;
     }
     
     public void cambiarEstado(String nuevoEstado) {
@@ -33,9 +36,10 @@ public class Pedido {
     }
 
     public String generarCodigo() {
-        contadorPedido++;
-        return "PED" + String.format("%04d", contadorPedido);
+        return String.format("PED%d", contadorPedido);
     }
+    
+    
 
     // Método para obtener el código actual sin generar uno nuevo
     public String obtenerCodigo() {
@@ -108,18 +112,4 @@ public class Pedido {
         this.codigoPedido = codigoPedido;
     }
 
-    // Método toString para mostrar información del pedido
-    @Override
-    public String toString() {
-        return "Pedido{" +
-                "codigoPedido='" + codigoPedido + '\'' +
-                ", fechaPedido=" + fechaPedido +
-                ", codigoProducto='" + codigoProducto + '\'' +
-                ", cantidadProducto=" + cantidadProducto +
-                ", totalPagado=" + totalPagado +
-                ", categoria=" + categoria +
-                ", estadoPedido='" + estadoPedido + '\'' +
-                ", codRepartidor='" + codRepartidor + '\'' +
-                '}';
-    }
 }
