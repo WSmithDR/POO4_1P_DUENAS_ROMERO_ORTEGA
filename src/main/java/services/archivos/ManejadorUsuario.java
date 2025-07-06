@@ -1,6 +1,5 @@
 package services.archivos;
 
-
 import java.util.ArrayList;
 
 import model.Enums.Rol;
@@ -16,6 +15,7 @@ public class ManejadorUsuario {
 
     /**
      * Carga los usuarios desde el archivo de usuarios
+     * 
      * @param usuarios ArrayList de usuarios
      * @return ArrayList de usuarios
      */
@@ -23,21 +23,20 @@ public class ManejadorUsuario {
 
         try {
             ArrayList<String> lineas = ManejoArchivos.LeeFichero(USUARIOS_FILE);
-            
-            
+
             for (int i = 1; i < lineas.size(); i++) {
                 String linea = lineas.get(i);
-                
+
                 String[] partes = linea.split("\\|");
-            
-                //String codigo=partes[0];
+
+                String codigoUnico = partes[0];
                 String cedula = partes[1];
                 String nombre = partes[2];
                 String apellido = partes[3];
                 String username = partes[4];
                 String contrasenia = partes[5];
-                String correo= partes[6];
-                String rolChar= partes[7];
+                String correo = partes[6];
+                String rolChar = partes[7];
                 ArrayList<String> nombres = new ArrayList<>();
                 if (!nombre.isEmpty())
                     nombres.add(nombre);
@@ -45,32 +44,30 @@ public class ManejadorUsuario {
                 ArrayList<String> apellidos = new ArrayList<>();
                 if (!apellido.isEmpty())
                     apellidos.add(apellido);
-                
-              
-        
-                if(rolChar.equals("C")){
-                    partes[7]=Rol.CLIENTE.toString();
+
+                if (rolChar.equals("C")) {
+                    partes[7] = Rol.CLIENTE.toString();
                 }
-                if(rolChar.equals("R")){
-                    partes[7]=Rol.REPARTIDOR.toString();
+                if (rolChar.equals("R")) {
+                    partes[7] = Rol.REPARTIDOR.toString();
                 }
                 if (partes[7].equals(Rol.CLIENTE.toString())) {
-                    
-                    Cliente cliente = cargarDatosCliente(cedula, username, nombres, apellidos, correo, contrasenia);
+
+                    Cliente cliente = cargarDatosCliente(codigoUnico, cedula, username, nombre, apellido, correo,
+                            contrasenia);
                     if (cliente != null) {
-                        
+
                         usuarios.add(cliente);
-                    
-                        
+
                     }
                 } else if (partes[7].equals(Rol.REPARTIDOR.toString())) {
-                    
-                    Repartidor repartidor = cargarDatosRepartidor(cedula, username, nombres, apellidos, correo,
+
+                    Repartidor repartidor = cargarDatosRepartidor(codigoUnico, username, nombre, apellido, correo,
                             contrasenia);
                     if (repartidor != null) {
-                       
+
                         usuarios.add(repartidor);
-                    
+
                     }
                 }
             }
@@ -79,12 +76,18 @@ public class ManejadorUsuario {
         }
         return usuarios;
     }
+
     /**
      * Lectura de datos del archivo cliente
      **/
-    public static Cliente cargarDatosCliente(String cedula, String username, ArrayList<String> nombres,
-            ArrayList<String> apellidos,
-            String correo, String contrasenia) {
+    public static Cliente cargarDatosCliente(
+            String codigoUnico,
+            String cedula,
+            String username,
+            String nombre,
+            String apellido,
+            String correo,
+            String contrasenia) {
 
         ArrayList<String> lineas = ManejoArchivos.LeeFichero(CLIENTES_FILE);
         Cliente clienteEncontrado = null;
@@ -94,8 +97,8 @@ public class ManejadorUsuario {
             if (partes[1].equals(cedula)) {
                 String celular = partes[4];
                 String direccion = partes[5];
-                clienteEncontrado = new Cliente(cedula, username, nombres, apellidos, correo, contrasenia, celular,
-                        direccion);
+                clienteEncontrado = new Cliente(cedula, username, nombre, apellido, correo, contrasenia, celular,
+                        direccion, codigoUnico);
             }
         }
         return clienteEncontrado;
@@ -104,21 +107,26 @@ public class ManejadorUsuario {
     /**
      * Lectura de datos del archivo repartidor
      **/
-    public static Repartidor cargarDatosRepartidor(String cedula, String username, ArrayList<String> nombres,
-            ArrayList<String> apellidos,
+    public static Repartidor cargarDatosRepartidor(
+            String codUnico,
+            String username,
+            String nombre,
+            String apellido,
             String correo, String contrasenia) {
-            ArrayList<String> lineas = ManejoArchivos.LeeFichero(REPARTIDORES_FILE);
-            Repartidor repartidorEncontrado = null;
-            
-            for (int i = 1; i < lineas.size(); i++) {
-                String linea = lineas.get(i);
-                String[] partes = linea.split("\\|");
-                if (partes[1].equals(cedula)) {
-                    String empresa = partes[4];
-                    repartidorEncontrado = new Repartidor(cedula, username, nombres, apellidos, correo, contrasenia, empresa);
-                }
+        ArrayList<String> lineas = ManejoArchivos.LeeFichero(REPARTIDORES_FILE);
+        Repartidor repartidorEncontrado = null;
+
+        for (int i = 1; i < lineas.size(); i++) {
+            String linea = lineas.get(i);
+            String[] partes = linea.split("\\|");
+            if (partes[0].equals(codUnico)) {
+                String empresa = partes[4];
+                String cedula = partes[1];
+                repartidorEncontrado = new Repartidor(cedula, username, nombre, apellido, correo, contrasenia, empresa,
+                        codUnico);
             }
-            return repartidorEncontrado;
         }
+        return repartidorEncontrado;
+    }
 
 }

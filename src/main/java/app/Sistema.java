@@ -20,7 +20,6 @@ public class Sistema {
     private static ArrayList<Usuario> usuarios = new ArrayList<>();
     private static ArrayList<Producto> productos = new ArrayList<>();
     private static ArrayList<Pedido> pedidos = new ArrayList<>();
-    
 
     /**
      * Método principal que inicia el sistema
@@ -56,7 +55,7 @@ public class Sistema {
 
                 if (u instanceof Cliente c) {
                     System.out.println(String.format("Rol detectado: %s", Rol.CLIENTE));
-                    System.out.println("Bienvenido, " + c.getNombres().get(0) + " " + c.getApellidos().get(0));
+                    System.out.println("Bienvenido, " + c.getNombre() + " " + c.getApellido());
                     System.out.println("Celular registrado: " + c.getNumeroCelular());
                     System.out.print("¿Este número de celular es correcto? (S/N): ");
                     String verif = scanner.nextLine();
@@ -67,7 +66,7 @@ public class Sistema {
                     }
                 } else if (u instanceof Repartidor r) {
                     System.out.println("Rol detectado: REPARTIDOR");
-                    System.out.println("Bienvenido, " + r.getNombres().get(0) + " " + r.getApellidos().get(0));
+                    System.out.println("Bienvenido, " + r.getNombre() + " " + r.getApellido());
                     System.out.println("Empresa asignada: " + r.getNombreEmpresa());
                     System.out.print("¿Esta empresa es correcta? (S/N): ");
                     String verif = scanner.nextLine();
@@ -109,7 +108,7 @@ public class Sistema {
                     cliente.realizarCompra(productos, usuarios, pedidos, scanner);
                     break;
                 case "2":
-                    cliente.gestionarPedido(scanner);
+                    cliente.gestionarPedido(pedidos, scanner);
                     break;
                 case "3":
                     System.out.println("Cerrando sesión...");
@@ -142,7 +141,7 @@ public class Sistema {
 
             switch (opcion) {
                 case "1":
-                    System.out.println("Función de gestión de pedido en desarrollo...");
+                    repartidor.gestionarPedido(pedidos, scanner);
                     break;
                 case "2":
                     repartidor.consultarPedidosAsignados(pedidos);
@@ -162,15 +161,15 @@ public class Sistema {
      * Notifica al cliente cuando este realiza un pedido.
      * Envía un correo electrónico con los detalles del pedido realizado.
      *
-     * @param cliente El objeto Cliente que realiza el pedido
-     * @param pedidoRealizado Contiene la información del pedido que realizó el cliente
-     * @param manejadorEmail Instancia de ManejadorEmail para enviar el correo
+     * @param cliente         El objeto Cliente que realiza el pedido
+     * @param pedidoRealizado Contiene la información del pedido que realizó el
+     *                        cliente
+     * @param manejadorEmail  Instancia de ManejadorEmail para enviar el correo
      */
     public static void notificar(
-        Cliente cliente, 
-        Pedido pedidoRealizado, 
-        ManejadorEmail manejadorEmail
-        ) {
+            Cliente cliente,
+            Pedido pedidoRealizado,
+            ManejadorEmail manejadorEmail) {
         String asunto = "Pedido realizado";
         String cuerpo = String.format(
                 "El cliente %s %s ha realizado un pedido con código %s el día %s.\n\n" +
@@ -179,8 +178,8 @@ public class Sistema {
                         "Valor pagado: $%.2f\n" +
                         "Estado inicial: %s\n\n" +
                         "Gracias por su compra. Recibirá actualizaciones del estado de su pedido por este medio.",
-                cliente.getNombres(),
-                cliente.getApellidos(),
+                cliente.getNombre(),
+                cliente.getApellido(),
                 pedidoRealizado.getCodigoPedido(),
                 pedidoRealizado.getFechaPedido(),
                 pedidoRealizado.getProducto().getCodigo(),
@@ -194,15 +193,14 @@ public class Sistema {
      * Notifica al repartidor cuando se le asigna un nuevo pedido.
      * Envía un correo electrónico con los detalles del pedido asignado.
      *
-     * @param repartidor El repartidor al que se le asigna el pedido
+     * @param repartidor     El repartidor al que se le asigna el pedido
      * @param pedidoAsignado El pedido que ha sido asignado
      * @param manejadorEmail Instancia de ManejadorEmail para enviar el correo
      */
     public static void notificar(
-        Repartidor repartidor, 
-        Pedido pedidoAsignado, 
-        ManejadorEmail manejadorEmail
-        ) {
+            Repartidor repartidor,
+            Pedido pedidoAsignado,
+            ManejadorEmail manejadorEmail) {
         String asunto = "Nuevo pedido asignado";
         String cuerpo = String.format(
                 "Estimado/a %s %s,\n\n" +
@@ -213,12 +211,12 @@ public class Sistema {
                         "Estado actual: %s\n\n" +
                         "Por favor, prepare la logística necesaria para la entrega.\n\n" +
                         "Gracias por su trabajo.",
-                repartidor.getNombres(),
-                repartidor.getApellidos(),
+                repartidor.getNombre(),
+                repartidor.getApellido(),
                 pedidoAsignado.getCodigoPedido(),
                 pedidoAsignado.getFechaPedido(),
-                pedidoAsignado.getCliente().getNombres(),
-                pedidoAsignado.getCliente().getApellidos(),
+                pedidoAsignado.getCliente().getNombre(),
+                pedidoAsignado.getCliente().getApellido(),
                 pedidoAsignado.getEstadoPedido());
         manejadorEmail.enviarCorreo(repartidor.getCorreo(), asunto, cuerpo);
     }
@@ -227,17 +225,16 @@ public class Sistema {
      * Notifica al cliente sobre un cambio en el estado de su pedido.
      * Envía un correo electrónico informando el nuevo estado del pedido.
      *
-     * @param cliente El cliente al que se le notifica
-     * @param pedido El pedido cuyo estado ha cambiado
-     * @param nuevoEstado El nuevo estado del pedido
+     * @param cliente        El cliente al que se le notifica
+     * @param pedido         El pedido cuyo estado ha cambiado
+     * @param nuevoEstado    El nuevo estado del pedido
      * @param manejadorEmail Instancia de ManejadorEmail para enviar el correo
      */
     public static void notificar(
-        Cliente cliente, 
-        Pedido pedido, 
-        EstadoPedido nuevoEstado,
-        ManejadorEmail manejadorEmail
-        ) {
+            Cliente cliente,
+            Pedido pedido,
+            EstadoPedido nuevoEstado,
+            ManejadorEmail manejadorEmail) {
         String asunto = "Actualización del estado de su pedido";
         String cuerpo = String.format(
                 "Estimado/a %s %s,\n\n" +
@@ -246,7 +243,7 @@ public class Sistema {
                         "Producto: %s\n" +
                         "Repartidor asignado: %s\n\n" +
                         "Gracias por confiar en nosotros.",
-                cliente.getNombres(), cliente.getApellidos(),
+                cliente.getNombre(), cliente.getApellido(),
                 pedido.getCodigoPedido(), nuevoEstado,
                 pedido.getFechaPedido(),
                 pedido.getProducto().getCodigo(),

@@ -14,6 +14,7 @@ public class ManejadorProducto {
 
     /**
      * Carga todos los productos desde el archivo
+     * 
      * @return ArrayList con todos los productos
      */
     public static ArrayList<Producto> cargarProductos() {
@@ -21,9 +22,10 @@ public class ManejadorProducto {
         ArrayList<Producto> productos = new ArrayList<>();
         ArrayList<String> codigosAgregados = new ArrayList<>();
 
-        //Empezamos desde la última línea hacia la primera (salta encabezado si existe).
-        //Esto lo hacemos ya que solo se tomara la ultima version de un producto
-        //ya que estaremos agregando el mismo producto pero con un stock diferente.
+        // Empezamos desde la última línea hacia la primera (salta encabezado si
+        // existe).
+        // Esto lo hacemos ya que solo se tomara la ultima version de un producto
+        // ya que estaremos agregando el mismo producto pero con un stock diferente.
         for (int i = lineas.size() - 1; i > 0; i--) {
             String linea = lineas.get(i);
             String[] partes = linea.split("\\|");
@@ -45,6 +47,7 @@ public class ManejadorProducto {
 
     /**
      * Retorna una lista de productos con stock mayor a cero de Productos.txt.
+     * 
      * @param productos Lista de productos a filtrar
      * @return ArrayList<Producto> con stock > 0
      */
@@ -59,13 +62,15 @@ public class ManejadorProducto {
     }
 
     /**
-     * Obtiene y muestra por consola las categorías de productos que tienen al menos un producto disponible en la base de datos (Productos.txt).
-     * Solo se listan categorías que realmente tienen productos registrados con stock mayor a cero.
+     * Obtiene y muestra por consola las categorías de productos que tienen al menos
+     * un producto disponible en la base de datos (Productos.txt).
+     * Solo se listan categorías que realmente tienen productos registrados con
+     * stock mayor a cero.
      *
-     * @return ArrayList<CategoriaProducto> con las categorías disponibles actualmente en el sistema
+     * @return ArrayList<CategoriaProducto> con las categorías disponibles
+     *         actualmente en el sistema
      */
     public static ArrayList<CategoriaProducto> mostrarCategoriasDisponibles() {
-        System.out.println("\nCategorías disponibles:");
         ArrayList<Producto> productosDB = cargarProductos();
         ArrayList<Producto> productosConStock = filtrarProductosConStock(productosDB);
         ArrayList<CategoriaProducto> categoriasDisponibles = new ArrayList<>();
@@ -76,10 +81,15 @@ public class ManejadorProducto {
                 categoriasDisponibles.add(categoria);
             }
         }
-
-        // Mostrar las categorías encontradas en la consola
-        for (int i = 0; i < categoriasDisponibles.size(); i++) {
-            System.out.println((i + 1) + ". " + categoriasDisponibles.get(i));
+        if (categoriasDisponibles.size() > 0) {
+            System.out.println("\nCategorías disponibles:");
+            // Mostrar las categorías encontradas en la consola
+            for (int i = 0; i < categoriasDisponibles.size(); i++) {
+                System.out.println((i + 1) + ". " + categoriasDisponibles.get(i));
+            }
+        } else {
+            System.out.println("NO hay categorias que mostrar");
+            System.out.println("Todos los productos estan fuera de stock");
         }
 
         return categoriasDisponibles;
@@ -87,11 +97,13 @@ public class ManejadorProducto {
 
     /**
      * Obtiene productos por categoría
+     * 
      * @param productos Lista de todos los productos
      * @param categoria Categoría a filtrar
      * @return ArrayList con productos de la categoría especificada
      */
-    public static ArrayList<Producto> obtenerProductosPorCategoria(ArrayList<Producto> productos, CategoriaProducto categoria) {
+    public static ArrayList<Producto> obtenerProductosPorCategoria(ArrayList<Producto> productos,
+            CategoriaProducto categoria) {
         ArrayList<Producto> productosConStock = filtrarProductosConStock(productos);
         ArrayList<Producto> productosFiltrados = new ArrayList<>();
         for (Producto producto : productosConStock) {
@@ -104,8 +116,9 @@ public class ManejadorProducto {
 
     /**
      * Busca un producto por código
+     * 
      * @param productos Lista de productos
-     * @param codigo Código del producto a buscar
+     * @param codigo    Código del producto a buscar
      * @return Producto encontrado o null si no existe
      */
     public static Producto buscarProductoPorCodigo(ArrayList<Producto> productos, String codigo) {
@@ -126,4 +139,4 @@ public class ManejadorProducto {
                 productoActualizado.getStock());
         ManejoArchivos.EscribirArchivo(PRODUCTOS_FILE, nuevaLinea);
     }
-} 
+}
