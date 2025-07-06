@@ -1,9 +1,13 @@
-Código|Categoría|Nombre|Precio|Stock
-P001|Tecnología|Audífonos Bluetooth|35.99|20
-P002|Tecnología|Mouse Inalámbrico|18.50|15
-P003|Ropa|Camiseta Deportiva Hombre|22.99|30
-P004|Ropa|Pantalón Deportivo Mujer|32.75|25
-P005|Hogar|Lámpara LED Recargable|12.00|40
-P006|Deportes|Balón de Fútbol|25.00|10
-P007|Hogar|Taza Térmica Acero|9.99|50
-P008|Tecnología|Teclado Mecánico|45.00|8
+Código|Nombre|Precio|Categoría|Stock
+P001|Camiseta Deportiva|25.00|ROPA|50
+P002|Pantalón Jeans|45.00|ROPA|30
+P003|Zapatillas Running|80.00|ROPA|25
+P004|Laptop HP|1200.00|TECNOLOGIA|10
+P005|Mouse Inalámbrico|25.00|TECNOLOGIA|40
+P006|Teclado Mecánico|120.00|TECNOLOGIA|15
+P007|Balón de Fútbol|35.00|DEPORTE|20
+P008|Raqueta de Tenis|85.00|DEPORTE|12
+P009|Pesas 5kg|45.00|DEPORTE|30
+P010|Lámpara LED|35.00|HOGAR|25
+P011|Sofá 3 Plazas|450.00|HOGAR|8
+P012|Mesa de Centro|120.00|HOGAR|15

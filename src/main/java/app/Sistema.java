@@ -10,17 +10,25 @@ import java.util.Scanner;
 
 import java.util.*;
 import services.ManejadorUsuario;
+import services.ManejadorProducto;
+import services.ManejadorPedido;
+import model.Producto;
+import model.Pedido;
 
 public class Sistema {
     private static ArrayList<Usuario> usuarios= new ArrayList<>();
+    private static ArrayList<Producto> productos = new ArrayList<>();
+    private static ArrayList<Pedido> pedidos = new ArrayList<>();
     private static Scanner scanner= new Scanner(System.in);
 
     /**
      * Método principal que inicia el sistema
-     * Carga los usuarios desde los archivos y muestra la pantalla de inicio de sesión
+     * Carga los usuarios desde la clase ManejadorUsuario y muestra la pantalla de inicio de sesión
      */
     public static void iniciar() {
         usuarios = ManejadorUsuario.cargarUsuarios(usuarios);
+        productos = ManejadorProducto.cargarProductos();
+        pedidos = ManejadorPedido.cargarPedidos(usuarios, productos);
         iniciarSesion(scanner);
     }
 
@@ -96,7 +104,7 @@ public class Sistema {
             
             switch (opcion) {
                 case "1":
-                    System.out.println("Función de compra en desarrollo...");
+                    cliente.realizarCompra(productos, usuarios, pedidos, scanner);
                     break;
                 case "2":
                     System.out.println("Función de gestión de pedido en desarrollo...");
