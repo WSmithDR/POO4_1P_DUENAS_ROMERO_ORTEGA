@@ -88,19 +88,6 @@ public class Producto {
         return codigo + " - " + nombre + " - $" + precio + " - Stock: " + stock;
     }
 
-    /*public void mostrarCategoriaProducto(){
-        System.out.println(categoriaProducto);
-    }*/
-
-    public static CategoriaProducto[] mostrarCategoriasDisponibles(){
-        System.out.println("\nCategorías disponibles:");
-     CategoriaProducto[] categorias = CategoriaProducto.values();
-     for (int i = 0; i < categorias.length; i++) {
-         System.out.println((i + 1) + ". " + categorias[i]);
-     }
-     return categorias;
-    }
-
     
 }
 

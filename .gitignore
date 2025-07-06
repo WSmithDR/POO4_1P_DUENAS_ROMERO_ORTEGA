@@ -30,3 +30,6 @@ diffs.txt
 
 #env
 .env
+
+#Pedidos
+/resources/Pedidos.txt

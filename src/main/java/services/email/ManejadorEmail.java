@@ -1,4 +1,4 @@
-package services;
+package services.email;
 
 import java.util.Properties;
 import javax.mail.Authenticator;
@@ -8,6 +8,8 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+
+import services.env.EnvReader;
 
 public class ManejadorEmail {
     EnvReader env = new EnvReader();

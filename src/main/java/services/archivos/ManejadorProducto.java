@@ -1,4 +1,4 @@
-package services;
+package services.archivos;
 
 import model.Producto;
 import model.Enums.CategoriaProducto;
@@ -44,20 +44,61 @@ public class ManejadorProducto {
     }
 
     /**
+     * Retorna una lista de productos con stock mayor a cero de Productos.txt.
+     * @param productos Lista de productos a filtrar
+     * @return ArrayList<Producto> con stock > 0
+     */
+    public static ArrayList<Producto> filtrarProductosConStock(ArrayList<Producto> productos) {
+        ArrayList<Producto> productosConStock = new ArrayList<>();
+        for (Producto producto : productos) {
+            if (producto.getStock() > 0) {
+                productosConStock.add(producto);
+            }
+        }
+        return productosConStock;
+    }
+
+    /**
+     * Obtiene y muestra por consola las categorías de productos que tienen al menos un producto disponible en la base de datos (Productos.txt).
+     * Solo se listan categorías que realmente tienen productos registrados con stock mayor a cero.
+     *
+     * @return ArrayList<CategoriaProducto> con las categorías disponibles actualmente en el sistema
+     */
+    public static ArrayList<CategoriaProducto> mostrarCategoriasDisponibles() {
+        System.out.println("\nCategorías disponibles:");
+        ArrayList<Producto> productosDB = cargarProductos();
+        ArrayList<Producto> productosConStock = filtrarProductosConStock(productosDB);
+        ArrayList<CategoriaProducto> categoriasDisponibles = new ArrayList<>();
+
+        for (Producto producto : productosConStock) {
+            CategoriaProducto categoria = producto.getCategoriaProducto();
+            if (!categoriasDisponibles.contains(categoria)) {
+                categoriasDisponibles.add(categoria);
+            }
+        }
+
+        // Mostrar las categorías encontradas en la consola
+        for (int i = 0; i < categoriasDisponibles.size(); i++) {
+            System.out.println((i + 1) + ". " + categoriasDisponibles.get(i));
+        }
+
+        return categoriasDisponibles;
+    }
+
+    /**
      * Obtiene productos por categoría
      * @param productos Lista de todos los productos
      * @param categoria Categoría a filtrar
      * @return ArrayList con productos de la categoría especificada
      */
     public static ArrayList<Producto> obtenerProductosPorCategoria(ArrayList<Producto> productos, CategoriaProducto categoria) {
+        ArrayList<Producto> productosConStock = filtrarProductosConStock(productos);
         ArrayList<Producto> productosFiltrados = new ArrayList<>();
-        
-        for (Producto producto : productos) {
+        for (Producto producto : productosConStock) {
             if (producto.getCategoriaProducto() == categoria) {
                 productosFiltrados.add(producto);
             }
         }
-        
         return productosFiltrados;
     }
 
@@ -75,4 +116,8 @@ public class ManejadorProducto {
         }
         return null;
     }
+
+       /*public void mostrarCategoriaProducto(){
+        System.out.println(categoriaProducto);
+    }*/
 } 

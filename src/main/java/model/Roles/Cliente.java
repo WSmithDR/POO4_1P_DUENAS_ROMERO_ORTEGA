@@ -2,12 +2,15 @@ package model.Roles;
 
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import app.Sistema;
 import model.Enums.Rol;
 import model.Enums.CategoriaProducto;
 import model.Producto;
 import model.Pedido;
-import services.ManejadorProducto;
-import services.ManejadorPedido;
+import services.archivos.ManejadorPedido;
+import services.archivos.ManejadorProducto;
+import services.email.ManejadorEmail;
 import model.Enums.EstadoPedido;
 import persistence.ManejoArchivos;
 import java.util.Random;
@@ -211,27 +214,32 @@ public class Cliente extends Usuario {
     * @param pedidos   Lista de pedidos para agregar el nuevo pedido
     * @param scanner   Scanner para leer entrada del usuario
     */
-   public boolean realizarCompra(ArrayList<Producto> productos, ArrayList<Usuario> usuarios, ArrayList<Pedido> pedidos,
+   public void realizarCompra(ArrayList<Producto> productos, ArrayList<Usuario> usuarios, ArrayList<Pedido> pedidos,
          Scanner scanner) {
       System.out.println("\n=== COMPRAR PRODUCTO ===");
 
-      // 1. Mostrar categorías
-      CategoriaProducto[] categorias = Producto.mostrarCategoriasDisponibles();
+      // 1. Mostrar categorías de productos que estan disponibles
+      ArrayList<CategoriaProducto> catProdDisponibles = 
+      ManejadorProducto.mostrarCategoriasDisponibles();
 
       // 2. Seleccionar categoría
-      System.out.print("Elige una categoría (1-" + categorias.length + "): ");
+      System.out.print("Elige una categoría (1-" + catProdDisponibles.size() + "): ");
       int opcionCategoria = Integer.parseInt(scanner.nextLine()) - 1;
-      if (opcionCategoria < 0 || opcionCategoria >= categorias.length) {
+      if (opcionCategoria < 0 || opcionCategoria >= catProdDisponibles.size()) {
          System.out.println("Opción inválida");
-         return false;
+         return;
       }
 
       // 3. Mostrar productos de esa categoría
-      ArrayList<Producto> productosCategoria = ManejadorProducto.obtenerProductosPorCategoria(productos,
-            categorias[opcionCategoria]);
+      ArrayList<Producto> productosCategoria = 
+      ManejadorProducto.
+      obtenerProductosPorCategoria(
+         productos,
+         catProdDisponibles.get(opcionCategoria)
+         );
       if (productosCategoria.isEmpty()) {
          System.out.println("No hay productos en esta categoría");
-         return false;
+         return;
       }
 
       System.out.println("\nProductos disponibles:");
@@ -245,7 +253,7 @@ public class Cliente extends Usuario {
       int opcionProducto = Integer.parseInt(scanner.nextLine()) - 1;
       if (opcionProducto < 0 || opcionProducto >= productosCategoria.size()) {
          System.out.println("Opción inválida");
-         return false;
+         return;
       }
 
       Producto productoElegido = productosCategoria.get(opcionProducto);
@@ -255,7 +263,7 @@ public class Cliente extends Usuario {
       int cantidad = Integer.parseInt(scanner.nextLine());
       if (cantidad <= 0 || cantidad > productoElegido.getStock()) {
          System.out.println("Cantidad inválida");
-         return false;
+         return;
       }
 
       // 6. Calcular total
@@ -267,7 +275,7 @@ public class Cliente extends Usuario {
       String confirmar = scanner.nextLine().toLowerCase();
       if (!confirmar.equals("s") && !confirmar.equals("si")) {
          System.out.println("Compra cancelada");
-         return false;
+         return;
       }
 
       // 8. Buscar/Asginar repartidor
@@ -281,23 +289,30 @@ public class Cliente extends Usuario {
 
       if (repartidores.isEmpty()) {
          System.out.println("No hay repartidores disponibles");
-         return false;
+         return;
       } else {
          // 9. Elegir repartidor al azar
          Random random = new Random();
          Repartidor repartidorElegido = repartidores.get(random.nextInt(repartidores.size()));
-
          // 10. Crear pedido
          Pedido nuevoPedido = new Pedido(this, repartidorElegido, productoElegido, cantidad, total);
          productoElegido.reducirStock(cantidad);
          ManejadorPedido.guardarPedido(nuevoPedido);
          pedidos.add(nuevoPedido);
 
-         System.out.println("¡Compra exitosa!");
-         System.out.println(
-               "Repartidor: " + repartidorElegido.getNombres().get(0) + " " + repartidorElegido.getApellidos().get(0));
-         System.out.println("Código de pedido: " + nuevoPedido.getCodigoPedido());
-         return true;
+         ManejadorEmail manejadorEmail = new ManejadorEmail();
+         if (repartidorElegido != null && nuevoPedido != null) {
+            Sistema.notificar(repartidorElegido, nuevoPedido, manejadorEmail);
+            Sistema.notificar(this, nuevoPedido, manejadorEmail);
+            System.out.println("¡Compra exitosa!");
+            System.out.println(
+                  "Repartidor: " + repartidorElegido.getNombres().get(0) + " " + repartidorElegido.getApellidos().get(0));
+            System.out.println("Código de pedido: " + nuevoPedido.getCodigoPedido());
+            return;
+         } else {
+            System.out.println("Error al procesar la compra.");
+            return;
+         }
       }
    }
 

@@ -1,4 +1,4 @@
-package services;
+package services.env;
 
 import io.github.cdimascio.dotenv.Dotenv;
 
