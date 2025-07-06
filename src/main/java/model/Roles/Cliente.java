@@ -297,6 +297,7 @@ public class Cliente extends Usuario {
          // 10. Crear pedido
          Pedido nuevoPedido = new Pedido(this, repartidorElegido, productoElegido, cantidad, total);
          productoElegido.reducirStock(cantidad);
+         ManejadorProducto.actualizarStockProductoEnArchivo(productoElegido);
          ManejadorPedido.guardarPedido(nuevoPedido);
          pedidos.add(nuevoPedido);
 

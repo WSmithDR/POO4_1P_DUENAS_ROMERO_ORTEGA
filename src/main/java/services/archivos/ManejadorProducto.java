@@ -17,29 +17,29 @@ public class ManejadorProducto {
      * @return ArrayList con todos los productos
      */
     public static ArrayList<Producto> cargarProductos() {
+        ArrayList<String> lineas = ManejoArchivos.LeeFichero(PRODUCTOS_FILE);
         ArrayList<Producto> productos = new ArrayList<>();
-        
-        try {
-            ArrayList<String> lineas = ManejoArchivos.LeeFichero(PRODUCTOS_FILE);
-            
-            // Saltar la primera línea (encabezado)
-            for (int i = 1; i < lineas.size(); i++) {
-                String linea = lineas.get(i);
-                String[] partes = linea.split("\\|");
-                
+        ArrayList<String> codigosAgregados = new ArrayList<>();
+
+        //Empezamos desde la última línea hacia la primera (salta encabezado si existe).
+        //Esto lo hacemos ya que solo se tomara la ultima version de un producto
+        //ya que estaremos agregando el mismo producto pero con un stock diferente.
+        for (int i = lineas.size() - 1; i > 0; i--) {
+            String linea = lineas.get(i);
+            String[] partes = linea.split("\\|");
+            if (partes.length >= 5) {
                 String codigo = partes[0];
-                String nombre = partes[1];
-                double precio = Double.parseDouble(partes[2]);
-                CategoriaProducto categoria = CategoriaProducto.valueOf(partes[3].toUpperCase());
-                int stock = Integer.parseInt(partes[4]);
-                
-                Producto producto = new Producto(codigo, nombre, precio, categoria, stock);
-                productos.add(producto);
+                if (!codigosAgregados.contains(codigo)) {
+                    String nombre = partes[1];
+                    double precio = Double.parseDouble(partes[2]);
+                    CategoriaProducto categoria = CategoriaProducto.valueOf(partes[3]);
+                    int stock = Integer.parseInt(partes[4]);
+                    Producto producto = new Producto(codigo, nombre, precio, categoria, stock);
+                    productos.add(producto);
+                    codigosAgregados.add(codigo);
+                }
             }
-        } catch (Exception e) {
-            System.out.println("Error cargando productos: " + e.getMessage());
         }
-        
         return productos;
     }
 
@@ -117,7 +117,13 @@ public class ManejadorProducto {
         return null;
     }
 
-       /*public void mostrarCategoriaProducto(){
-        System.out.println(categoriaProducto);
-    }*/
+    public static void actualizarStockProductoEnArchivo(Producto productoActualizado) {
+        String nuevaLinea = String.format("%s|%s|%s|%s|%d",
+                productoActualizado.getCodigo(),
+                productoActualizado.getNombre(),
+                productoActualizado.getPrecio(),
+                productoActualizado.getCategoriaProducto().getName(),
+                productoActualizado.getStock());
+        ManejoArchivos.EscribirArchivo(PRODUCTOS_FILE, nuevaLinea);
+    }
 } 
