@@ -1,8 +1,9 @@
 package model.Roles;
 
 import java.util.ArrayList;
-
 import model.Enums.Rol;
+import model.Enums.EstadoPedido;
+import model.Pedido;
 
 public class Repartidor extends Usuario {
     private String nombreEmpresa;
@@ -20,5 +21,44 @@ public class Repartidor extends Usuario {
     //setters
     public void setNombreEmpresa(String nombreEmpresa){
         this.nombreEmpresa = nombreEmpresa;
+    }
+    
+    /**
+     * Consulta los pedidos asignados al repartidor que no han sido entregados
+     * @param pedidos Lista de todos los pedidos del sistema
+     */
+    public void consultarPedidosAsignados(ArrayList<Pedido> pedidos) {
+        System.out.println("\n===== PEDIDOS ASIGNADOS =====");
+        System.out.println("Buscando pedidos asignados no entregados...\n");
+        
+        ArrayList<Pedido> pedidosAsignados = new ArrayList<>();
+        
+        // Buscar pedidos asignados a este repartidor que no estén entregados
+        for (Pedido pedido : pedidos) {
+            if (pedido.getRepartidor().getCedula().equals(this.getCedula()) && 
+                pedido.getEstado() != EstadoPedido.ENTREGADO &&
+                pedido.getEstado() != EstadoPedido.CANCELADO) {
+                pedidosAsignados.add(pedido);
+            }
+        }
+        
+        if (pedidosAsignados.isEmpty()) {
+            System.out.println("No tienes pedidos asignados pendientes.");
+            return;
+        }
+        
+        System.out.println("Pedidos encontrados:\n");
+        
+        // Mostrar cada pedido
+        for (int i = 0; i < pedidosAsignados.size(); i++) {
+            Pedido pedido = pedidosAsignados.get(i);
+            System.out.println((i + 1) + ". Código: " + pedido.getCodigoPedido());
+            System.out.println("   Fecha del pedido: " + pedido.getFechaPedido().toLocalDate());
+            System.out.println("   Estado actual: " + pedido.getEstado());
+            System.out.println();
+        }
+        
+        System.out.println("Total de pedidos pendientes: " + pedidosAsignados.size());
+        System.out.println("Recuerde que solo puede gestionar los pedidos que se encuentren EN PREPARACIÓN o EN RUTA.");
     }
 }

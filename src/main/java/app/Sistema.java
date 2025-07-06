@@ -143,7 +143,7 @@ public class Sistema {
                     System.out.println("Función de gestión de pedido en desarrollo...");
                     break;
                 case "2":
-                    System.out.println("Función de consulta de pedidos en desarrollo...");
+                    repartidor.consultarPedidosAsignados(pedidos);
                     break;
                 case "3":
                     System.out.println("Cerrando sesión...");
