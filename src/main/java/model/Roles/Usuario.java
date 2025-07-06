@@ -3,6 +3,7 @@ package model.Roles;
 import java.util.ArrayList;
 
 import model.Enums.Rol;
+import model.Pedido;
 
 
 
@@ -83,9 +84,7 @@ public abstract class Usuario {
     }
 
     public void setNombres(ArrayList<String> nombres) {
-        
-            this.nombres = nombres;
-        
+        this.nombres = nombres;
     }
     
     public void setApellidos(ArrayList<String> apellidos) {
@@ -94,19 +93,20 @@ public abstract class Usuario {
     
 
     protected void setContrasenia(String contrasenia){
-    
-    this.contrasenia = contrasenia;
-            
-        
+        this.contrasenia = contrasenia;
     }
 
     protected void setCorreo(String correo) {
-       this.correo = correo;
-           
-        
+        this.correo = correo;
     }
 
     public void setRol(Rol rol) {
         this.rol = rol;
     }
+    
+    /**
+     * Método abstracto para gestionar pedidos según el rol del usuario
+     * @param pedidos Lista de pedidos disponibles para gestionar
+     */
+    public abstract void gestionarPedido(ArrayList<Pedido> pedidos);
 }

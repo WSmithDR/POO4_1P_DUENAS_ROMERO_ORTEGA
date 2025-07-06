@@ -2,7 +2,6 @@ package model.Roles;
 
 import java.util.ArrayList;
 import model.Enums.Rol;
-import model.Enums.EstadoPedido;
 import model.Pedido;
 
 public class Repartidor extends Usuario {
@@ -28,41 +27,18 @@ public class Repartidor extends Usuario {
      * @param pedidos Lista de todos los pedidos del sistema
      */
     public void consultarPedidosAsignados(ArrayList<Pedido> pedidos) {
-        System.out.println("\n===== PEDIDOS ASIGNADOS =====");
-        System.out.println("Buscando pedidos asignados no entregados...\n");
-        
-        ArrayList<Pedido> pedidosAsignados = new ArrayList<>();
-        
-        // Buscar pedidos asignados a este repartidor que no estén entregados
-        for (Pedido pedido : pedidos) {
-            if (pedido.getCodRepartidor().equals(this.getCedula()) && 
-                !(pedido.getEstadoPedido()==EstadoPedido.ENTREGADO) &&
-                !(pedido.getEstadoPedido().equals(EstadoPedido.CANCELADO))) {
-                pedidosAsignados.add(pedido);
-            }
-        }
-        
-        if (pedidosAsignados.isEmpty()) {
-            System.out.println("No tienes pedidos asignados pendientes.");
-            return;
-        }
-        
-        System.out.println("Pedidos encontrados:\n");
-        
-        // Mostrar cada pedido
-        for (int i = 0; i < pedidosAsignados.size(); i++) {
-            Pedido pedido = pedidosAsignados.get(i);
-            System.out.println((i + 1) + ". Código: " + pedido.getCodigoPedido());
-            System.out.println("   Fecha del pedido: " + pedido.getFechaPedido());
-            System.out.println("   Estado actual: " + pedido.getEstadoPedido());
-            System.out.println();
-        }
-        
-        System.out.println("Total de pedidos pendientes: " + pedidosAsignados.size());
-        System.out.println("Recuerde que solo puede gestionar los pedidos que se encuentren EN PREPARACIÓN o EN RUTA.");
+        services.ManejadorPedido.consultarPedidosAsignados(this, pedidos);
     }
 
-    public void gestionarPedido(){
-        
+    /**
+     * Implementación del método abstracto de Usuario
+     * Permite al repartidor gestionar sus pedidos asignados
+     * @param pedidos Lista de todos los pedidos del sistema
+     */
+    @Override
+    public void gestionarPedido(ArrayList<Pedido> pedidos) {
+        java.util.Scanner scanner = new java.util.Scanner(System.in);
+        services.ManejadorPedido.gestionarPedido(this, pedidos, scanner);
+        // No cerrar el scanner aquí ya que podría estar en uso en otros lugares
     }
 }
