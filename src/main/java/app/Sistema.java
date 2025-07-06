@@ -1,6 +1,7 @@
 package app;
 
 
+import model.Pedido;
 import model.Roles.Cliente;
 import model.Roles.Repartidor;
 import model.Roles.Usuario;
@@ -8,11 +9,11 @@ import model.Roles.Usuario;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import services.ManejadorEmail;
 import services.ManejadorUsuario;
 import services.ManejadorProducto;
 import services.ManejadorPedido;
 import model.Producto;
-import model.Pedido;
 
 public class Sistema {
     private static ArrayList<Usuario> usuarios= new ArrayList<>();
@@ -154,4 +155,75 @@ public class Sistema {
             }
         }
     }
+
+    /**
+     * Notifica al cliente cuando este realiza un pedido
+     * @param cliente El objeto Cliente que realiza el pedido
+     * @param pedidoRealizado Contiene la informacion del pedido que realizo el cliente
+     */
+    public void notificar(Cliente cliente, Pedido pedidoRealizado) {
+        ManejadorEmail manejadorEmail = new ManejadorEmail();
+        String asunto = "Pedido realizado";
+        String cuerpo = String.format(
+            "El cliente %s %s ha realizado un pedido con código %s el día %s.\n\n" +
+            "Producto: %s\n" +
+            "Cantidad: %d\n" +
+            "Valor pagado: $%.2f\n" +
+            "Estado inicial: %s\n\n" +
+            "Gracias por su compra. Recibirá actualizaciones del estado de su pedido por este medio.",
+            cliente.getNombres(), cliente.getApellidos(),
+            pedidoRealizado.codigoPedido(),
+            pedidoRealizado.getFechaPedido(),
+            pedidoRealizado.getCodigoProduto(),
+            pedidoRealizado.getCantidadProducto(),
+            pedidoRealizado.getTotalPagado(),
+            pedidoRealizado.getEstadoPedido()
+        );
+        manejadorEmail.enviarCorreo(cliente.getCorreo(), asunto, cuerpo);
+    }
+
+    public void notificar(Repartidor repartidor, Pedido pedidoAsignado) {
+        ManejadorEmail manejadorEmail = new ManejadorEmail();
+        String asunto = "Nuevo pedido asignado";
+        String cuerpo = String.format(
+            "Estimado/a %s %s,\n\n" +
+            "Se le ha asignado un nuevo pedido con los siguientes detalles:\n\n" +
+            "Código del pedido: %s\n" +
+            "Fecha del pedido: %s\n" +
+            "Cliente: %s %s\n" +
+            "Estado actual: %s\n\n" +
+            "Por favor, prepare la logística necesaria para la entrega.\n\n" +
+            "Gracias por su trabajo.",
+            repartidor.getNombres(), 
+            repartidor.getApellidos(),
+            pedidoAsignado.getCodigoPedido(),
+            pedidoAsignado.getFechaPedido(),
+            pedidoAsignado.getCliente().getNombres(), 
+            pedidoAsignado.getCliente().getApellidos(),
+            pedidoAsignado.getEstadoPedido()
+        );
+        manejadorEmail.enviarCorreo(repartidor.getCorreo(), asunto, cuerpo);
+    }
+
+    public void notificar(Cliente cliente, Pedido pedido, String nuevoEstado) {
+        ManejadorEmail manejadorEmail = new ManejadorEmail();
+        String asunto = "Actualización del estado de su pedido";
+        String cuerpo = String.format(
+            "Estimado/a %s %s,\n\n" +
+            "Le informamos que el estado de su pedido con código %s ha cambiado a: %s.\n\n" +
+            "Fecha del pedido: %s\n" +
+            "Producto: %s\n" +
+            "Repartidor asignado: %s\n\n" +
+            "Gracias por confiar en nosotros.",
+            cliente.getNombres(), cliente.getApellidos(),
+            pedido.codigoPedido(), nuevoEstado,
+            pedido.getFechaPedido(),
+            pedido.getCodigoProduto(),
+            pedido.getCodRepartidor()
+        );
+
+        manejadorEmail.enviarCorreo(cliente.getCorreo(), asunto, cuerpo);
+    }
+
+    
 }

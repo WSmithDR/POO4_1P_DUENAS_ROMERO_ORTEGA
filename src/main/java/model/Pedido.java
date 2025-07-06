@@ -36,7 +36,7 @@ public class Pedido {
         this.cantidad = cantidad;
         this.valorPagado = valorPagado;
         this.fechaPedido = LocalDateTime.now();
-        this.estado = EstadoPedido.EN_PREPARACION;
+        this.estadoPedido = EstadoPedido.EN_PREPARACION;
     }
 
     /**

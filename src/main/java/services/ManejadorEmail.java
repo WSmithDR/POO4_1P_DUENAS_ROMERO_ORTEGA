@@ -9,7 +9,7 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-public class ManejoEmail {
+public class ManejadorEmail {
     EnvReader env = new EnvReader();
     private final String emailFrom = env.emailSystem;
     private final String appPassword = env.passwordSystem;
@@ -17,7 +17,7 @@ public class ManejoEmail {
     private final Properties properties;
     private final Authenticator auth;
 
-    public ManejoEmail() {
+    public ManejadorEmail() {
         properties = new Properties();
         properties.put("mail.smtp.host", "smtp.gmail.com");
         properties.put("mail.smtp.ssl.trust", "smtp.gmail.com");
