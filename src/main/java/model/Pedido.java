@@ -1,9 +1,9 @@
 package model;
 
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 import model.Enums.CategoriaProducto;
+import model.Enums.EstadoPedido;
 import model.Roles.Cliente;
 import model.Roles.Repartidor;
 import utils.ManejoFechas;
@@ -18,7 +18,7 @@ public class Pedido {
     private int cantidadProducto;
     private CategoriaProducto categoria;
     private String codRepartidor;
-    private String estadoPedido;
+    private EstadoPedido estadoPedido;
     private String codigoPedido;
     private Cliente cliente;
 
@@ -33,7 +33,8 @@ public class Pedido {
         CategoriaProducto categoriaProducto,
         String codRepartidor, 
         Cliente cliente,
-        String estadoPedido) {
+        EstadoPedido estadoPedido
+        ) {
         this.fechaPedido = fechaPedido;
         this.codigoProducto = codigoProducto;
         this.totalPagado = totalPagado;
@@ -54,7 +55,7 @@ public class Pedido {
         this.cantidadProducto = cantidad;
         this.categoria = producto.getCategoria();
         this.codRepartidor = repartidor.getCedula();
-        this.estadoPedido = "En Preparación";
+        this.estadoPedido = EstadoPedido.EN_PREPARACION;
         this.codigoPedido = generarCodigo();
         this.cliente = cliente;
 
@@ -97,7 +98,7 @@ public class Pedido {
         return this.codRepartidor;
     }
 
-    public String getEstadoPedido() {
+    public EstadoPedido getEstadoPedido() {
         return this.estadoPedido;
     }
 
@@ -130,7 +131,7 @@ public class Pedido {
         this.codRepartidor = codRepartidor;
     }
 
-    public void setEstadoPedido(String estadoPedido) {
+    public void setEstadoPedido(EstadoPedido estadoPedido) {
         this.estadoPedido = estadoPedido;
     }
 
@@ -147,7 +148,7 @@ public class Pedido {
             String.valueOf(cantidadProducto),
             String.valueOf(totalPagado),
             ManejoFechas.getFechaSimple(fechaPedido),
-            estadoPedido
+            String.valueOf(estadoPedido)
         );
     }
         

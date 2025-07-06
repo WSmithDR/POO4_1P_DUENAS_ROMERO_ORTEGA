@@ -30,7 +30,7 @@ public class ManejadorUsuario {
                 
                 String[] partes = linea.split("\\|");
             
-                String codigo=partes[0];
+                //String codigo=partes[0];
                 String cedula = partes[1];
                 String nombre = partes[2];
                 String apellido = partes[3];
