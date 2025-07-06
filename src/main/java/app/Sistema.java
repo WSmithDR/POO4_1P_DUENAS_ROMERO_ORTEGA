@@ -15,13 +15,21 @@ public class Sistema {
     private static ArrayList<Usuario> usuarios= new ArrayList<>();
     private static Scanner scanner= new Scanner(System.in);
 
-
+    /**
+     * Método principal que inicia el sistema
+     * Carga los usuarios desde los archivos y muestra la pantalla de inicio de sesión
+     */
     public static void iniciar() {
         usuarios = ManejadorUsuario.cargarUsuarios(usuarios);
-        
         iniciarSesion(scanner);
     }
 
+    /**
+     * Maneja el proceso de inicio de sesión del usuario
+     * Solicita credenciales y autentica al usuario según su rol
+     * 
+     * @param scanner Scanner para leer la entrada del usuario
+     */
     private static void iniciarSesion(Scanner scanner) {
         System.out.println("===== INICIO DE SESIÓN =====");
         System.out.print("Usuario: ");
@@ -35,6 +43,7 @@ public class Sistema {
             if (u.getUser_name().equals(userInput) && u.getContrasenia().equals(passInput)) {
                 usuarioEncontrado = true;
                 System.out.println("Usuario autenticado correctamente.");
+                
                 if (u instanceof Cliente c) {
                     System.out.println("Rol detectado: CLIENTE");
                     System.out.println("Bienvenido, " + c.getNombres().get(0) + " " + c.getApellidos().get(0));
@@ -58,7 +67,7 @@ public class Sistema {
                         System.out.println("Verificación fallida. Cerrando sesión.");
                     }
                 }
-                break; // Salir del bucle una vez que se encuentra el usuario
+                break;
             }
         }
         
@@ -67,8 +76,15 @@ public class Sistema {
         }
     }
 
+    /**
+     * Muestra y maneja el menú principal para usuarios con rol de Cliente
+     * Permite al cliente realizar compras y gestionar pedidos
+     * 
+     * @param cliente El objeto Cliente autenticado
+     */
     private static void mostrarMenuCliente(Cliente cliente) {
         boolean continuar = true;
+        
         while (continuar) {
             System.out.println("\n=== Menú Cliente ===");
             System.out.println("1. Comprar");
@@ -96,8 +112,15 @@ public class Sistema {
         }
     }
 
+    /**
+     * Muestra y maneja el menú principal para usuarios con rol de Repartidor
+     * Permite al repartidor gestionar pedidos y consultar asignaciones
+     * 
+     * @param repartidor El objeto Repartidor autenticado
+     */
     private static void mostrarMenuRepartidor(Repartidor repartidor) {
         boolean continuar = true;
+        
         while (continuar) {
             System.out.println("\n=== Menú Repartidor ===");
             System.out.println("1. Gestionar pedido");
