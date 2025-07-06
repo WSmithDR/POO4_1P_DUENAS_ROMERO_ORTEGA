@@ -8,6 +8,8 @@ import model.Roles.Usuario;
 import persistence.ManejoArchivos;
 import utils.ManejoFechas;
 import model.Enums.EstadoPedido;
+import services.email.ManejadorEmail;
+import app.Sistema;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -405,18 +407,17 @@ public class ManejadorPedido {
      */
     private static void mostrarOpcionesEstado(Pedido pedido, Scanner scanner) {
         EstadoPedido estadoActual = pedido.getEstadoPedido();
-        
+        ManejadorEmail manejadorEmail = new ManejadorEmail();
         if (estadoActual == EstadoPedido.EN_PREPARACION) {
             System.out.println("\nSeleccione el nuevo estado:");
             System.out.println("1. EN CAMINO");
             System.out.println("2. ENTREGADO");
-            
             System.out.print("Opción: ");
             int opcion = Integer.parseInt(scanner.nextLine());
-            
             if (opcion == 1) {
                 pedido.setEstadoPedido(EstadoPedido.EN_CAMINO);
                 System.out.println("Estado actualizado correctamente a EN CAMINO.");
+                Sistema.notificar(pedido.getCliente(), pedido, EstadoPedido.EN_CAMINO, manejadorEmail);
             } else if (opcion == 2) {
                 System.out.println("\nError: No puede cambiar directamente de EN PREPARACIÓN a ENTREGADO. Debe cambiar primero a EN CAMINO.");
                 mostrarOpcionesEstado(pedido, scanner); // Mostrar opciones nuevamente
@@ -426,13 +427,12 @@ public class ManejadorPedido {
         } else if (estadoActual == EstadoPedido.EN_CAMINO) {
             System.out.println("\nSeleccione el nuevo estado:");
             System.out.println("1. ENTREGADO");
-            
             System.out.print("Opción: ");
             int opcion = Integer.parseInt(scanner.nextLine());
-            
             if (opcion == 1) {
                 pedido.setEstadoPedido(EstadoPedido.ENTREGADO);
                 System.out.println("Estado actualizado correctamente a ENTREGADO.");
+                Sistema.notificar(pedido.getCliente(), pedido, EstadoPedido.ENTREGADO, manejadorEmail);
             } else {
                 System.out.println("Opción inválida.");
             }
