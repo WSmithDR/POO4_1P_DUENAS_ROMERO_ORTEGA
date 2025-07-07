@@ -97,8 +97,6 @@ public class ManejadorPedido {
 
     /**
      * Carga todos los pedidos desde el archivo
-     * Nota: Como el archivo no incluye la cédula del cliente, solo muestra la información
-     * de los pedidos sin crear objetos completos
      */
     public static ArrayList<Pedido> cargarPedidos(ArrayList<Usuario> usuarios, ArrayList<Producto> productos) {
         ArrayList<Pedido> pedidos = new ArrayList<>();
@@ -134,17 +132,17 @@ public class ManejadorPedido {
                 Producto producto = buscarProductoPorCodigo(productos, partes[2]);
                 
                 if (repartidor != null && producto != null) {
-                    // Solo mostrar información del pedido sin crear objeto completo
-                    // ya que no tenemos el cliente real
-                    System.out.println("Pedido encontrado en archivo:");
-                    System.out.println("  Código: " + partes[0]);
-                    System.out.println("  Fecha: " + partes[1]);
-                    System.out.println("  Producto: " + producto.getNombre());
-                    System.out.println("  Cantidad: " + partes[3]);
-                    System.out.println("  Total: $" + partes[4]);
-                    System.out.println("  Estado: " + partes[5]);
-                    System.out.println("  Repartidor: " + repartidor.getNombre() + " " + repartidor.getApellido());
-                    System.out.println();
+                    int cantidad = Integer.parseInt(partes[3]);
+                    double valorPagado = Double.parseDouble(partes[4]);
+                    
+                    // Crear un cliente temporal para que el sistema funcione
+                    // En un sistema real, esto se manejaría de otra manera
+                    Cliente clienteTemp = new Cliente("TEMP001", "0000000000", "Cliente", "Temporal", "temp_user", "temp@email.com", "temp123", "0000000000", "Dirección Temporal");
+                    
+                    Pedido pedido = new Pedido(clienteTemp, repartidor, producto, cantidad, valorPagado);
+                    pedido.setCodigoPedido(partes[0]); // Usar el código original del archivo
+                    pedido.setEstadoPedido(convertirStringAEstado(partes[5])); // Establecer el estado desde el archivo
+                    pedidos.add(pedido);
                 }
             }
         } catch (Exception e) {
