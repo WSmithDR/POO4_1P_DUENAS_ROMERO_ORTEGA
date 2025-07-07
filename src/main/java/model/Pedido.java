@@ -130,20 +130,19 @@ public class Pedido {
     /**
      * Convierte el pedido a formato de archivo para persistencia.
      * Los campos se separan por el carácter '|' en el siguiente orden:
-     * código_pedido|cédula_cliente|cédula_repartidor|código_producto|cantidad|total|fecha|estado
+     * código_pedido|fecha|código_producto|cantidad|total|estado|código_repartidor
      * 
      * @return String con el pedido en formato de archivo
      */
     public String toFileFormat() {
         return String.join("|",
             codigoPedido,
-            cliente.getCedula(),
-            repartidor.getCodigoUnico(),
+            ManejoFechas.setFechaSimple(fechaPedido),
             producto.getCodigo(),
             String.valueOf(cantidadProducto),
             String.valueOf(totalPagado),
-            ManejoFechas.setFechaSimple(fechaPedido),
-            String.valueOf(estadoPedido)
+            String.valueOf(estadoPedido),
+            repartidor.getCodigoUnico()
         );
     }
 }
