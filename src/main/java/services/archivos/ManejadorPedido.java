@@ -14,6 +14,7 @@ import app.Sistema;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
+import java.io.File;
 
 /**
  * Clase que maneja la gestión de pedidos, incluyendo asignación de repartidores,
@@ -43,6 +44,10 @@ public class ManejadorPedido {
      */
     public static void guardarPedido(Pedido pedido) {
         try {
+            File archivo = new File(PEDIDOS_FILE);
+            if (!archivo.exists()) {
+                ManejoArchivos.EscribirArchivo(PEDIDOS_FILE, "CodigoPedido|Fecha|CodigoProducto|Cantidad|ValorPagado|Estado|CodigoRepartidor");
+            }
             String lineaPedido = pedido.toFileFormat();
             ManejoArchivos.EscribirArchivo(PEDIDOS_FILE, lineaPedido);
         } catch (Exception e) {
@@ -58,45 +63,48 @@ public class ManejadorPedido {
      */
     public static ArrayList<Pedido> cargarPedidos(ArrayList<Usuario> usuarios, ArrayList<Producto> productos) {
         ArrayList<Pedido> pedidos = new ArrayList<>();
-        
         try {
             ArrayList<String> lineas = ManejoArchivos.LeeFichero(PEDIDOS_FILE);
-            
-            // Saltar la primera línea (encabezado)
             for (int i = 1; i < lineas.size(); i++) {
                 String linea = lineas.get(i);
                 String[] partes = linea.split("\\|");
-                
-                // Buscar cliente y repartidor por cédula
-                Cliente cliente = buscarClientePorCedula(usuarios, partes[1]);
-                Repartidor repartidor = buscarRepartidorPorCodigoUnico(usuarios, partes[2]);
-                Producto producto = buscarProductoPorCodigo(productos, partes[3]);
-                
-                if (cliente != null && repartidor != null && producto != null) {
-                    int cantidad = Integer.parseInt(partes[4]);
-                    double valorPagado = Double.parseDouble(partes[5]);
-                    
+                if (partes.length < 8) continue;
+                String codigoPedido = partes[0];
+                String fecha = partes[1];
+                String codigoProducto = partes[2];
+                int cantidad = Integer.parseInt(partes[3]);
+                double valorPagado = Double.parseDouble(partes[4]);
+                String estadoStr = partes[5];
+                String codigoRepartidor = partes[6];
+                String codigoUnicoCliente = partes[7];
+
+                Producto producto = buscarProductoPorCodigo(productos, codigoProducto);
+                Repartidor repartidor = buscarRepartidorPorCodigoUnico(usuarios, codigoRepartidor);
+                Cliente cliente = buscarClientePorCodigoUnico(usuarios, codigoUnicoCliente);
+
+                if (producto != null && repartidor != null && cliente != null) {
                     Pedido pedido = new Pedido(cliente, repartidor, producto, cantidad, valorPagado);
-                    pedido.setCodigoPedido(partes[0]); // Usar el código original del archivo
+                    pedido.setCodigoPedido(codigoPedido);
+                    pedido.setFechaPedido(ManejoFechas.parseFechaSimple(fecha));
+                    pedido.setEstadoPedido(Enum.valueOf(model.Enums.EstadoPedido.class, estadoStr));
                     pedidos.add(pedido);
                 }
             }
         } catch (Exception e) {
             System.out.println("Error cargando pedidos: " + e.getMessage());
         }
-        
         return pedidos;
     }
 
     /**
-     * Busca un cliente por cédula
+     * Busca un cliente por código único
      * @param usuarios Lista de usuarios
-     * @param cedula Cédula del cliente
+     * @param codigoUnico Código único del cliente
      * @return Cliente encontrado o null
      */
-    private static Cliente buscarClientePorCedula(ArrayList<Usuario> usuarios, String cedula) {
+    private static Cliente buscarClientePorCodigoUnico(ArrayList<Usuario> usuarios, String codigoUnico) {
         for (Usuario usuario : usuarios) {
-            if (usuario instanceof Cliente && usuario.getCedula().equals(cedula)) {
+            if (usuario instanceof Cliente && usuario.getCodigoUnico().equals(codigoUnico)) {
                 return (Cliente) usuario;
             }
         }

@@ -33,7 +33,7 @@ public class ManejadorProducto {
                 String codigo = partes[0];
                 if (!codigosAgregados.contains(codigo)) {
                     CategoriaProducto categoria = CategoriaProducto.fromDescripcion(partes[1]);
-                    if (categoria == null) continue; 
+                    if (categoria == null) continue;
                     String nombre = partes[2];
                     double precio = Double.parseDouble(partes[3]);
                     int stock = Integer.parseInt(partes[4]);
