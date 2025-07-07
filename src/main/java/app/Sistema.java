@@ -40,48 +40,57 @@ public class Sistema {
      * @param scanner Scanner para leer la entrada del usuario
      */
     private static void iniciarSesion(Scanner scanner) {
-        System.out.println("===== INICIO DE SESIÓN =====");
-        System.out.print("Usuario: ");
-        String userInput = scanner.nextLine();
-        System.out.print("Contraseña: ");
-        String passInput = scanner.nextLine();
+        boolean sesionIniciada = false;
+        
+        while (!sesionIniciada) {
+            System.out.println("===== INICIO DE SESIÓN =====");
+            System.out.print("Usuario: ");
+            String userInput = scanner.nextLine();
+            System.out.print("Contraseña: ");
+            String passInput = scanner.nextLine();
 
-        boolean usuarioEncontrado = false;
+            boolean usuarioEncontrado = false;
 
-        for (Usuario u : usuarios) {
-            if (u.getUser_name().equals(userInput) && u.getContrasenia().equals(passInput)) {
-                usuarioEncontrado = true;
-                System.out.println("Usuario autenticado correctamente.");
+            for (Usuario u : usuarios) {
+                if (u.getUser_name().equals(userInput) && u.getContrasenia().equals(passInput)) {
+                    usuarioEncontrado = true;
+                    System.out.println("Usuario autenticado correctamente.");
 
-                if (u instanceof Cliente c) {
-                    System.out.println(String.format("Rol detectado: %s", Rol.CLIENTE));
-                    System.out.println("Bienvenido, " + c.getNombre() + " " + c.getApellido());
-                    System.out.println("Celular registrado: " + c.getNumeroCelular());
-                    System.out.print("¿Este número de celular es correcto? (S/N): ");
-                    String verif = scanner.nextLine();
-                    if (verif.equalsIgnoreCase("S")) {
-                        mostrarMenu(c, scanner);
-                    } else {
-                        System.out.println("Verificación fallida. Cerrando sesión.");
+                    if (u instanceof Cliente c) {
+                        System.out.println(String.format("Rol detectado: %s", Rol.CLIENTE));
+                        System.out.println("Bienvenido, " + c.getNombre() + " " + c.getApellido());
+                        System.out.println("Celular registrado: " + c.getNumeroCelular());
+                        System.out.print("¿Este número de celular es correcto? (S/N): ");
+                        String verif = scanner.nextLine();
+                        if (verif.equalsIgnoreCase("S")) {
+                            mostrarMenu(c, scanner);
+                            sesionIniciada = true;
+                        } else {
+                            System.out.println("Verificación fallida. Cerrando sesión.");
+                            sesionIniciada = true;
+                        }
+                    } else if (u instanceof Repartidor r) {
+                        System.out.println("Rol detectado: REPARTIDOR");
+                        System.out.println("Bienvenido, " + r.getNombre() + " " + r.getApellido());
+                        System.out.println("Empresa asignada: " + r.getNombreEmpresa());
+                        System.out.print("¿Esta empresa es correcta? (S/N): ");
+                        String verif = scanner.nextLine();
+                        if (verif.equalsIgnoreCase("S")) {
+                            mostrarMenu(r, scanner);
+                            sesionIniciada = true;
+                        } else {
+                            System.out.println("Verificación fallida. Cerrando sesión.");
+                            sesionIniciada = true;
+                        }
                     }
-                } else if (u instanceof Repartidor r) {
-                    System.out.println("Rol detectado: REPARTIDOR");
-                    System.out.println("Bienvenido, " + r.getNombre() + " " + r.getApellido());
-                    System.out.println("Empresa asignada: " + r.getNombreEmpresa());
-                    System.out.print("¿Esta empresa es correcta? (S/N): ");
-                    String verif = scanner.nextLine();
-                    if (verif.equalsIgnoreCase("S")) {
-                        mostrarMenu(r, scanner);
-                    } else {
-                        System.out.println("Verificación fallida. Cerrando sesión.");
-                    }
+                    break;
                 }
-                break;
             }
-        }
 
-        if (!usuarioEncontrado) {
-            System.out.println("Usuario o contraseña incorrectos. Intente nuevamente.");
+            if (!usuarioEncontrado) {
+                System.out.println("Usuario o contraseña incorrectos. Intente nuevamente.");
+                System.out.println();
+            }
         }
     }
 

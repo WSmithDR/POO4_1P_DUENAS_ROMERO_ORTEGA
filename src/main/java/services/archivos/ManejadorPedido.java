@@ -159,7 +159,7 @@ public class ManejadorPedido {
 
             // Verificar que el código coincida y retornar la posición 2 del array (nombre)
             if (datosP[0].equalsIgnoreCase(codigoProducto)) {
-                return datosP[2];
+                return datosP[1];
             }
         }
         return "Producto no encontrado";
@@ -373,7 +373,7 @@ public class ManejadorPedido {
      */
     private static void cambiarEstadoPedido(Repartidor repartidor, ArrayList<Pedido> pedidos, Scanner scanner) {
         System.out.println("===== GESTIONAR ESTADO DE PEDIDO =====");
-        System.out.println("Ingrese el código del pedido que desea gestionar: ");
+        System.out.print("Ingrese el código del pedido que desea gestionar: ");
         String codigoPedido = scanner.nextLine().trim();
         
         // Buscar el pedido
@@ -393,8 +393,8 @@ public class ManejadorPedido {
         
         System.out.println("\nPedido encontrado:");
         System.out.println("Fecha del pedido: " + ManejoFechas.setFechaSimple(pedidoAModificar.getFechaPedido()) + 
-                          " Código del producto: " + pedidoAModificar.getProducto().getCodigo() + 
-                          " Estado actual: " + pedidoAModificar.getEstadoPedido());
+                          " \nCódigo del producto: " + pedidoAModificar.getProducto().getCodigo() + 
+                          " \nEstado actual: " + pedidoAModificar.getEstadoPedido());
         
         // Mostrar opciones según el estado actual
         mostrarOpcionesEstado(pedidoAModificar, scanner);
