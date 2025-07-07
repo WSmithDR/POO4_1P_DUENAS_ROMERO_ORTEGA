@@ -109,7 +109,17 @@ public class Sistema {
      * @param scanner Scanner para leer la entrada del usuario
      */
     private static void mostrarMenu(Cliente cliente, Scanner scanner) {
-        mostrarMenuGenerico("Cliente", scanner, opcion -> {
+        boolean continuar = true;
+
+        while (continuar) {
+            System.out.println("\n=== Menú Cliente ===");
+            System.out.println("1. Comprar");
+            System.out.println("2. Gestionar pedido");
+            System.out.println("3. Salir");
+            System.out.print("Seleccione una opción: ");
+
+            String opcion = scanner.nextLine();
+
             switch (opcion) {
                 case "1":
                     cliente.realizarCompra(productos, usuarios, pedidos, scanner);
@@ -117,11 +127,15 @@ public class Sistema {
                 case "2":
                     cliente.gestionarPedido(pedidos, scanner);
                     break;
+                case "3":
+                    System.out.println("Cerrando sesión...");
+                    continuar = false;
+                    break;
                 default:
-                    return false;
+                    System.out.println("Opción no válida. Intente nuevamente.");
+                    break;
             }
-            return true;
-        });
+        }
     }
 
     /**
@@ -132,7 +146,17 @@ public class Sistema {
      * @param scanner    Scanner para leer la entrada del usuario
      */
     private static void mostrarMenu(Repartidor repartidor, Scanner scanner) {
-        mostrarMenuGenerico("Repartidor", scanner, opcion -> {
+        boolean continuar = true;
+
+        while (continuar) {
+            System.out.println("\n=== Menú Repartidor ===");
+            System.out.println("1. Gestionar pedido");
+            System.out.println("2. Consultar pedidos asignados");
+            System.out.println("3. Salir");
+            System.out.print("Seleccione una opción: ");
+
+            String opcion = scanner.nextLine();
+
             switch (opcion) {
                 case "1":
                     repartidor.gestionarPedido(pedidos, scanner);
@@ -140,40 +164,13 @@ public class Sistema {
                 case "2":
                     repartidor.consultarPedidosAsignados(pedidos);
                     break;
+                case "3":
+                    System.out.println("Cerrando sesión...");
+                    continuar = false;
+                    break;
                 default:
-                    return false;
-            }
-            return true;
-        });
-    }
-
-    /**
-     * Este método muestra el menú para cualquier tipo de usuario
-     */
-    private static void mostrarMenuGenerico(String tipoUsuario, Scanner scanner, MenuHandler handler) {
-        boolean continuar = true;
-
-        while (continuar) {
-            System.out.println("\n=== Menú " + tipoUsuario + " ===");
-            
-            if (tipoUsuario.equals("Cliente")) {
-                System.out.println("1. Comprar");
-                System.out.println("2. Gestionar pedido");
-            } else {
-                System.out.println("1. Gestionar pedido");
-                System.out.println("2. Consultar pedidos asignados");
-            }
-            
-            System.out.println("3. Salir");
-            System.out.print("Seleccione una opción: ");
-
-            String opcion = scanner.nextLine();
-
-            if (opcion.equals("3")) {
-                System.out.println("Cerrando sesión...");
-                continuar = false;
-            } else if (!handler.handleOption(opcion)) {
-                System.out.println("Opción no válida. Intente nuevamente.");
+                    System.out.println("Opción no válida. Intente nuevamente.");
+                    break;
             }
         }
     }
