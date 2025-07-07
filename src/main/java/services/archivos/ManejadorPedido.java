@@ -440,4 +440,12 @@ public class ManejadorPedido {
             System.out.println("No se pueden realizar cambios en el estado actual: " + estadoActual);
         }
     }
+
+    public static int cantidadRegistroPedidos() {
+        ArrayList<String> lineas = ManejoArchivos.LeeFichero(PEDIDOS_FILE);
+        if (lineas == null || lineas.size() <= 1) {
+            return 0;
+        }
+        return lineas.size() - 1;
+    }
 } 

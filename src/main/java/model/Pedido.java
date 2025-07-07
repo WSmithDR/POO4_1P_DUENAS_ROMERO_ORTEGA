@@ -4,6 +4,7 @@ import java.util.Date;
 import model.Enums.EstadoPedido;
 import model.Roles.Cliente;
 import model.Roles.Repartidor;
+import services.archivos.ManejadorPedido;
 import utils.ManejoFechas;
 
 /**
@@ -20,7 +21,7 @@ public class Pedido {
     private Cliente cliente;
 
     /** Contador estático para generar códigos únicos de pedidos */
-    public static int contadorPedido = 0;
+    public static int contadorPedido = ManejadorPedido.cantidadRegistroPedidos();
 
     /**
      * Constructor de la clase Pedido.
