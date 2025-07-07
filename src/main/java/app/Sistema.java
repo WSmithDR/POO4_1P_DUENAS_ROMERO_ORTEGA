@@ -93,8 +93,10 @@ public class Sistema {
         System.out.println("Celular registrado: " + cliente.getNumeroCelular());
         System.out.print("¿Este número de celular es correcto? (S/N): ");
         
+        
         String verif = scanner.nextLine();
         if (verif.equalsIgnoreCase("S")) {
+            System.out.println("\nIdentidad confirmada.");
             mostrarMenu(cliente, scanner);
             return true;
         } else {
@@ -117,7 +119,9 @@ public class Sistema {
             mostrarMenu(repartidor, scanner);
             return true;
         } else {
-            System.out.println("Verificación fallida. Cerrando sesión.");
+            System.out.println("Verificación fallida");
+            System.out.println("Por motivos de seguridad se cerrando sesión.");
+            System.out.println("\nSaliendo del sistema...");
             return true;
         }
     }
