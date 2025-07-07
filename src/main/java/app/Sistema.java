@@ -65,6 +65,7 @@ public class Sistema {
                         System.out.print("¿Este número de celular es correcto? (S/N): ");
                         String verif = scanner.nextLine();
                         if (verif.equalsIgnoreCase("S")) {
+                            System.out.println("¡Identidad confirmada!");
                             mostrarMenu(c, scanner);
                             sesionIniciada = true;
                         } else {
@@ -78,10 +79,14 @@ public class Sistema {
                         System.out.print("¿Esta empresa es correcta? (S/N): ");
                         String verif = scanner.nextLine();
                         if (verif.equalsIgnoreCase("S")) {
+                            System.out.println("¡Identidad confirmada!");
                             mostrarMenu(r, scanner);
                             sesionIniciada = true;
                         } else {
-                            System.out.println("Verificación fallida. Cerrando sesión.");
+                            System.out.println("Verificación fallida");
+                            System.out.println("Por motivos de seguridad se cerrará la sesion");
+                            System.out.println();
+                            System.out.println("Saliendo del sistema...");
                             sesionIniciada = true;
                         }
                     }
