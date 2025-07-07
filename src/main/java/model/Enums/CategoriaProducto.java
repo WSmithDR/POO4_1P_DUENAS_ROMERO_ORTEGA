@@ -1,16 +1,14 @@
 package model.Enums;
 
 public enum CategoriaProducto {
-    ROPA("ROPA","Ropa y Vestimenta"),
-    TECNOLOGIA("TECNOLOGIA","Tecnología"),
-    DEPORTE("DEPORTE","Deportes"),
-    HOGAR("HOGAR","Hogar y Jardín");
+    TECNOLOGIA("Tecnología"),
+    ROPA("Ropa"),
+    DEPORTES("Deportes"),
+    HOGAR("Hogar");
 
-    private final String name;
     private final String descripcion;
 
-    CategoriaProducto(String name, String descripcion) {
-        this.name = name;
+    CategoriaProducto(String descripcion) {
         this.descripcion = descripcion;
     }
 
@@ -18,8 +16,14 @@ public enum CategoriaProducto {
         return descripcion;
     }
 
-    public String getName(){
-        return name;
+    public static CategoriaProducto fromDescripcion(String descripcion) {
+        for (CategoriaProducto categoria : CategoriaProducto.values()) {
+            if (categoria.getDescripcion().equalsIgnoreCase(descripcion)) {
+                return categoria;
+            }
+        }
+        System.out.println("[ADVERTENCIA] No se encontró una categoría para la descripción: " + descripcion);
+        return null;
     }
 
     @Override

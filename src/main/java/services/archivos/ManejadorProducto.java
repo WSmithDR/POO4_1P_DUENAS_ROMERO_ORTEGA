@@ -32,9 +32,10 @@ public class ManejadorProducto {
             if (partes.length >= 5) {
                 String codigo = partes[0];
                 if (!codigosAgregados.contains(codigo)) {
-                    String nombre = partes[1];
-                    double precio = Double.parseDouble(partes[2]);
-                    CategoriaProducto categoria = CategoriaProducto.valueOf(partes[3]);
+                    CategoriaProducto categoria = CategoriaProducto.fromDescripcion(partes[1]);
+                    if (categoria == null) continue; 
+                    String nombre = partes[2];
+                    double precio = Double.parseDouble(partes[3]);
                     int stock = Integer.parseInt(partes[4]);
                     Producto producto = new Producto(codigo, nombre, precio, categoria, stock);
                     productos.add(producto);
@@ -131,11 +132,11 @@ public class ManejadorProducto {
     }
 
     public static void actualizarStockProductoEnArchivo(Producto productoActualizado) {
-        String nuevaLinea = String.format("%s|%s|%s|%s|%d",
+        String nuevaLinea = String.format("%s|%s|%s|%.2f|%d",
                 productoActualizado.getCodigo(),
+                productoActualizado.getCategoriaProducto().getDescripcion(),
                 productoActualizado.getNombre(),
                 productoActualizado.getPrecio(),
-                productoActualizado.getCategoriaProducto().getName(),
                 productoActualizado.getStock());
         ManejoArchivos.EscribirArchivo(PRODUCTOS_FILE, nuevaLinea);
     }
