@@ -1,0 +1,1 @@
+/usr/lib/jvm/java-24-openjdk/bin/javadoc -J-Duser.language= -J-Duser.country= @options @packages

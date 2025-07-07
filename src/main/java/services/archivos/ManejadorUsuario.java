@@ -81,8 +81,16 @@ public class ManejadorUsuario {
     }
 
     /**
-     * Lectura de datos del archivo cliente
-     **/
+     * Lectura de datos del archivo cliente.
+     * @param codigoUnico Código único del cliente
+     * @param cedula Cédula del cliente
+     * @param nombre Nombre del cliente
+     * @param apellido Apellido del cliente
+     * @param username Nombre de usuario
+     * @param correo Correo electrónico
+     * @param contrasenia Contraseña
+     * @return Cliente encontrado o null si no existe
+     */
     public static Cliente cargarDatosCliente(
             String codigoUnico,
             String cedula,
@@ -108,8 +116,16 @@ public class ManejadorUsuario {
     }
 
     /**
-     * Lectura de datos del archivo repartidor
-     **/
+     * Lectura de datos del archivo repartidor.
+     * @param codigoUnico Código único del repartidor
+     * @param cedula Cédula del repartidor
+     * @param nombre Nombre del repartidor
+     * @param apellido Apellido del repartidor
+     * @param username Nombre de usuario
+     * @param correo Correo electrónico
+     * @param contrasenia Contraseña
+     * @return Repartidor encontrado o null si no existe
+     */
     public static Repartidor cargarDatosRepartidor(
             String codigoUnico,
             String cedula,

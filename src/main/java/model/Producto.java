@@ -13,11 +13,11 @@ public class Producto {
     private int stock;
 
     /**
-     * Constructor de la clase Producto
+     * Constructor de la clase Producto.
      * @param codigo Código único del producto
      * @param nombre Nombre del producto
      * @param precio Precio del producto
-     * @param categoria Categoría del producto
+     * @param categoriaProducto Categoría del producto
      * @param stock Cantidad disponible en stock
      */
     public Producto(String codigo, String nombre, double precio, CategoriaProducto categoriaProducto, int stock) {
