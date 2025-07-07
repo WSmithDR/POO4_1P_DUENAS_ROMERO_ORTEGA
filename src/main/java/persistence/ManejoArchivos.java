@@ -19,15 +19,18 @@ public class ManejoArchivos {
      */
     public static ArrayList<String> LeeFichero(String nombrearchivo) {
         ArrayList<String> lineas = new ArrayList<>();
-        File archivo = null;
+        File archivo = new File(nombrearchivo);
+        if (!archivo.exists()) {
+            // Si el archivo no existe, retorna la lista vacía
+            return lineas;
+        }
         FileReader fr = null;
         BufferedReader br = null;
 
         try {
             // Apertura del fichero y creacion de BufferedReader para poder
             // hacer una lectura comoda (disponer del metodo readLine()).
-            archivo = new File(nombrearchivo);
-            fr = new FileReader(archivo,StandardCharsets.UTF_8);
+            fr = new FileReader(archivo, StandardCharsets.UTF_8);
             br = new BufferedReader(fr);
 
             // Lectura del fichero
