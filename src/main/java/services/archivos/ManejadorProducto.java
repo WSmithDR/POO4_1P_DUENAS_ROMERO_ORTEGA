@@ -7,7 +7,7 @@ import persistence.ManejoArchivos;
 import java.util.ArrayList;
 
 /**
- * Clase que maneja la carga y gestión de productos
+ * Clase que maneja la carga, filtrado, búsqueda y actualización de productos en el sistema.
  */
 public class ManejadorProducto {
     private static final String PRODUCTOS_FILE = "resources/Productos.txt";
@@ -131,6 +131,13 @@ public class ManejadorProducto {
         return null;
     }
 
+    /**
+     * Actualiza el stock de un producto 
+     * en el archivo Productos.txt 
+     * agregando una nueva línea con 
+     * la información actualizada.
+     * @param productoActualizado El producto con el stock actualizado que se va a registrar en el archivo
+     */
     public static void actualizarStockProductoEnArchivo(Producto productoActualizado) {
         String nuevaLinea = String.format("%s|%s|%s|%.2f|%d",
                 productoActualizado.getCodigo(),

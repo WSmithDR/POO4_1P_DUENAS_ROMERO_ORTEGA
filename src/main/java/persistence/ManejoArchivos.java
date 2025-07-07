@@ -11,6 +11,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class ManejoArchivos {
+    /**
+     * Lee todas las líneas de un archivo de texto y las retorna en un ArrayList de String.
+     *
+     * @param nombrearchivo Nombre del archivo a leer
+     * @return ArrayList con las líneas leídas del archivo
+     */
     public static ArrayList<String> LeeFichero(String nombrearchivo) {
         ArrayList<String> lineas = new ArrayList<>();
         File archivo = null;
@@ -50,6 +56,12 @@ public class ManejoArchivos {
 
     }
 
+    /**
+     * Escribe una línea al final de un archivo de texto. Si el archivo no existe, lo crea.
+     *
+     * @param nombreArchivo Nombre del archivo donde escribir
+     * @param linea Línea de texto a escribir en el archivo
+     */
     public static void EscribirArchivo(String nombreArchivo, String linea) {
 
         FileWriter fichero = null;

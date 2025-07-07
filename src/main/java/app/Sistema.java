@@ -22,9 +22,10 @@ public class Sistema {
     private static ArrayList<Pedido> pedidos = new ArrayList<>();
 
     /**
-     * Método principal que inicia el sistema
-     * Carga los usuarios desde la clase ManejadorUsuario y muestra la pantalla de
-     * inicio de sesión
+     * Inicia el sistema: carga usuarios, productos
+     * y pedidos, y muestra la pantalla de inicio de sesión.
+     * 
+     * @param scanner Scanner para leer la entrada del usuario desde la consola
      */
     public static void iniciar(Scanner scanner) {
         usuarios = ManejadorUsuario.cargarUsuarios(usuarios);
@@ -34,14 +35,15 @@ public class Sistema {
     }
 
     /**
-     * Maneja el proceso de inicio de sesión del usuario
-     * Solicita credenciales y autentica al usuario según su rol
+     * Maneja el proceso de inicio de sesión del usuario,
+     * solicitando credenciales
+     * y autenticando según el rol.
      * 
      * @param scanner Scanner para leer la entrada del usuario
      */
     private static void iniciarSesion(Scanner scanner) {
         boolean sesionIniciada = false;
-        
+
         while (!sesionIniciada) {
             System.out.println("===== INICIO DE SESIÓN =====");
             System.out.print("Usuario: ");
@@ -95,10 +97,11 @@ public class Sistema {
     }
 
     /**
-     * Muestra y maneja el menú principal para usuarios con rol de Cliente
-     * Permite al cliente realizar compras y gestionar pedidos
+     * Muestra y maneja el menú principal para usuarios con rol de Cliente.
+     * Permite al cliente realizar compras y gestionar pedidos.
      * 
      * @param cliente El objeto Cliente autenticado
+     * @param scanner Scanner para leer la entrada del usuario
      */
     private static void mostrarMenu(Cliente cliente, Scanner scanner) {
         boolean continuar = true;
@@ -131,10 +134,11 @@ public class Sistema {
     }
 
     /**
-     * Muestra y maneja el menú principal para usuarios con rol de Repartidor
-     * Permite al repartidor gestionar pedidos y consultar asignaciones
+     * Muestra y maneja el menú principal para usuarios con rol de Repartidor.
+     * Permite al repartidor gestionar pedidos y consultar asignaciones.
      * 
      * @param repartidor El objeto Repartidor autenticado
+     * @param scanner    Scanner para leer la entrada del usuario
      */
     private static void mostrarMenu(Repartidor repartidor, Scanner scanner) {
         boolean continuar = true;
@@ -167,9 +171,9 @@ public class Sistema {
     }
 
     /**
-     * Notifica al cliente cuando este realiza un pedido.
-     * Envía un correo electrónico con los detalles del pedido realizado.
-     *
+     * Notifica al cliente cuando este realiza un pedido, enviando un correo
+     * electrónico con los detalles del pedido realizado.
+     * 
      * @param cliente         El objeto Cliente que realiza el pedido
      * @param pedidoRealizado Contiene la información del pedido que realizó el
      *                        cliente
@@ -199,9 +203,9 @@ public class Sistema {
     }
 
     /**
-     * Notifica al repartidor cuando se le asigna un nuevo pedido.
-     * Envía un correo electrónico con los detalles del pedido asignado.
-     *
+     * Notifica al repartidor cuando se le asigna un nuevo pedido, enviando un
+     * correo electrónico con los detalles del pedido asignado.
+     * 
      * @param repartidor     El repartidor al que se le asigna el pedido
      * @param pedidoAsignado El pedido que ha sido asignado
      * @param manejadorEmail Instancia de ManejadorEmail para enviar el correo
@@ -231,9 +235,9 @@ public class Sistema {
     }
 
     /**
-     * Notifica al cliente sobre un cambio en el estado de su pedido.
-     * Envía un correo electrónico informando el nuevo estado del pedido.
-     *
+     * Notifica al cliente sobre un cambio en el estado de su pedido, enviando un
+     * correo electrónico informando el nuevo estado del pedido.
+     * 
      * @param cliente        El cliente al que se le notifica
      * @param pedido         El pedido cuyo estado ha cambiado
      * @param nuevoEstado    El nuevo estado del pedido

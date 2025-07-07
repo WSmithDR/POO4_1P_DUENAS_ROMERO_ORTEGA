@@ -28,44 +28,82 @@ public class Producto {
         this.stock = stock;
     }
 
-    // Getters
+    /**
+     * Obtiene el código único del producto.
+     * @return Código del producto
+     */
     public String getCodigo() {
         return codigo;
     }
 
+    /**
+     * Obtiene el nombre del producto.
+     * @return Nombre del producto
+     */
     public String getNombre() {
         return nombre;
     }
 
+    /**
+     * Obtiene el precio del producto.
+     * @return Precio del producto
+     */
     public double getPrecio() {
         return precio;
     }
 
+    /**
+     * Obtiene la categoría del producto.
+     * @return Categoría del producto
+     */
     public CategoriaProducto getCategoriaProducto() {
         return categoriaProducto;
     }
 
+    /**
+     * Obtiene el stock disponible del producto.
+     * @return Stock del producto
+     */
     public int getStock() {
         return stock;
     }
 
-    // Setters
+    /**
+     * Establece el código único del producto.
+     * @param codigo Código del producto
+     */
     public void setCodigo(String codigo) {
         this.codigo = codigo;
     }
 
+    /**
+     * Establece el nombre del producto.
+     * @param nombre Nombre del producto
+     */
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
 
+    /**
+     * Establece el precio del producto.
+     * @param precio Precio del producto
+     */
     public void setPrecio(double precio) {
         this.precio = precio;
     }
 
+    /**
+     * Establece la categoría del producto.
+     * @param categoria Categoría del producto
+     */
     public void setCategoriaProducto(CategoriaProducto categoria) {
         this.categoriaProducto = categoria;
     }
 
+    /**
+     * Establece el stock disponible del producto.
+     * @param stock Stock del producto
+     */
     public void setStock(int stock) {
         this.stock = stock;
     }
@@ -83,6 +121,10 @@ public class Producto {
         return false;
     }
 
+    /**
+     * Devuelve una representación en String del producto.
+     * @return String con los datos del producto
+     */
     @Override
     public String toString() {
         return codigo + " - " + nombre + " - $" + precio + " - Stock: " + stock;

@@ -16,7 +16,8 @@ import java.util.Random;
 import java.util.Scanner;
 
 /**
- * Clase que maneja la gestión de pedidos
+ * Clase que maneja la gestión de pedidos, incluyendo asignación de repartidores,
+ * almacenamiento, carga, consulta y cambio de estado de pedidos.
  */
 public class ManejadorPedido {
     private static final String PEDIDOS_FILE = "resources/Pedidos.txt";
@@ -441,6 +442,10 @@ public class ManejadorPedido {
         }
     }
 
+    /**
+     * Retorna la cantidad de registros de pedidos almacenados en el archivo.
+     * @return Número de pedidos registrados
+     */
     public static int cantidadRegistroPedidos() {
         ArrayList<String> lineas = ManejoArchivos.LeeFichero(PEDIDOS_FILE);
         if (lineas == null || lineas.size() <= 1) {

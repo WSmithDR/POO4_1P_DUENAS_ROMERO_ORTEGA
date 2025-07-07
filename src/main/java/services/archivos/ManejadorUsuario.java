@@ -8,6 +8,9 @@ import model.Roles.Repartidor;
 import model.Roles.Usuario;
 import persistence.ManejoArchivos;
 
+/**
+ * Clase que maneja la carga y gestión de usuarios, clientes y repartidores desde archivos.
+ */
 public class ManejadorUsuario {
     private static final String USUARIOS_FILE = "resources/Usuarios.txt";
     private static final String CLIENTES_FILE = "resources/Clientes.txt";

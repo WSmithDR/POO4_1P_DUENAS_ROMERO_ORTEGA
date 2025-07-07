@@ -74,56 +74,106 @@ public class Pedido {
         return ManejoFechas.getFechaSimple(this.fechaPedido);
     }*/
 
-    //Getters
+    /**
+     * Obtiene la fecha del pedido.
+     * @return Fecha del pedido
+     */
     public Date getFechaPedido() {
         return this.fechaPedido;
     }
 
+    /**
+     * Obtiene el total pagado por el pedido.
+     * @return Total pagado
+     */
     public double getTotalPagado() {
         return this.totalPagado;
     }
 
+    /**
+     * Obtiene la cantidad de productos en el pedido.
+     * @return Cantidad de productos
+     */
     public int getCantidadProducto() {
         return this.cantidadProducto;
     }
 
+    /**
+     * Obtiene el estado del pedido.
+     * @return Estado del pedido
+     */
     public EstadoPedido getEstadoPedido() {
         return this.estadoPedido;
     }
 
+    /**
+     * Obtiene el código del pedido.
+     * @return Código del pedido
+     */
     public String getCodigoPedido() {
         return this.codigoPedido;
     }
 
+    /**
+     * Obtiene el cliente que realizó el pedido.
+     * @return Cliente del pedido
+     */
     public Cliente getCliente() {
         return this.cliente;
     }
 
+    /**
+     * Obtiene el repartidor asignado al pedido.
+     * @return Repartidor del pedido
+     */
     public Repartidor getRepartidor(){
         return this.repartidor;
     }
 
+    /**
+     * Obtiene el producto solicitado en el pedido.
+     * @return Producto del pedido
+     */
     public Producto getProducto(){
         return this.producto;
     }
 
-    //Setters
+    /**
+     * Establece la fecha del pedido.
+     * @param fechaPedido Fecha del pedido
+     */
     public void setFechaPedido(Date fechaPedido) {
         this.fechaPedido = fechaPedido;
     }
 
+    /**
+     * Establece el total pagado por el pedido.
+     * @param totalPagado Total pagado
+     */
     public void setTotalPagado(double totalPagado) {
         this.totalPagado = totalPagado;
     }
 
+    /**
+     * Establece la cantidad de productos en el pedido.
+     * @param cantidadProducto Cantidad de productos
+     */
     public void setCantidadProducto(int cantidadProducto) {
         this.cantidadProducto = cantidadProducto;
     }
 
+    /**
+     * Establece el estado del pedido.
+     * @param estadoPedido Estado del pedido
+     */
     public void setEstadoPedido(EstadoPedido estadoPedido) {
         this.estadoPedido = estadoPedido;
     }
 
+    /**
+     * Establece el código del pedido.
+     * @param codigoPedido Código del pedido
+     */
     public void setCodigoPedido(String codigoPedido) {
         this.codigoPedido = codigoPedido;
     }
