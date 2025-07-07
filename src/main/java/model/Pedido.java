@@ -4,6 +4,7 @@ import java.util.Date;
 import model.Enums.EstadoPedido;
 import model.Roles.Cliente;
 import model.Roles.Repartidor;
+import services.archivos.ManejadorPedido;
 import utils.ManejoFechas;
 
 /**
@@ -20,7 +21,7 @@ public class Pedido {
     private Cliente cliente;
 
     /** Contador estático para generar códigos únicos de pedidos */
-    public static int contadorPedido = 0;
+    public static int contadorPedido = ManejadorPedido.cantidadRegistroPedidos();
 
     /**
      * Constructor de la clase Pedido.
@@ -73,76 +74,124 @@ public class Pedido {
         return ManejoFechas.getFechaSimple(this.fechaPedido);
     }*/
 
-    //Getters
+    /**
+     * Obtiene la fecha del pedido.
+     * @return Fecha del pedido
+     */
     public Date getFechaPedido() {
         return this.fechaPedido;
     }
 
+    /**
+     * Obtiene el total pagado por el pedido.
+     * @return Total pagado
+     */
     public double getTotalPagado() {
         return this.totalPagado;
     }
 
+    /**
+     * Obtiene la cantidad de productos en el pedido.
+     * @return Cantidad de productos
+     */
     public int getCantidadProducto() {
         return this.cantidadProducto;
     }
 
+    /**
+     * Obtiene el estado del pedido.
+     * @return Estado del pedido
+     */
     public EstadoPedido getEstadoPedido() {
         return this.estadoPedido;
     }
 
+    /**
+     * Obtiene el código del pedido.
+     * @return Código del pedido
+     */
     public String getCodigoPedido() {
         return this.codigoPedido;
     }
 
+    /**
+     * Obtiene el cliente que realizó el pedido.
+     * @return Cliente del pedido
+     */
     public Cliente getCliente() {
         return this.cliente;
     }
 
+    /**
+     * Obtiene el repartidor asignado al pedido.
+     * @return Repartidor del pedido
+     */
     public Repartidor getRepartidor(){
         return this.repartidor;
     }
 
+    /**
+     * Obtiene el producto solicitado en el pedido.
+     * @return Producto del pedido
+     */
     public Producto getProducto(){
         return this.producto;
     }
 
-    //Setters
+    /**
+     * Establece la fecha del pedido.
+     * @param fechaPedido Fecha del pedido
+     */
     public void setFechaPedido(Date fechaPedido) {
         this.fechaPedido = fechaPedido;
     }
 
+    /**
+     * Establece el total pagado por el pedido.
+     * @param totalPagado Total pagado
+     */
     public void setTotalPagado(double totalPagado) {
         this.totalPagado = totalPagado;
     }
 
+    /**
+     * Establece la cantidad de productos en el pedido.
+     * @param cantidadProducto Cantidad de productos
+     */
     public void setCantidadProducto(int cantidadProducto) {
         this.cantidadProducto = cantidadProducto;
     }
 
+    /**
+     * Establece el estado del pedido.
+     * @param estadoPedido Estado del pedido
+     */
     public void setEstadoPedido(EstadoPedido estadoPedido) {
         this.estadoPedido = estadoPedido;
     }
 
+    /**
+     * Establece el código del pedido.
+     * @param codigoPedido Código del pedido
+     */
     public void setCodigoPedido(String codigoPedido) {
         this.codigoPedido = codigoPedido;
     }
 
     /**
-     * Convierte el pedido a formato de archivo para persistencia.
-     * Los campos se separan por el carácter '|' en el siguiente orden:
-     * código_pedido|fecha|código_producto|cantidad|total|estado|código_repartidor
-     * 
-     * @return String con el pedido en formato de archivo
+     * Devuelve una representación en formato de archivo del pedido, con el orden:
+     * CodigoPedido|Fecha|CodigoProducto|Cantidad|ValorPagado|Estado|CodigoRepartidor|CodigoUnicoCliente
+     * @return Cadena con los datos del pedido en el formato especificado
      */
     public String toFileFormat() {
-        return String.join("|",
-            codigoPedido,
-            ManejoFechas.setFechaSimple(fechaPedido),
-            producto.getCodigo(),
-            String.valueOf(cantidadProducto),
-            String.valueOf(totalPagado),
-            String.valueOf(estadoPedido),
-            repartidor.getCodigoUnico()
-        );
+        return String.format("%s|%s|%s|%d|%.2f|%s|%s|%s",
+                codigoPedido,
+                ManejoFechas.setFechaSimple(fechaPedido),
+                producto.getCodigo(),
+                cantidadProducto,
+                totalPagado,
+                estadoPedido.name(),
+                repartidor != null ? repartidor.getCodigoUnico() : "",
+                cliente != null ? cliente.getCodigoUnico() : "");
     }
 }

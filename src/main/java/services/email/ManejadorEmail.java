@@ -11,6 +11,9 @@ import javax.mail.internet.MimeMessage;
 
 import services.env.EnvReader;
 
+/**
+ * Clase que gestiona el envío de correos electrónicos utilizando SMTP y credenciales del sistema.
+ */
 public class ManejadorEmail {
     EnvReader env = new EnvReader();
     private final String emailFrom = env.emailSystem;
@@ -19,6 +22,9 @@ public class ManejadorEmail {
     private final Properties properties;
     private final Authenticator auth;
 
+    /**
+     * Constructor que configura las propiedades SMTP y la autenticación para el envío de correos.
+     */
     public ManejadorEmail() {
         properties = new Properties();
         properties.put("mail.smtp.host", "smtp.gmail.com");

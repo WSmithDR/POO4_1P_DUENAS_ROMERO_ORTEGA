@@ -14,15 +14,19 @@ import app.Sistema;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
+import java.io.File;
 
 /**
- * Clase que maneja la gestión de pedidos
+ * Clase que maneja la gestión de pedidos, incluyendo asignación de repartidores,
+ * almacenamiento, carga, consulta y cambio de estado de pedidos.
  */
 public class ManejadorPedido {
     private static final String PEDIDOS_FILE = "resources/Pedidos.txt";
 
     /**
-     * Asigna un repartidor al azar de la lista
+     * Asigna un repartidor aleatorio de la lista
+     * @param repartidores Lista de repartidores disponibles
+     * @return Repartidor seleccionado aleatoriamente
      */
     public static Repartidor asignarRepartidorAleatorio(ArrayList<Repartidor> repartidores) {
         if (repartidores.isEmpty()) {
@@ -35,59 +39,15 @@ public class ManejadorPedido {
     }
 
     /**
-     * Verifica si el archivo existe
-     */
-    private static boolean archivoExiste(String nombreArchivo) {
-        try {
-            java.io.File archivo = new java.io.File(nombreArchivo);
-            return archivo.exists() && archivo.length() > 0;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    /**
-     * Convierte un string de estado a su enum correspondiente
-     */
-    private static EstadoPedido convertirStringAEstado(String estadoString) {
-        for (EstadoPedido estado : EstadoPedido.values()) {
-            if (estado.getDescripcion().equals(estadoString)) {
-                return estado;
-            }
-        }
-        // Si no encuentra coincidencia, retornar EN_PREPARACION por defecto
-        return EstadoPedido.EN_PREPARACION;
-    }
-
-    /**
      * Guarda un pedido en el archivo
+     * @param pedido Pedido a guardar
      */
     public static void guardarPedido(Pedido pedido) {
         try {
-            boolean archivoExiste = archivoExiste(PEDIDOS_FILE);
-            boolean necesitaEncabezado = false;
-            
-            if (!archivoExiste) {
-                // Si el archivo no existe, necesita encabezado
-                necesitaEncabezado = true;
-            } else {
-                // Si existe, verificar si tiene encabezado
-                try {
-                    ArrayList<String> lineasExistentes = ManejoArchivos.LeeFichero(PEDIDOS_FILE);
-                    boolean archivoVacio = lineasExistentes == null || lineasExistentes.isEmpty();
-                    necesitaEncabezado = archivoVacio || !lineasExistentes.get(0).contains("codigoPedido");
-                } catch (Exception e) {
-                    // Si hay error al leer, asumir que necesita encabezado
-                    necesitaEncabezado = true;
-                }
+            File archivo = new File(PEDIDOS_FILE);
+            if (!archivo.exists()) {
+                ManejoArchivos.EscribirArchivo(PEDIDOS_FILE, "CodigoPedido|Fecha|CodigoProducto|Cantidad|ValorPagado|Estado|CodigoRepartidor");
             }
-            
-            // Si necesita encabezado, crear el encabezado primero
-            if (necesitaEncabezado) {
-                String encabezado = "codigoPedido|fecha|codigoProducto|cantidad|total|estado|codigoRepartidor";
-                ManejoArchivos.EscribirArchivo(PEDIDOS_FILE, encabezado);
-            }
-            
             String lineaPedido = pedido.toFileFormat();
             ManejoArchivos.EscribirArchivo(PEDIDOS_FILE, lineaPedido);
         } catch (Exception e) {
@@ -97,67 +57,54 @@ public class ManejadorPedido {
 
     /**
      * Carga todos los pedidos desde el archivo
+     * @param usuarios Lista de usuarios para buscar clientes y repartidores
+     * @param productos Lista de productos para buscar productos
+     * @return ArrayList con todos los pedidos
      */
     public static ArrayList<Pedido> cargarPedidos(ArrayList<Usuario> usuarios, ArrayList<Producto> productos) {
         ArrayList<Pedido> pedidos = new ArrayList<>();
-        
         try {
-            // Verificar si el archivo existe antes de intentar leerlo
-            if (!archivoExiste(PEDIDOS_FILE)) {
-                System.out.println("Archivo de pedidos no encontrado. Se creará automáticamente cuando se registre el primer pedido.");
-                return pedidos;
-            }
-            
             ArrayList<String> lineas = ManejoArchivos.LeeFichero(PEDIDOS_FILE);
-            
-            // Verificar que el archivo tenga contenido
-            if (lineas == null || lineas.isEmpty()) {
-                return pedidos;
-            }
-            
-            // Saltar la primera línea (encabezado)
             for (int i = 1; i < lineas.size(); i++) {
                 String linea = lineas.get(i);
                 String[] partes = linea.split("\\|");
-                
-                // Verificar que tenga suficientes campos
-                if (partes.length < 7) {
-                    continue;
-                }
-                
-                // El formato es: código_pedido|fecha|código_producto|cantidad|total|estado|código_repartidor
-                // Para cargar pedidos completos necesitamos la cédula del cliente
-                // Por ahora, vamos a crear pedidos con información básica
-                Repartidor repartidor = buscarRepartidorPorCodigoUnico(usuarios, partes[6]);
-                Producto producto = buscarProductoPorCodigo(productos, partes[2]);
-                
-                if (repartidor != null && producto != null) {
-                    int cantidad = Integer.parseInt(partes[3]);
-                    double valorPagado = Double.parseDouble(partes[4]);
-                    
-                    // Crear un cliente temporal para que el sistema funcione
-                    // En un sistema real, esto se manejaría de otra manera
-                    Cliente clienteTemp = new Cliente("TEMP001", "0000000000", "Cliente", "Temporal", "temp_user", "temp@email.com", "temp123", "0000000000", "Dirección Temporal");
-                    
-                    Pedido pedido = new Pedido(clienteTemp, repartidor, producto, cantidad, valorPagado);
-                    pedido.setCodigoPedido(partes[0]); // Usar el código original del archivo
-                    pedido.setEstadoPedido(convertirStringAEstado(partes[5])); // Establecer el estado desde el archivo
+                if (partes.length < 8) continue;
+                String codigoPedido = partes[0];
+                String fecha = partes[1];
+                String codigoProducto = partes[2];
+                int cantidad = Integer.parseInt(partes[3]);
+                double valorPagado = Double.parseDouble(partes[4]);
+                String estadoStr = partes[5];
+                String codigoRepartidor = partes[6];
+                String codigoUnicoCliente = partes[7];
+
+                Producto producto = buscarProductoPorCodigo(productos, codigoProducto);
+                Repartidor repartidor = buscarRepartidorPorCodigoUnico(usuarios, codigoRepartidor);
+                Cliente cliente = buscarClientePorCodigoUnico(usuarios, codigoUnicoCliente);
+
+                if (producto != null && repartidor != null && cliente != null) {
+                    Pedido pedido = new Pedido(cliente, repartidor, producto, cantidad, valorPagado);
+                    pedido.setCodigoPedido(codigoPedido);
+                    pedido.setFechaPedido(ManejoFechas.parseFechaSimple(fecha));
+                    pedido.setEstadoPedido(Enum.valueOf(model.Enums.EstadoPedido.class, estadoStr));
                     pedidos.add(pedido);
                 }
             }
         } catch (Exception e) {
             System.out.println("Error cargando pedidos: " + e.getMessage());
         }
-        
         return pedidos;
     }
 
     /**
-     * Busca un cliente por cédula
+     * Busca un cliente por código único
+     * @param usuarios Lista de usuarios
+     * @param codigoUnico Código único del cliente
+     * @return Cliente encontrado o null
      */
-    private static Cliente buscarClientePorCedula(ArrayList<Usuario> usuarios, String cedula) {
+    private static Cliente buscarClientePorCodigoUnico(ArrayList<Usuario> usuarios, String codigoUnico) {
         for (Usuario usuario : usuarios) {
-            if (usuario instanceof Cliente && usuario.getCedula().equals(cedula)) {
+            if (usuario instanceof Cliente && usuario.getCodigoUnico().equals(codigoUnico)) {
                 return (Cliente) usuario;
             }
         }
@@ -166,6 +113,9 @@ public class ManejadorPedido {
 
     /**
      * Busca un repartidor por código único
+     * @param usuarios Lista de usuarios
+     * @param codigoUnico Código único del repartidor
+     * @return Repartidor encontrado o null
      */
     private static Repartidor buscarRepartidorPorCodigoUnico(ArrayList<Usuario> usuarios, String codigoUnico) {
         for (Usuario usuario : usuarios) {
@@ -178,6 +128,9 @@ public class ManejadorPedido {
 
     /**
      * Busca un producto por código
+     * @param productos Lista de productos
+     * @param codigo Código del producto
+     * @return Producto encontrado o null
      */
     private static Producto buscarProductoPorCodigo(ArrayList<Producto> productos, String codigo) {
         for (Producto producto : productos) {
@@ -190,6 +143,8 @@ public class ManejadorPedido {
     
     /**
      * Obtiene el nombre de un producto por su código
+     * @param codigoProducto Código del producto
+     * @return Nombre del producto o "Producto no encontrado" si no existe
      */
     private static String obtenerNombreProducto(String codigoProducto) {
         String archivoProductos = "resources/Productos.txt";
@@ -220,7 +175,9 @@ public class ManejadorPedido {
     }
     
     /**
-     * Obtiene el nombre de un repartidor por su código único
+     * Obtiene el nombre de un repartidor por su cédula
+     * @param codUnico codigo unico del reapartidor
+     * @return Nombre del repartidor o "Repartidor no encontrado" si no existe
      */
     private static String obtenerNombreRepartidor(String codUnico) {
         String archivoUsuarios = "resources/Usuarios.txt";
@@ -251,22 +208,30 @@ public class ManejadorPedido {
     }
     
     /**
-     * Maneja la gestión de pedidos según si es cliente o repartidor
+     * Método general para gestionar pedidos según el tipo de usuario
+     * @param usuario Usuario que gestiona los pedidos (Cliente o Repartidor)
+     * @param pedidos Lista de pedidos disponibles
+     * @param scanner Scanner para leer entrada del usuario
      */
     public static void gestionarPedido(Usuario usuario, ArrayList<Pedido> pedidos, Scanner scanner) {
         if (usuario instanceof Cliente) {
             gestionarPedidoCliente((Cliente) usuario, pedidos, scanner);
         } else if (usuario instanceof Repartidor) {
             gestionarPedidoRepartidor((Repartidor) usuario, pedidos, scanner);
+        } else {
+            System.out.println("Tipo de usuario no soportado para gestión de pedidos.");
         }
     }
-
+    
     /**
-     * Maneja la gestión de pedidos para clientes
+     * Gestiona pedidos específicamente para clientes
+     * @param cliente Cliente que gestiona sus pedidos
+     * @param pedidos Lista de todos los pedidos
+     * @param scanner Scanner para leer entrada del usuario
      */
     private static void gestionarPedidoCliente(Cliente cliente, ArrayList<Pedido> pedidos, Scanner scanner) {
         System.out.println("===== CONSULTA DE ESTADO DE PEDIDO =====");
-        System.out.print("Ingrese el código del pedido:");
+        System.out.println("Ingrese el código del pedido:");
         String codPedido = scanner.nextLine().trim();
 
         if (codPedido.isEmpty()) {
@@ -278,7 +243,10 @@ public class ManejadorPedido {
     }
     
     /**
-     * Maneja la gestión de pedidos para repartidores
+     * Gestiona pedidos específicamente para repartidores
+     * @param repartidor Repartidor que gestiona sus pedidos
+     * @param pedidos Lista de todos los pedidos
+     * @param scanner Scanner para leer entrada del usuario
      */
     private static void gestionarPedidoRepartidor(Repartidor repartidor, ArrayList<Pedido> pedidos, Scanner scanner) {
         System.out.println("\n===== GESTIÓN DE PEDIDOS - REPARTIDOR =====");
@@ -296,7 +264,10 @@ public class ManejadorPedido {
     }
     
     /**
-     * Busca un pedido específico para un cliente
+     * Consulta un pedido específico para un cliente
+     * @param cliente Cliente que consulta
+     * @param pedidos Lista de pedidos
+     * @param codPedido Código del pedido a consultar
      */
     private static void consultarPedidoCliente(Cliente cliente, ArrayList<Pedido> pedidos, String codPedido) {
         boolean pedidoEncontrado = false;
@@ -316,7 +287,9 @@ public class ManejadorPedido {
     }
     
     /**
-     * Muestra los pedidos que tiene asignados un repartidor
+     * Consulta los pedidos asignados a un repartidor
+     * @param repartidor Repartidor que consulta
+     * @param pedidos Lista de todos los pedidos
      */
     public static void consultarPedidosAsignados(Repartidor repartidor, ArrayList<Pedido> pedidos) {
         System.out.println("\n===== PEDIDOS ASIGNADOS =====");
@@ -354,7 +327,8 @@ public class ManejadorPedido {
     }
     
     /**
-     * Muestra toda la información de un pedido
+     * Muestra la información detallada de un pedido
+     * @param pedido Pedido a mostrar
      */
     private static void mostrarInformacionPedido(Pedido pedido) {
         // Obtener nombre del producto
@@ -364,8 +338,7 @@ public class ManejadorPedido {
         String nombreRepartidor = obtenerNombreRepartidor(pedido.getRepartidor().getCodigoUnico());
         
         System.out.println("Fecha del pedido: " + ManejoFechas.setFechaSimple(pedido.getFechaPedido()));
-        System.out.println("Producto comprado: " + nombreProducto + " (Código: " + pedido.getProducto().getCodigo() + ")");
-        System.out.println("Cantidad: " + pedido.getCantidadProducto());
+        System.out.println("Producto comprado: " + nombreProducto + " (Código: " + pedido.getProducto().getCodigo() + ") Cantidad: " + pedido.getCantidadProducto());
         System.out.println("Valor pagado: $" + String.format("%.2f", pedido.getTotalPagado()));
         System.out.println("Estado actual: " + pedido.getEstadoPedido());
         System.out.println("Repartidor: " + nombreRepartidor);
@@ -376,7 +349,8 @@ public class ManejadorPedido {
     }
     
     /**
-     * Le dice al cliente qué significa cada estado
+     * Muestra un mensaje personalizado según el estado del pedido
+     * @param estado Estado actual del pedido
      */
     private static void mostrarMensajeSegunEstado(EstadoPedido estado) {
         if (estado == null) {
@@ -401,7 +375,10 @@ public class ManejadorPedido {
     }
     
     /**
-     * Le permite al repartidor cambiar el estado de un pedido
+     * Permite al repartidor cambiar el estado de un pedido
+     * @param repartidor Repartidor que cambia el estado
+     * @param pedidos Lista de pedidos
+     * @param scanner Scanner para leer entrada
      */
     private static void cambiarEstadoPedido(Repartidor repartidor, ArrayList<Pedido> pedidos, Scanner scanner) {
         System.out.println("===== GESTIONAR ESTADO DE PEDIDO =====");
@@ -433,63 +410,55 @@ public class ManejadorPedido {
     }
     
     /**
-     * Le muestra al repartidor qué estados puede cambiar
+     * Muestra las opciones de estado disponibles según el estado actual
+     * @param pedido Pedido a modificar
+     * @param scanner Scanner para leer entrada
      */
     private static void mostrarOpcionesEstado(Pedido pedido, Scanner scanner) {
         EstadoPedido estadoActual = pedido.getEstadoPedido();
         ManejadorEmail manejadorEmail = new ManejadorEmail();
-        
         if (estadoActual == EstadoPedido.EN_PREPARACION) {
-            procesarCambioEstadoPreparacion(pedido, scanner, manejadorEmail);
+            System.out.println("\nSeleccione el nuevo estado:");
+            System.out.println("1. EN CAMINO");
+            System.out.println("2. ENTREGADO");
+            System.out.print("Opción: ");
+            int opcion = Integer.parseInt(scanner.nextLine());
+            if (opcion == 1) {
+                pedido.setEstadoPedido(EstadoPedido.EN_CAMINO);
+                System.out.println("Estado actualizado correctamente a EN CAMINO.");
+                Sistema.notificar(pedido.getCliente(), pedido, EstadoPedido.EN_CAMINO, manejadorEmail);
+            } else if (opcion == 2) {
+                System.out.println("\nError: No puede cambiar directamente de EN PREPARACIÓN a ENTREGADO. Debe cambiar primero a EN CAMINO.");
+                mostrarOpcionesEstado(pedido, scanner); // Mostrar opciones nuevamente
+            } else {
+                System.out.println("Opción inválida.");
+            }
         } else if (estadoActual == EstadoPedido.EN_CAMINO) {
-            procesarCambioEstadoEnCamino(pedido, scanner, manejadorEmail);
+            System.out.println("\nSeleccione el nuevo estado:");
+            System.out.println("1. ENTREGADO");
+            System.out.print("Opción: ");
+            int opcion = Integer.parseInt(scanner.nextLine());
+            if (opcion == 1) {
+                pedido.setEstadoPedido(EstadoPedido.ENTREGADO);
+                System.out.println("Estado actualizado correctamente a ENTREGADO.");
+                Sistema.notificar(pedido.getCliente(), pedido, EstadoPedido.ENTREGADO, manejadorEmail);
+            } else {
+                System.out.println("Opción inválida.");
+            }
         } else {
             System.out.println("No se pueden realizar cambios en el estado actual: " + estadoActual);
         }
     }
 
     /**
-     * Maneja el cambio cuando el pedido está en preparación
+     * Retorna la cantidad de registros de pedidos almacenados en el archivo.
+     * @return Número de pedidos registrados
      */
-    private static void procesarCambioEstadoPreparacion(Pedido pedido, Scanner scanner, ManejadorEmail manejadorEmail) {
-        System.out.println("\nSeleccione el nuevo estado:");
-        System.out.println("1. EN CAMINO");
-        System.out.println("2. ENTREGADO");
-        System.out.print("Opción: ");
-        
-        int opcion = Integer.parseInt(scanner.nextLine());
-        if (opcion == 1) {
-            cambiarEstadoPedido(pedido, EstadoPedido.EN_CAMINO, "EN CAMINO", manejadorEmail);
-        } else if (opcion == 2) {
-            System.out.println("\nError: No puede cambiar directamente de EN PREPARACIÓN a ENTREGADO. Debe cambiar primero a EN CAMINO.");
-            mostrarOpcionesEstado(pedido, scanner);
-        } else {
-            System.out.println("Opción inválida.");
+    public static int cantidadRegistroPedidos() {
+        ArrayList<String> lineas = ManejoArchivos.LeeFichero(PEDIDOS_FILE);
+        if (lineas == null || lineas.size() <= 1) {
+            return 0;
         }
+        return lineas.size() - 1;
     }
-
-    /**
-     * Maneja el cambio cuando el pedido está en camino
-     */
-    private static void procesarCambioEstadoEnCamino(Pedido pedido, Scanner scanner, ManejadorEmail manejadorEmail) {
-        System.out.println("\nSeleccione el nuevo estado:");
-        System.out.println("1. ENTREGADO");
-        System.out.print("Opción: ");
-        
-        int opcion = Integer.parseInt(scanner.nextLine());
-        if (opcion == 1) {
-            cambiarEstadoPedido(pedido, EstadoPedido.ENTREGADO, "ENTREGADO", manejadorEmail);
-        } else {
-            System.out.println("Opción inválida.");
-        }
-    }
-
-    /**
-     * Cambia el estado y le avisa al cliente
-     */
-    private static void cambiarEstadoPedido(Pedido pedido, EstadoPedido nuevoEstado, String nombreEstado, ManejadorEmail manejadorEmail) {
-        pedido.setEstadoPedido(nuevoEstado);
-        System.out.println("Estado actualizado correctamente a " + nombreEstado + ".");
-        Sistema.notificar(pedido.getCliente(), pedido, nuevoEstado, manejadorEmail);
-    }
-} 
+}

@@ -1,0 +1,24 @@
+-classpath
+'/home/wagner/.m2/repository/com/sun/mail/javax.mail/1.6.2/javax.mail-1.6.2.jar:/home/wagner/.m2/repository/javax/activation/activation/1.1/activation-1.1.jar:/home/wagner/.m2/repository/io/github/cdimascio/java-dotenv/5.2.2/java-dotenv-5.2.2.jar:/home/wagner/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib/1.4.0/kotlin-stdlib-1.4.0.jar:/home/wagner/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib-common/1.4.0/kotlin-stdlib-common-1.4.0.jar:/home/wagner/.m2/repository/org/jetbrains/annotations/13.0/annotations-13.0.jar'
+-encoding
+'UTF-8'
+-protected
+-source
+'17'
+-sourcepath
+'/home/wagner/dev-projects/anki/POO4_1P_DUENAS_ROMERO_ORTEGA/src/main/java'
+-author
+-bottom
+'Copyright &#169; 2025. All rights reserved.'
+-charset
+'UTF-8'
+-d
+'/home/wagner/dev-projects/anki/POO4_1P_DUENAS_ROMERO_ORTEGA/target/reports/apidocs'
+-docencoding
+'UTF-8'
+-doctitle
+'demo 1.0-SNAPSHOT API'
+-use
+-version
+-windowtitle
+'demo 1.0-SNAPSHOT API'

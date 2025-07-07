@@ -7,34 +7,10 @@ import persistence.ManejoArchivos;
 import java.util.ArrayList;
 
 /**
- * Clase que maneja la carga y gestión de productos
+ * Clase que maneja la carga, filtrado, búsqueda y actualización de productos en el sistema.
  */
 public class ManejadorProducto {
     private static final String PRODUCTOS_FILE = "resources/Productos.txt";
-
-    /**
-     * Convierte un string de categoría a su enum correspondiente
-     */
-    private static CategoriaProducto convertirStringACategoria(String categoriaString) {
-        // Mapeo directo de las categorías del archivo
-        switch (categoriaString.trim()) {
-            case "Tecnología":
-            case "TECNOLOGIA":
-                return CategoriaProducto.TECNOLOGIA;
-            case "Ropa":
-            case "ROPA":
-                return CategoriaProducto.ROPA;
-            case "Deportes":
-            case "DEPORTE":
-                return CategoriaProducto.DEPORTE;
-            case "Hogar":
-            case "HOGAR":
-                return CategoriaProducto.HOGAR;
-            default:
-                System.out.println("Categoría no reconocida: " + categoriaString + ", usando TECNOLOGIA por defecto");
-                return CategoriaProducto.TECNOLOGIA;
-        }
-    }
 
     /**
      * Carga todos los productos desde el archivo
@@ -56,38 +32,14 @@ public class ManejadorProducto {
             if (partes.length >= 5) {
                 String codigo = partes[0];
                 if (!codigosAgregados.contains(codigo)) {
-                    try {
-                        // Intentar el formato: Código|Categoría|Nombre|Precio|Stock
-                        String categoriaStr = partes[1];
-                        String nombre = partes[2];
-                        double precio = Double.parseDouble(partes[3]);
-                        int stock = Integer.parseInt(partes[4]);
-                        
-                        // Convertir la categoría del archivo al enum
-                        CategoriaProducto categoria = convertirStringACategoria(categoriaStr);
-                        
-                        Producto producto = new Producto(codigo, nombre, precio, categoria, stock);
-                        productos.add(producto);
-                        codigosAgregados.add(codigo);
-                    } catch (NumberFormatException e) {
-                        // Si falla, intentar el formato: Código|Nombre|Precio|Categoría|Stock
-                        try {
-                            String nombre = partes[1];
-                            double precio = Double.parseDouble(partes[2]);
-                            String categoriaStr = partes[3];
-                            int stock = Integer.parseInt(partes[4]);
-                            
-                            // Convertir la categoría del archivo al enum
-                            CategoriaProducto categoria = convertirStringACategoria(categoriaStr);
-                            
-                            Producto producto = new Producto(codigo, nombre, precio, categoria, stock);
-                            productos.add(producto);
-                            codigosAgregados.add(codigo);
-                        } catch (NumberFormatException e2) {
-                            // Si ambos formatos fallan, saltar esta línea
-                            System.out.println("Formato no reconocido en línea: " + linea);
-                        }
-                    }
+                    CategoriaProducto categoria = CategoriaProducto.fromDescripcion(partes[1]);
+                    if (categoria == null) continue;
+                    String nombre = partes[2];
+                    double precio = Double.parseDouble(partes[3]);
+                    int stock = Integer.parseInt(partes[4]);
+                    Producto producto = new Producto(codigo, nombre, precio, categoria, stock);
+                    productos.add(producto);
+                    codigosAgregados.add(codigo);
                 }
             }
         }
@@ -134,8 +86,7 @@ public class ManejadorProducto {
             System.out.println("\nCategorías disponibles:");
             // Mostrar las categorías encontradas en la consola
             for (int i = 0; i < categoriasDisponibles.size(); i++) {
-                CategoriaProducto categoria = categoriasDisponibles.get(i);
-                System.out.println((i + 1) + ". " + categoria.getDescripcion());
+                System.out.println((i + 1) + ". " + categoriasDisponibles.get(i));
             }
         } else {
             System.out.println("NO hay categorias que mostrar");
@@ -180,12 +131,19 @@ public class ManejadorProducto {
         return null;
     }
 
+    /**
+     * Actualiza el stock de un producto 
+     * en el archivo Productos.txt 
+     * agregando una nueva línea con 
+     * la información actualizada.
+     * @param productoActualizado El producto con el stock actualizado que se va a registrar en el archivo
+     */
     public static void actualizarStockProductoEnArchivo(Producto productoActualizado) {
-        String nuevaLinea = String.format("%s|%s|%s|%s|%d",
+        String nuevaLinea = String.format("%s|%s|%s|%.2f|%d",
                 productoActualizado.getCodigo(),
+                productoActualizado.getCategoriaProducto().getDescripcion(),
                 productoActualizado.getNombre(),
                 productoActualizado.getPrecio(),
-                productoActualizado.getCategoriaProducto().getName(),
                 productoActualizado.getStock());
         ManejoArchivos.EscribirArchivo(PRODUCTOS_FILE, nuevaLinea);
     }

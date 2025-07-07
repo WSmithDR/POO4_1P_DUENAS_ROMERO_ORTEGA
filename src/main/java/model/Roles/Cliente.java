@@ -40,20 +40,34 @@ public class Cliente extends Usuario {
       this.direccion = direccion;
    }
 
-   // getters
+   /**
+    * Obtiene el número de celular del cliente.
+    * @return Número de celular
+    */
    public String getNumeroCelular() {
       return this.numero_celular;
    }
 
+   /**
+    * Obtiene la dirección del cliente.
+    * @return Dirección del cliente
+    */
    public String getDireccion() {
       return this.direccion;
    }
 
-   // setters
+   /**
+    * Establece el número de celular del cliente.
+    * @param numero_celular Número de celular
+    */
    public void setNumeroCelular(String numero_celular) {
       this.numero_celular = numero_celular;
    }
 
+   /**
+    * Establece la dirección del cliente.
+    * @param direccion Dirección del cliente
+    */
    public void setDireccion(String direccion) {
       this.direccion = direccion;
    }

@@ -36,56 +36,106 @@ public abstract class Usuario {
         this.rol = rol;
     }
 
-    // Getters
+    /**
+     * Obtiene el código único del usuario.
+     * @return Código único del usuario
+     */
     public String getCodigoUnico() {
         return this.codigoUnico;
     }
 
+    /**
+     * Obtiene la cédula del usuario.
+     * @return Cédula del usuario
+     */
     public String getCedula() {
         return this.cedula;
     }
 
+    /**
+     * Obtiene el nombre de usuario.
+     * @return Nombre de usuario
+     */
     public String getUser_name() {
         return this.user_name;
     }
 
+    /**
+     * Obtiene el nombre del usuario.
+     * @return Nombre del usuario
+     */
     public String getNombre() {
         return this.nombre;
     }
 
+    /**
+     * Obtiene el apellido del usuario.
+     * @return Apellido del usuario
+     */
     public String getApellido() {
         return this.apellido;
     }
 
+    /**
+     * Obtiene la contraseña del usuario.
+     * @return Contraseña del usuario
+     */
     public String getContrasenia() {
         return this.contrasenia;
     }
 
+    /**
+     * Obtiene el correo electrónico del usuario.
+     * @return Correo electrónico del usuario
+     */
     public String getCorreo() {
         return this.correo;
     }
 
+    /**
+     * Obtiene el rol del usuario.
+     * @return Rol del usuario
+     */
     public Rol getRol() {
         return rol;
     }
 
-    // Setters
+    /**
+     * Establece el código único del usuario.
+     * @param codigoUnico Código único del usuario
+     */
     public void setCodigoUnico(String codigoUnico) {
         this.codigoUnico = codigoUnico;
     }
 
+    /**
+     * Establece la cédula del usuario.
+     * @param cedula Cédula del usuario
+     */
     public void setCedula(String cedula) {
         this.cedula = cedula;
     }
 
+    /**
+     * Establece el nombre de usuario.
+     * @param user_name Nombre de usuario
+     */
     public void setUser_name(String user_name) {
         this.user_name = user_name;
     }
 
+    /**
+     * Establece el nombre del usuario.
+     * @param nombre Nombre del usuario
+     */
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
 
+    /**
+     * Establece el apellido del usuario.
+     * @param apellido Apellido del usuario
+     */
     public void setApellidos(String apellido) {
         this.apellido = apellido;
     }
@@ -98,6 +148,10 @@ public abstract class Usuario {
         this.correo = correo;
     }
 
+    /**
+     * Establece el rol del usuario.
+     * @param rol Rol del usuario
+     */
     public void setRol(Rol rol) {
         this.rol = rol;
     }

@@ -32,13 +32,19 @@ public class Repartidor extends Usuario {
         this.nombreEmpresa = nombreEmpresa;
     }
 
-    //getters
-    public String getNombreEmpresa(){
+    /**
+     * Obtiene el nombre de la empresa a la que pertenece el repartidor.
+     * @return Nombre de la empresa
+     */
+    public String getNombreEmpresa() {
         return this.nombreEmpresa;
     }
 
-    //setters
-    public void setNombreEmpresa(String nombreEmpresa){
+    /**
+     * Establece el nombre de la empresa a la que pertenece el repartidor.
+     * @param nombreEmpresa Nombre de la empresa
+     */
+    public void setNombreEmpresa(String nombreEmpresa) {
         this.nombreEmpresa = nombreEmpresa;
     }
     
