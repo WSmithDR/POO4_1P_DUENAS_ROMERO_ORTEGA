@@ -23,8 +23,7 @@ public class Sistema {
 
     /**
      * Método principal que inicia el sistema
-     * Carga los usuarios desde la clase ManejadorUsuario y muestra la pantalla de
-     * inicio de sesión
+     * Carga los usuarios, productos y pedidos, luego muestra la pantalla de iniciar sesión
      */
     public static void iniciar(Scanner scanner) {
         usuarios = ManejadorUsuario.cargarUsuarios(usuarios);
@@ -34,10 +33,8 @@ public class Sistema {
     }
 
     /**
-     * Maneja el proceso de inicio de sesión del usuario
-     * Solicita credenciales y autentica al usuario según su rol
-     * 
-     * @param scanner Scanner para leer la entrada del usuario
+     * Maneja el inicio de sesión del usuario
+     * Pide usuario y contraseña hasta que sean correctos
      */
     private static void iniciarSesion(Scanner scanner) {
         boolean sesionIniciada = false;
@@ -49,45 +46,11 @@ public class Sistema {
             System.out.print("Contraseña: ");
             String passInput = scanner.nextLine();
 
-            boolean usuarioEncontrado = false;
-
-            for (Usuario u : usuarios) {
-                if (u.getUser_name().equals(userInput) && u.getContrasenia().equals(passInput)) {
-                    usuarioEncontrado = true;
-                    System.out.println("Usuario autenticado correctamente.");
-
-                    if (u instanceof Cliente c) {
-                        System.out.println(String.format("Rol detectado: %s", Rol.CLIENTE));
-                        System.out.println("Bienvenido, " + c.getNombre() + " " + c.getApellido());
-                        System.out.println("Celular registrado: " + c.getNumeroCelular());
-                        System.out.print("¿Este número de celular es correcto? (S/N): ");
-                        String verif = scanner.nextLine();
-                        if (verif.equalsIgnoreCase("S")) {
-                            mostrarMenu(c, scanner);
-                            sesionIniciada = true;
-                        } else {
-                            System.out.println("Verificación fallida. Cerrando sesión.");
-                            sesionIniciada = true;
-                        }
-                    } else if (u instanceof Repartidor r) {
-                        System.out.println("Rol detectado: REPARTIDOR");
-                        System.out.println("Bienvenido, " + r.getNombre() + " " + r.getApellido());
-                        System.out.println("Empresa asignada: " + r.getNombreEmpresa());
-                        System.out.print("¿Esta empresa es correcta? (S/N): ");
-                        String verif = scanner.nextLine();
-                        if (verif.equalsIgnoreCase("S")) {
-                            mostrarMenu(r, scanner);
-                            sesionIniciada = true;
-                        } else {
-                            System.out.println("Verificación fallida. Cerrando sesión.");
-                            sesionIniciada = true;
-                        }
-                    }
-                    break;
-                }
-            }
-
-            if (!usuarioEncontrado) {
+            Usuario usuarioAutenticado = autenticarUsuario(userInput, passInput);
+            
+            if (usuarioAutenticado != null) {
+                sesionIniciada = procesarAutenticacion(usuarioAutenticado, scanner);
+            } else {
                 System.out.println("Usuario o contraseña incorrectos. Intente nuevamente.");
                 System.out.println();
             }
@@ -95,23 +58,75 @@ public class Sistema {
     }
 
     /**
-     * Muestra y maneja el menú principal para usuarios con rol de Cliente
-     * Permite al cliente realizar compras y gestionar pedidos
-     * 
-     * @param cliente El objeto Cliente autenticado
+     * Busca si existe un usuario con esas credenciales
+     */
+    private static Usuario autenticarUsuario(String userInput, String passInput) {
+        for (Usuario u : usuarios) {
+            if (u.getUser_name().equals(userInput) && u.getContrasenia().equals(passInput)) {
+                return u;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Procesa el inicio de sesión según si es cliente o repartidor
+     */
+    private static boolean procesarAutenticacion(Usuario usuario, Scanner scanner) {
+        System.out.println("Usuario autenticado correctamente.");
+
+        if (usuario instanceof Cliente cliente) {
+            return autenticarCliente(cliente, scanner);
+        } else if (usuario instanceof Repartidor repartidor) {
+            return autenticarRepartidor(repartidor, scanner);
+        }
+        
+        return false;
+    }
+
+    /**
+     * Verifica que el cliente sea cliente
+     */
+    private static boolean autenticarCliente(Cliente cliente, Scanner scanner) {
+        System.out.println(String.format("Rol detectado: %s", Rol.CLIENTE));
+        System.out.println("Bienvenido, " + cliente.getNombre() + " " + cliente.getApellido());
+        System.out.println("Celular registrado: " + cliente.getNumeroCelular());
+        System.out.print("¿Este número de celular es correcto? (S/N): ");
+        
+        String verif = scanner.nextLine();
+        if (verif.equalsIgnoreCase("S")) {
+            mostrarMenu(cliente, scanner);
+            return true;
+        } else {
+            System.out.println("Verificación fallida. Cerrando sesión.");
+            return true;
+        }
+    }
+
+    /**
+     * Verifica que el repartidor sea repartidor
+     */
+    private static boolean autenticarRepartidor(Repartidor repartidor, Scanner scanner) {
+        System.out.println("Rol detectado: REPARTIDOR");
+        System.out.println("Bienvenido, " + repartidor.getNombre() + " " + repartidor.getApellido());
+        System.out.println("Empresa asignada: " + repartidor.getNombreEmpresa());
+        System.out.print("¿Esta empresa es correcta? (S/N): ");
+        
+        String verif = scanner.nextLine();
+        if (verif.equalsIgnoreCase("S")) {
+            mostrarMenu(repartidor, scanner);
+            return true;
+        } else {
+            System.out.println("Verificación fallida. Cerrando sesión.");
+            return true;
+        }
+    }
+
+    /**
+     * Muestra el menú del cliente
      */
     private static void mostrarMenu(Cliente cliente, Scanner scanner) {
-        boolean continuar = true;
-
-        while (continuar) {
-            System.out.println("\n=== Menú Cliente ===");
-            System.out.println("1. Comprar");
-            System.out.println("2. Gestionar pedido");
-            System.out.println("3. Salir");
-            System.out.print("Seleccione una opción: ");
-
-            String opcion = scanner.nextLine();
-
+        mostrarMenuGenerico("Cliente", scanner, opcion -> {
             switch (opcion) {
                 case "1":
                     cliente.realizarCompra(productos, usuarios, pedidos, scanner);
@@ -119,35 +134,18 @@ public class Sistema {
                 case "2":
                     cliente.gestionarPedido(pedidos, scanner);
                     break;
-                case "3":
-                    System.out.println("Cerrando sesión...");
-                    continuar = false;
-                    break;
                 default:
-                    System.out.println("Opción no válida. Intente nuevamente.");
-                    break;
+                    return false;
             }
-        }
+            return true;
+        });
     }
 
     /**
-     * Muestra y maneja el menú principal para usuarios con rol de Repartidor
-     * Permite al repartidor gestionar pedidos y consultar asignaciones
-     * 
-     * @param repartidor El objeto Repartidor autenticado
+     * Muestra el menú del repartidor
      */
     private static void mostrarMenu(Repartidor repartidor, Scanner scanner) {
-        boolean continuar = true;
-
-        while (continuar) {
-            System.out.println("\n=== Menú Repartidor ===");
-            System.out.println("1. Gestionar pedido");
-            System.out.println("2. Consultar pedidos asignados");
-            System.out.println("3. Salir");
-            System.out.print("Seleccione una opción: ");
-
-            String opcion = scanner.nextLine();
-
+        mostrarMenuGenerico("Repartidor", scanner, opcion -> {
             switch (opcion) {
                 case "1":
                     repartidor.gestionarPedido(pedidos, scanner);
@@ -155,25 +153,54 @@ public class Sistema {
                 case "2":
                     repartidor.consultarPedidosAsignados(pedidos);
                     break;
-                case "3":
-                    System.out.println("Cerrando sesión...");
-                    continuar = false;
-                    break;
                 default:
-                    System.out.println("Opción no válida. Intente nuevamente.");
-                    break;
+                    return false;
+            }
+            return true;
+        });
+    }
+
+    /**
+     * Este método muestra el menú para cualquier tipo de usuario
+     */
+    private static void mostrarMenuGenerico(String tipoUsuario, Scanner scanner, MenuHandler handler) {
+        boolean continuar = true;
+
+        while (continuar) {
+            System.out.println("\n=== Menú " + tipoUsuario + " ===");
+            
+            if (tipoUsuario.equals("Cliente")) {
+                System.out.println("1. Comprar");
+                System.out.println("2. Gestionar pedido");
+            } else {
+                System.out.println("1. Gestionar pedido");
+                System.out.println("2. Consultar pedidos asignados");
+            }
+            
+            System.out.println("3. Salir");
+            System.out.print("Seleccione una opción: ");
+
+            String opcion = scanner.nextLine();
+
+            if (opcion.equals("3")) {
+                System.out.println("Cerrando sesión...");
+                continuar = false;
+            } else if (!handler.handleOption(opcion)) {
+                System.out.println("Opción no válida. Intente nuevamente.");
             }
         }
     }
 
     /**
-     * Notifica al cliente cuando este realiza un pedido.
-     * Envía un correo electrónico con los detalles del pedido realizado.
-     *
-     * @param cliente         El objeto Cliente que realiza el pedido
-     * @param pedidoRealizado Contiene la información del pedido que realizó el
-     *                        cliente
-     * @param manejadorEmail  Instancia de ManejadorEmail para enviar el correo
+     * Esta interfaz me ayuda a manejar las opciones del menú
+     */
+    @FunctionalInterface
+    private interface MenuHandler {
+        boolean handleOption(String opcion);
+    }
+
+    /**
+     * Le manda un email al cliente cuando hace un pedido
      */
     public static void notificar(
             Cliente cliente,
@@ -199,12 +226,7 @@ public class Sistema {
     }
 
     /**
-     * Notifica al repartidor cuando se le asigna un nuevo pedido.
-     * Envía un correo electrónico con los detalles del pedido asignado.
-     *
-     * @param repartidor     El repartidor al que se le asigna el pedido
-     * @param pedidoAsignado El pedido que ha sido asignado
-     * @param manejadorEmail Instancia de ManejadorEmail para enviar el correo
+     * Le avisa al repartidor que tiene un nuevo pedido
      */
     public static void notificar(
             Repartidor repartidor,
@@ -231,13 +253,7 @@ public class Sistema {
     }
 
     /**
-     * Notifica al cliente sobre un cambio en el estado de su pedido.
-     * Envía un correo electrónico informando el nuevo estado del pedido.
-     *
-     * @param cliente        El cliente al que se le notifica
-     * @param pedido         El pedido cuyo estado ha cambiado
-     * @param nuevoEstado    El nuevo estado del pedido
-     * @param manejadorEmail Instancia de ManejadorEmail para enviar el correo
+     * Le avisa al cliente cuando cambia el estado de su pedido
      */
     public static void notificar(
             Cliente cliente,

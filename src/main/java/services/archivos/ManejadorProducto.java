@@ -13,6 +13,30 @@ public class ManejadorProducto {
     private static final String PRODUCTOS_FILE = "resources/Productos.txt";
 
     /**
+     * Convierte un string de categoría a su enum correspondiente
+     */
+    private static CategoriaProducto convertirStringACategoria(String categoriaString) {
+        // Mapeo directo de las categorías del archivo
+        switch (categoriaString.trim()) {
+            case "Tecnología":
+            case "TECNOLOGIA":
+                return CategoriaProducto.TECNOLOGIA;
+            case "Ropa":
+            case "ROPA":
+                return CategoriaProducto.ROPA;
+            case "Deportes":
+            case "DEPORTE":
+                return CategoriaProducto.DEPORTE;
+            case "Hogar":
+            case "HOGAR":
+                return CategoriaProducto.HOGAR;
+            default:
+                System.out.println("Categoría no reconocida: " + categoriaString + ", usando TECNOLOGIA por defecto");
+                return CategoriaProducto.TECNOLOGIA;
+        }
+    }
+
+    /**
      * Carga todos los productos desde el archivo
      * 
      * @return ArrayList con todos los productos
@@ -32,13 +56,38 @@ public class ManejadorProducto {
             if (partes.length >= 5) {
                 String codigo = partes[0];
                 if (!codigosAgregados.contains(codigo)) {
-                    String nombre = partes[1];
-                    double precio = Double.parseDouble(partes[2]);
-                    CategoriaProducto categoria = CategoriaProducto.valueOf(partes[3]);
-                    int stock = Integer.parseInt(partes[4]);
-                    Producto producto = new Producto(codigo, nombre, precio, categoria, stock);
-                    productos.add(producto);
-                    codigosAgregados.add(codigo);
+                    try {
+                        // Intentar el formato: Código|Categoría|Nombre|Precio|Stock
+                        String categoriaStr = partes[1];
+                        String nombre = partes[2];
+                        double precio = Double.parseDouble(partes[3]);
+                        int stock = Integer.parseInt(partes[4]);
+                        
+                        // Convertir la categoría del archivo al enum
+                        CategoriaProducto categoria = convertirStringACategoria(categoriaStr);
+                        
+                        Producto producto = new Producto(codigo, nombre, precio, categoria, stock);
+                        productos.add(producto);
+                        codigosAgregados.add(codigo);
+                    } catch (NumberFormatException e) {
+                        // Si falla, intentar el formato: Código|Nombre|Precio|Categoría|Stock
+                        try {
+                            String nombre = partes[1];
+                            double precio = Double.parseDouble(partes[2]);
+                            String categoriaStr = partes[3];
+                            int stock = Integer.parseInt(partes[4]);
+                            
+                            // Convertir la categoría del archivo al enum
+                            CategoriaProducto categoria = convertirStringACategoria(categoriaStr);
+                            
+                            Producto producto = new Producto(codigo, nombre, precio, categoria, stock);
+                            productos.add(producto);
+                            codigosAgregados.add(codigo);
+                        } catch (NumberFormatException e2) {
+                            // Si ambos formatos fallan, saltar esta línea
+                            System.out.println("Formato no reconocido en línea: " + linea);
+                        }
+                    }
                 }
             }
         }
@@ -85,7 +134,8 @@ public class ManejadorProducto {
             System.out.println("\nCategorías disponibles:");
             // Mostrar las categorías encontradas en la consola
             for (int i = 0; i < categoriasDisponibles.size(); i++) {
-                System.out.println((i + 1) + ". " + categoriasDisponibles.get(i));
+                CategoriaProducto categoria = categoriasDisponibles.get(i);
+                System.out.println((i + 1) + ". " + categoria.getDescripcion());
             }
         } else {
             System.out.println("NO hay categorias que mostrar");
