@@ -10,17 +10,6 @@ import model.Pedido;
 public class Repartidor extends Usuario {
     private String nombreEmpresa;
 
-    /**
-     * Constructor de la clase Repartidor.
-     * @param codigoUnico Código único del repartidor
-     * @param cedula Cédula del repartidor
-     * @param nombre Nombre del repartidor
-     * @param apellido Apellido del repartidor
-     * @param user_name Nombre de usuario
-     * @param correo Correo electrónico
-     * @param contrasenia Contraseña
-     * @param nombreEmpresa Nombre de la empresa a la que pertenece
-     */
     public Repartidor(
         String codigoUnico,
         String cedula,
