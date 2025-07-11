@@ -31,7 +31,12 @@ public class Sistema {
         usuarios = ManejadorUsuario.cargarUsuarios(usuarios);
         productos = ManejadorProducto.cargarProductos();
         pedidos = ManejadorPedido.cargarPedidos(usuarios, productos);
-        iniciarSesion(scanner);
+
+        boolean salir = false;
+        while (!salir) {
+            salir = iniciarSesion(scanner); // Retorna true solo si el usuario elige salir del sistema
+        }
+        System.out.println("¡Hasta luego!");
     }
 
     /**
@@ -41,11 +46,19 @@ public class Sistema {
      * 
      * @param scanner Scanner para leer la entrada del usuario
      */
-    private static void iniciarSesion(Scanner scanner) {
-        boolean sesionIniciada = false;
+    private static boolean iniciarSesion(Scanner scanner) {
+        System.out.println("===== INICIO DE SESIÓN =====");
+        System.out.println("1. Iniciar sesión");
+        System.out.println("2. Salir del sistema");
+        System.out.print("Seleccione una opción: ");
+        String opcion = scanner.nextLine();
 
+        if (opcion.equals("2")) {
+            return true; // Salir del sistema
+        }
+
+        boolean sesionIniciada = false;
         while (!sesionIniciada) {
-            System.out.println("===== INICIO DE SESIÓN =====");
             System.out.print("Usuario: ");
             String userInput = scanner.nextLine();
             System.out.print("Contraseña: ");
@@ -86,7 +99,7 @@ public class Sistema {
                             System.out.println("Verificación fallida");
                             System.out.println("Por motivos de seguridad se cerrará la sesion");
                             System.out.println();
-                            System.out.println("Saliendo del sistema...");
+                            System.out.println("Cerrando sesión...");
                             sesionIniciada = true;
                         }
                     }
@@ -99,6 +112,7 @@ public class Sistema {
                 System.out.println();
             }
         }
+        return false; // No salir del sistema, solo volver al login
     }
 
     /**
@@ -115,7 +129,7 @@ public class Sistema {
             System.out.println("\n=== Menú Cliente ===");
             System.out.println("1. Comprar");
             System.out.println("2. Gestionar pedido");
-            System.out.println("3. Salir");
+            System.out.println("3. Cerrar sesión");
             System.out.print("Seleccione una opción: ");
 
             String opcion = scanner.nextLine();
@@ -152,7 +166,7 @@ public class Sistema {
             System.out.println("\n=== Menú Repartidor ===");
             System.out.println("1. Gestionar pedido");
             System.out.println("2. Consultar pedidos asignados");
-            System.out.println("3. Salir");
+            System.out.println("3. Cerrar sesión");
             System.out.print("Seleccione una opción: ");
 
             String opcion = scanner.nextLine();

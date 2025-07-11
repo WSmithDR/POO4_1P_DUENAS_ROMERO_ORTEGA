@@ -146,7 +146,23 @@ public class Cliente extends Usuario {
       double total = productoElegido.getPrecio() * cantidad;
       System.out.println("\nTotal a pagar: $" + total);
 
-      // 7. Confirmar compra
+      // 7. Pedir número de tarjeta
+      String numeroTarjeta = "";
+      boolean tarjetaValida = false;
+      while (!tarjetaValida) {
+          System.out.print("Ingrese su número de tarjeta (16 dígitos): ");
+          numeroTarjeta = scanner.nextLine();
+          if (numeroTarjeta.length() == 16 && numeroTarjeta.matches("\\d+")) {
+              tarjetaValida = true;
+          } else {
+              System.out.println("Número de tarjeta inválido. Debe tener 16 dígitos numéricos.");
+          }
+      }
+
+      // 8. Simular pago
+      System.out.println("Pago realizado exitosamente.");
+
+      // 9. Confirmar compra
       System.out.print("¿Confirmar compra? (s/n): ");
       String confirmar = scanner.nextLine().toLowerCase();
       if (!confirmar.equals("s") && !confirmar.equals("si")) {

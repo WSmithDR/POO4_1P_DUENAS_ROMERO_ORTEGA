@@ -6,6 +6,7 @@ import model.Roles.Cliente;
 import model.Roles.Repartidor;
 import services.archivos.ManejadorPedido;
 import utils.ManejoFechas;
+import java.util.Locale;
 
 /**
  * Clase que representa un pedido en el sistema
@@ -180,11 +181,11 @@ public class Pedido {
 
     /**
      * Devuelve una representación en formato de archivo del pedido, con el orden:
-     * CodigoPedido|Fecha|CodigoProducto|Cantidad|ValorPagado|Estado|CodigoRepartidor|CodigoUnicoCliente
+     * CodigoPedido|Fecha|CodigoProducto|Cantidad|ValorPagado|Estado|CodigoRepartidor|CodigoCliente
      * @return Cadena con los datos del pedido en el formato especificado
      */
     public String toFileFormat() {
-        return String.format("%s|%s|%s|%d|%.2f|%s|%s|%s",
+        return String.format(java.util.Locale.US, "%s|%s|%s|%d|%.2f|%s|%s|%s",
                 codigoPedido,
                 ManejoFechas.setFechaSimple(fechaPedido),
                 producto.getCodigo(),

@@ -5,6 +5,7 @@ import model.Enums.CategoriaProducto;
 import persistence.ManejoArchivos;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Clase que maneja la carga, filtrado, búsqueda y actualización de productos en el sistema.
@@ -139,7 +140,7 @@ public class ManejadorProducto {
      * @param productoActualizado El producto con el stock actualizado que se va a registrar en el archivo
      */
     public static void actualizarStockProductoEnArchivo(Producto productoActualizado) {
-        String nuevaLinea = String.format("%s|%s|%s|%.2f|%d",
+        String nuevaLinea = String.format(Locale.US, "%s|%s|%s|%.2f|%d",
                 productoActualizado.getCodigo(),
                 productoActualizado.getCategoriaProducto().getDescripcion(),
                 productoActualizado.getNombre(),
