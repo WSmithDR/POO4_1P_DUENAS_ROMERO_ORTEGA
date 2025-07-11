@@ -47,14 +47,20 @@ public class Sistema {
      * @param scanner Scanner para leer la entrada del usuario
      */
     private static boolean iniciarSesion(Scanner scanner) {
-        System.out.println("===== INICIO DE SESIÓN =====");
-        System.out.println("1. Iniciar sesión");
-        System.out.println("2. Salir del sistema");
-        System.out.print("Seleccione una opción: ");
-        String opcion = scanner.nextLine();
+        while (true) {
+            System.out.println("===== INICIO DE SESIÓN =====");
+            System.out.println("1. Iniciar sesión");
+            System.out.println("2. Salir del sistema");
+            System.out.print("Seleccione una opción: ");
+            String opcion = scanner.nextLine();
 
-        if (opcion.equals("2")) {
-            return true; // Salir del sistema
+            if (opcion.equals("2")) {
+                return true; // Salir del sistema
+            } else if (opcion.equals("1")) {
+                break; // Continuar con el login
+            } else {
+                System.out.println("Opción no válida. Intente nuevamente.");
+            }
         }
 
         boolean sesionIniciada = false;
@@ -218,6 +224,7 @@ public class Sistema {
                 pedidoRealizado.getCantidadProducto(),
                 pedidoRealizado.getTotalPagado(),
                 pedidoRealizado.getEstadoPedido());
+        System.out.println("Enviando correo a " + cliente.getCorreo());
         manejadorEmail.enviarCorreo(cliente.getCorreo(), asunto, cuerpo);
     }
 
@@ -250,6 +257,7 @@ public class Sistema {
                 pedidoAsignado.getCliente().getNombre(),
                 pedidoAsignado.getCliente().getApellido(),
                 pedidoAsignado.getEstadoPedido());
+        System.out.println("Enviando correo a " + repartidor.getCorreo());
         manejadorEmail.enviarCorreo(repartidor.getCorreo(), asunto, cuerpo);
     }
 
@@ -280,7 +288,7 @@ public class Sistema {
                 pedido.getFechaPedido(),
                 pedido.getProducto().getCodigo(),
                 pedido.getRepartidor().getCodigoUnico());
-
+        System.out.println("Enviando correo a " + cliente.getCorreo());
         manejadorEmail.enviarCorreo(cliente.getCorreo(), asunto, cuerpo);
     }
 }
