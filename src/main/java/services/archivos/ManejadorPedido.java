@@ -46,7 +46,7 @@ public class ManejadorPedido {
         try {
             File archivo = new File(PEDIDOS_FILE);
             if (!archivo.exists()) {
-                ManejoArchivos.EscribirArchivo(PEDIDOS_FILE, "CodigoPedido|Fecha|CodigoProducto|Cantidad|ValorPagado|Estado|CodigoRepartidor");
+                ManejoArchivos.EscribirArchivo(PEDIDOS_FILE, "CodigoPedido|Fecha|CodigoProducto|Cantidad|ValorPagado|Estado|CodigoRepartidor|CodigoCliente");
             }
             String lineaPedido = pedido.toFileFormat();
             ManejoArchivos.EscribirArchivo(PEDIDOS_FILE, lineaPedido);

@@ -31,7 +31,12 @@ public class Sistema {
         usuarios = ManejadorUsuario.cargarUsuarios(usuarios);
         productos = ManejadorProducto.cargarProductos();
         pedidos = ManejadorPedido.cargarPedidos(usuarios, productos);
-        iniciarSesion(scanner);
+
+        boolean salir = false;
+        while (!salir) {
+            salir = iniciarSesion(scanner); // Retorna true solo si el usuario elige salir del sistema
+        }
+        System.out.println("¡Hasta luego!");
     }
 
     /**
@@ -41,12 +46,26 @@ public class Sistema {
      * 
      * @param scanner Scanner para leer la entrada del usuario
      */
-    private static void iniciarSesion(Scanner scanner) {
-        boolean sesionIniciada = false;
+        private static boolean iniciarSesion(Scanner scanner) {
+        while (true) {
+            System.out.println("1. Iniciar sesión");
+            System.out.println("2. Salir del sistema");
+            System.out.print("Seleccione una opción: ");
+            String opcion = scanner.nextLine();
 
-        while (!sesionIniciada) {
-            System.out.println("===== INICIO DE SESIÓN =====");
-            System.out.print("Usuario: ");
+            if (opcion.equals("2")) {
+                return true; // Salir del sistema
+            } else if (opcion.equals("1")) {
+                System.out.println("===== INICIO DE SESIÓN =====");
+                break; // Continuar con el login
+            } else {
+                System.out.println("Opción no válida. Intente nuevamente.");
+            }
+        }
+
+    boolean sesionIniciada = false;
+    while (!sesionIniciada) {
+        System.out.print("Usuario: ");
             String userInput = scanner.nextLine();
             System.out.print("Contraseña: ");
             String passInput = scanner.nextLine();
@@ -86,7 +105,7 @@ public class Sistema {
                             System.out.println("Verificación fallida");
                             System.out.println("Por motivos de seguridad se cerrará la sesion");
                             System.out.println();
-                            System.out.println("Saliendo del sistema...");
+                            System.out.println("Cerrando sesión...");
                             sesionIniciada = true;
                         }
                     }
@@ -99,6 +118,7 @@ public class Sistema {
                 System.out.println();
             }
         }
+        return false; // No salir del sistema, solo volver al login
     }
 
     /**
@@ -115,7 +135,7 @@ public class Sistema {
             System.out.println("\n=== Menú Cliente ===");
             System.out.println("1. Comprar");
             System.out.println("2. Gestionar pedido");
-            System.out.println("3. Salir");
+            System.out.println("3. Cerrar sesión");
             System.out.print("Seleccione una opción: ");
 
             String opcion = scanner.nextLine();
@@ -152,7 +172,7 @@ public class Sistema {
             System.out.println("\n=== Menú Repartidor ===");
             System.out.println("1. Gestionar pedido");
             System.out.println("2. Consultar pedidos asignados");
-            System.out.println("3. Salir");
+            System.out.println("3. Cerrar sesión");
             System.out.print("Seleccione una opción: ");
 
             String opcion = scanner.nextLine();
@@ -204,6 +224,7 @@ public class Sistema {
                 pedidoRealizado.getCantidadProducto(),
                 pedidoRealizado.getTotalPagado(),
                 pedidoRealizado.getEstadoPedido());
+        System.out.println("Enviando correo a " + cliente.getCorreo());
         manejadorEmail.enviarCorreo(cliente.getCorreo(), asunto, cuerpo);
     }
 
@@ -236,6 +257,7 @@ public class Sistema {
                 pedidoAsignado.getCliente().getNombre(),
                 pedidoAsignado.getCliente().getApellido(),
                 pedidoAsignado.getEstadoPedido());
+        System.out.println("Enviando correo a " + repartidor.getCorreo());
         manejadorEmail.enviarCorreo(repartidor.getCorreo(), asunto, cuerpo);
     }
 
@@ -266,7 +288,7 @@ public class Sistema {
                 pedido.getFechaPedido(),
                 pedido.getProducto().getCodigo(),
                 pedido.getRepartidor().getCodigoUnico());
-
+        System.out.println("Enviando correo a " + cliente.getCorreo());
         manejadorEmail.enviarCorreo(cliente.getCorreo(), asunto, cuerpo);
     }
 }
