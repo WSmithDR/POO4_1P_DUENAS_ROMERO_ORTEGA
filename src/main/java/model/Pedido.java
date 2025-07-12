@@ -21,6 +21,7 @@ public class Pedido {
     private String codigoPedido;
     private Cliente cliente;
 
+
     /** Contador estático para generar códigos únicos de pedidos */
     public static int contadorPedido = ManejadorPedido.cantidadRegistroPedidos();
 
@@ -185,11 +186,11 @@ public class Pedido {
      * @return Cadena con los datos del pedido en el formato especificado
      */
     public String toFileFormat() {
-        return String.format(java.util.Locale.US, "%s|%s|%s|%d|%.2f|%s|%s|%s",
+        return String.format(Locale.US, "%s|%s|%s|%d|%.2f|%s|%s|%s",
                 codigoPedido,
                 ManejoFechas.setFechaSimple(fechaPedido),
                 producto.getCodigo(),
-                cantidadProducto,
+                cantidadProducto,   
                 totalPagado,
                 estadoPedido.name(),
                 repartidor != null ? repartidor.getCodigoUnico() : "",

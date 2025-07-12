@@ -46,9 +46,8 @@ public class Sistema {
      * 
      * @param scanner Scanner para leer la entrada del usuario
      */
-    private static boolean iniciarSesion(Scanner scanner) {
+        private static boolean iniciarSesion(Scanner scanner) {
         while (true) {
-            System.out.println("===== INICIO DE SESIÓN =====");
             System.out.println("1. Iniciar sesión");
             System.out.println("2. Salir del sistema");
             System.out.print("Seleccione una opción: ");
@@ -57,15 +56,16 @@ public class Sistema {
             if (opcion.equals("2")) {
                 return true; // Salir del sistema
             } else if (opcion.equals("1")) {
+                System.out.println("===== INICIO DE SESIÓN =====");
                 break; // Continuar con el login
             } else {
                 System.out.println("Opción no válida. Intente nuevamente.");
             }
         }
 
-        boolean sesionIniciada = false;
-        while (!sesionIniciada) {
-            System.out.print("Usuario: ");
+    boolean sesionIniciada = false;
+    while (!sesionIniciada) {
+        System.out.print("Usuario: ");
             String userInput = scanner.nextLine();
             System.out.print("Contraseña: ");
             String passInput = scanner.nextLine();
