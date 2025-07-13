@@ -9,7 +9,7 @@ import utils.Printers;
 
 
 public class ManejadorProducto {
-    private static final String PRODUCTOS_FILE = "resources/Productos.txt";
+    private static final String PRODUCTOS_FILE = "database/Productos.txt";
 
     /**
      * Carga todos los productos desde el archivo

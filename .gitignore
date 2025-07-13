@@ -31,5 +31,5 @@ diffs.txt
 #env
 .env
 
-#Resources
-resources/
+#Ignorar la carpeta de base de datos
+/database/

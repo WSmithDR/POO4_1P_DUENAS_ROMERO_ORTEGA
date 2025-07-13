@@ -12,9 +12,9 @@ import utils.Printers;
  * Clase que maneja la carga y gestión de usuarios, clientes y repartidores desde archivos.
  */
 public class ManejadorUsuario {
-    private static final String USUARIOS_FILE = "resources/Usuarios.txt";
-    private static final String CLIENTES_FILE = "resources/Clientes.txt";
-    private static final String REPARTIDORES_FILE = "resources/Repartidores.txt";
+    private static final String USUARIOS_FILE = "database/Usuarios.txt";
+    private static final String CLIENTES_FILE = "database/Clientes.txt";
+    private static final String REPARTIDORES_FILE = "database/Repartidores.txt";
 
     /**
      * Carga los usuarios desde el archivo de usuarios

@@ -11,12 +11,9 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.io.File;
 
-/**
- * Clase que maneja la gestión de pedidos, incluyendo asignación de repartidores,
- * almacenamiento, carga, consulta y cambio de estado de pedidos.
- */
+
 public class ManejadorPedido {
-    private static final String PEDIDOS_FILE = "resources/Pedidos.txt";
+    private static final String PEDIDOS_FILE = "database/Pedidos.txt";
 
     /**
      * Asigna un repartidor aleatorio de la lista

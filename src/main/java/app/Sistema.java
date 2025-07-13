@@ -11,12 +11,13 @@ import java.util.Scanner;
 import services.archivos.ManejadorUsuario;
 import services.email.ManejadorEmail;
 import model.Enums.EstadoPedido;
-
+import model.Enums.Rol;
 import utils.Printers;
 import utils.Time;
 
 public class Sistema {
     private static ArrayList<Usuario> usuarios = new ArrayList<>();
+
     /**
      * Inicia el sistema: carga usuarios, productos
      * y pedidos, y muestra la pantalla de inicio de sesión.
@@ -30,10 +31,9 @@ public class Sistema {
         while (!salir) {
             Printers.printSeparator();
             Printers.printTitle(String.format(
-                "BIENVENIDO/A A \n"+
-                "DUENAS_ROMERERO_ORTEGA \n"+
-                "DELIVERY SYSTEM"
-                ));
+                    "BIENVENIDO/A A \n" +
+                            "DUENAS_ROMERERO_ORTEGA \n" +
+                            "DELIVERY SYSTEM"));
             Printers.printSeparator();
             System.out.println("1. Iniciar sesión");
             System.out.println("2. Salir del sistema");
@@ -42,7 +42,8 @@ public class Sistema {
             if (opcion.equals("2")) {
                 salir = true;
             } else if (opcion.equals("1")) {
-                salir = iniciarSesion(scanner); // Retorna true solo si el usuario elige salir del sistema desde el login
+                salir = iniciarSesion(scanner); // Retorna true solo si el usuario elige salir del sistema desde el
+                                                // login
             } else {
                 Printers.printError("Opción no válida. Intente nuevamente.");
             }
@@ -50,7 +51,7 @@ public class Sistema {
         Printers.printSeparator();
         Printers.printInfo("Apagando sistema...");
         Time.sleep();
-        
+
         Printers.printInfo("¡Hasta luego!");
         Printers.printSeparator();
     }
@@ -222,17 +223,20 @@ public class Sistema {
             ManejadorEmail manejadorEmail) {
         String asunto = "Pedido realizado";
         String cuerpo = String.format(
-                "<html><body>"+"El/La cliente <strong>%s %s</strong> ha realizado un pedido con código <strong>%s</strong> el día <strong>%s</strong>."+
-                        "<br><br>"+
-                        "Producto: <strong>%s</strong>"+
-                        "<br>"+
-                        "Cantidad: <strong>%d</strong>"+
-                        "<br>"+
-                        "Valor pagado: <strong>$%.2f</strong>"+
-                        "<br>"+
-                        "Estado inicial: <strong>%s</strong>"+
-                        "<br><br>"+
-                        "Gracias por su compra. Recibirá actualizaciones del estado de su pedido por este medio."+"</body></html>",
+                "<html><body>"
+                        + "El/La cliente <strong>%s %s</strong> ha realizado un pedido con código <strong>%s</strong> el día <strong>%s</strong>."
+                        +
+                        "<br><br>" +
+                        "Producto: <strong>%s</strong>" +
+                        "<br>" +
+                        "Cantidad: <strong>%d</strong>" +
+                        "<br>" +
+                        "Valor pagado: <strong>$%.2f</strong>" +
+                        "<br>" +
+                        "Estado inicial: <strong>%s</strong>" +
+                        "<br><br>" +
+                        "Gracias por su compra. Recibirá actualizaciones del estado de su pedido por este medio."
+                        + "</body></html>",
                 cliente.getNombre(),
                 cliente.getApellido(),
                 pedidoRealizado.getCodigoPedido(),
@@ -241,7 +245,7 @@ public class Sistema {
                 pedidoRealizado.getCantidadProducto(),
                 pedidoRealizado.getTotalPagado(),
                 pedidoRealizado.getEstadoPedido());
-        System.out.println("Enviando correo al "+Rol.CLIENTE+" "+cliente.getCorreo());
+        System.out.println("Enviando correo al " + Rol.CLIENTE + " " + cliente.getCorreo());
         manejadorEmail.enviarCorreo(cliente.getCorreo(), asunto, cuerpo);
     }
 
@@ -259,20 +263,20 @@ public class Sistema {
             ManejadorEmail manejadorEmail) {
         String asunto = "Nuevo pedido asignado";
         String cuerpo = String.format(
-                "<html><body>"+"Estimado/a <strong>%s %s</strong>,"+
-                "<br>"+
-                        "Se le ha asignado un nuevo pedido con los siguientes detalles:"+
-                        "<br><br>"+
-                        "Código del pedido: <strong>%s</strong>"+
-                        "<br>"+
-                        "Fecha del pedido: <strong>%s</strong>"+
-                        "<br>"+
-                        "Cliente: <strong>%s %s</strong>,"+
-                        "<br>"+ 
-                        "Estado actual: <strong>%s</strong>"+
-                        "<br><br>"+
+                "<html><body>" + "Estimado/a <strong>%s %s</strong>," +
+                        "<br>" +
+                        "Se le ha asignado un nuevo pedido con los siguientes detalles:" +
+                        "<br><br>" +
+                        "Código del pedido: <strong>%s</strong>" +
+                        "<br>" +
+                        "Fecha del pedido: <strong>%s</strong>" +
+                        "<br>" +
+                        "Cliente: <strong>%s %s</strong>," +
+                        "<br>" +
+                        "Estado actual: <strong>%s</strong>" +
+                        "<br><br>" +
                         "Por favor, prepare la logística necesaria para la entrega." +
-                        "Gracias por su trabajo."+"</body></html>",
+                        "Gracias por su trabajo." + "</body></html>",
                 repartidor.getNombre(),
                 repartidor.getApellido(),
                 pedidoAsignado.getCodigoPedido(),
@@ -280,7 +284,7 @@ public class Sistema {
                 pedidoAsignado.getCliente().getNombre(),
                 pedidoAsignado.getCliente().getApellido(),
                 pedidoAsignado.getEstadoPedido());
-        System.out.println("Enviando correo al "+Rol.REPARTIDOR+" "+repartidor.getCorreo());
+        System.out.println("Enviando correo al " + Rol.REPARTIDOR + " " + repartidor.getCorreo());
         manejadorEmail.enviarCorreo(repartidor.getCorreo(), asunto, cuerpo);
     }
 
@@ -300,23 +304,24 @@ public class Sistema {
             ManejadorEmail manejadorEmail) {
         String asunto = "Actualización del estado de su pedido";
         String cuerpo = String.format(
-                "<html><body>"+"Estimado/a <strong>%s %s</strong>,"+
-                "<br>"+
-                        "Le informamos que el estado de su pedido con código <strong>%s</strong> ha cambiado a: <strong>%s</strong>."+
-                        "<br><br>"+
-                        "Fecha del pedido: <strong>%s</strong>"+
-                        "<br>"+
-                        "Producto: <strong>%s</strong>"+
-                        "<br>"+
-                        "Repartidor asignado: <strong>%s</strong>"+
-                        "<br>"+
-                        "Gracias por confiar en nosotros."+"</body></html>",
+                "<html><body>" + "Estimado/a <strong>%s %s</strong>," +
+                        "<br>" +
+                        "Le informamos que el estado de su pedido con código <strong>%s</strong> ha cambiado a: <strong>%s</strong>."
+                        +
+                        "<br><br>" +
+                        "Fecha del pedido: <strong>%s</strong>" +
+                        "<br>" +
+                        "Producto: <strong>%s</strong>" +
+                        "<br>" +
+                        "Repartidor asignado: <strong>%s</strong>" +
+                        "<br><br>" +
+                        "Gracias por confiar en nosotros." + "</body></html>",
                 cliente.getNombre(), cliente.getApellido(),
                 pedido.getCodigoPedido(), nuevoEstado,
                 pedido.getFechaPedido(),
                 pedido.getProducto().getCodigo(),
                 pedido.getRepartidor().getCodigoUnico());
-        System.out.println("Enviando correo al "+Rol.CLIENTE+" "+cliente.getCorreo());
+        System.out.println("Enviando correo al " + Rol.CLIENTE + " " + cliente.getCorreo());
         manejadorEmail.enviarCorreo(cliente.getCorreo(), asunto, cuerpo);
     }
 }
