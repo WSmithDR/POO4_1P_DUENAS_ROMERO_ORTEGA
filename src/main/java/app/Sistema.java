@@ -48,7 +48,7 @@ public class Sistema {
      */
         private static boolean iniciarSesion(Scanner scanner) {
         while (true) {
-            System.out.println("1. Iniciar sesión");
+            System.out.println("\n1. Iniciar sesión");
             System.out.println("2. Salir del sistema");
             System.out.print("Seleccione una opción: ");
             String opcion = scanner.nextLine();
