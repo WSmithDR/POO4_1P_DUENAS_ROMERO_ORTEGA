@@ -59,7 +59,7 @@ public class ManejadorEmail {
             msg.setRecipient(Message.RecipientType.TO, new InternetAddress(mailTo));
             msg.setSubject(asunto);
             msg.setSentDate(new java.util.Date());
-            msg.setContent(contenido, "text/plain");
+            msg.setContent(contenido, "text/html");
 
             Transport.send(msg);
             System.out.println("Correo enviado a " + mailTo);

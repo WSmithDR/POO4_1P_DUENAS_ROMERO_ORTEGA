@@ -48,7 +48,7 @@ public class Sistema {
      */
         private static boolean iniciarSesion(Scanner scanner) {
         while (true) {
-            System.out.println("1. Iniciar sesión");
+            System.out.println("\n1. Iniciar sesión");
             System.out.println("2. Salir del sistema");
             System.out.print("Seleccione una opción: ");
             String opcion = scanner.nextLine();
@@ -56,7 +56,7 @@ public class Sistema {
             if (opcion.equals("2")) {
                 return true; // Salir del sistema
             } else if (opcion.equals("1")) {
-                System.out.println("===== INICIO DE SESIÓN =====");
+                System.out.println("\n===== INICIO DE SESIÓN =====");
                 break; // Continuar con el login
             } else {
                 System.out.println("Opción no válida. Intente nuevamente.");
@@ -75,37 +75,37 @@ public class Sistema {
             for (Usuario u : usuarios) {
                 if (u.getUser_name().equals(userInput) && u.getContrasenia().equals(passInput)) {
                     usuarioEncontrado = true;
-                    System.out.println("Usuario autenticado correctamente.");
+                    System.out.println("\nUsuario autenticado correctamente.");
 
                     if (u instanceof Cliente c) {
-                        System.out.println(String.format("Rol detectado: %s", Rol.CLIENTE));
-                        System.out.println("Bienvenido, " + c.getNombre() + " " + c.getApellido());
+                        System.out.println(String.format("\nRol detectado: %s", Rol.CLIENTE));
+                        System.out.println("\nBienvenido, " + c.getNombre() + " " + c.getApellido());
                         System.out.println("Celular registrado: " + c.getNumeroCelular());
-                        System.out.print("¿Este número de celular es correcto? (S/N): ");
+                        System.out.print("\n¿Este número de celular es correcto? (S/N): ");
                         String verif = scanner.nextLine();
                         if (verif.equalsIgnoreCase("S")) {
-                            System.out.println("¡Identidad confirmada!");
+                            System.out.println("\n¡Identidad confirmada!");
                             mostrarMenu(c, scanner);
                             sesionIniciada = true;
                         } else {
-                            System.out.println("Verificación fallida. Cerrando sesión.");
+                            System.out.println("\nVerificación fallida. Cerrando sesión.");
                             sesionIniciada = true;
                         }
                     } else if (u instanceof Repartidor r) {
-                        System.out.println("Rol detectado: REPARTIDOR");
-                        System.out.println("Bienvenido, " + r.getNombre() + " " + r.getApellido());
+                        System.out.println("\nRol detectado: REPARTIDOR");
+                        System.out.println("\nBienvenido, " + r.getNombre() + " " + r.getApellido());
                         System.out.println("Empresa asignada: " + r.getNombreEmpresa());
-                        System.out.print("¿Esta empresa es correcta? (S/N): ");
+                        System.out.print("\n¿Esta empresa es correcta? (S/N): ");
                         String verif = scanner.nextLine();
                         if (verif.equalsIgnoreCase("S")) {
-                            System.out.println("¡Identidad confirmada!");
+                            System.out.println("\n¡Identidad confirmada!");
                             mostrarMenu(r, scanner);
                             sesionIniciada = true;
                         } else {
-                            System.out.println("Verificación fallida");
+                            System.out.println("\nVerificación fallida");
                             System.out.println("Por motivos de seguridad se cerrará la sesion");
                             System.out.println();
-                            System.out.println("Cerrando sesión...");
+                            System.out.println("\nCerrando sesión...");
                             sesionIniciada = true;
                         }
                     }
@@ -114,7 +114,7 @@ public class Sistema {
             }
 
             if (!usuarioEncontrado) {
-                System.out.println("Usuario o contraseña incorrectos. Intente nuevamente.");
+                System.out.println("\nUsuario o contraseña incorrectos. Intente nuevamente.");
                 System.out.println();
             }
         }
@@ -136,7 +136,7 @@ public class Sistema {
             System.out.println("1. Comprar");
             System.out.println("2. Gestionar pedido");
             System.out.println("3. Cerrar sesión");
-            System.out.print("Seleccione una opción: ");
+            System.out.print("\nSeleccione una opción: ");
 
             String opcion = scanner.nextLine();
 
@@ -148,11 +148,11 @@ public class Sistema {
                     cliente.gestionarPedido(pedidos, scanner);
                     break;
                 case "3":
-                    System.out.println("Cerrando sesión...");
+                    System.out.println("\nCerrando sesión...");
                     continuar = false;
                     break;
                 default:
-                    System.out.println("Opción no válida. Intente nuevamente.");
+                    System.out.println("\nOpción no válida. Intente nuevamente.");
                     break;
             }
         }
@@ -173,7 +173,7 @@ public class Sistema {
             System.out.println("1. Gestionar pedido");
             System.out.println("2. Consultar pedidos asignados");
             System.out.println("3. Cerrar sesión");
-            System.out.print("Seleccione una opción: ");
+            System.out.print("\nSeleccione una opción: ");
 
             String opcion = scanner.nextLine();
 
@@ -185,11 +185,11 @@ public class Sistema {
                     repartidor.consultarPedidosAsignados(pedidos);
                     break;
                 case "3":
-                    System.out.println("Cerrando sesión...");
+                    System.out.println("\nCerrando sesión...");
                     continuar = false;
                     break;
                 default:
-                    System.out.println("Opción no válida. Intente nuevamente.");
+                    System.out.println("\nOpción no válida. Intente nuevamente.");
                     break;
             }
         }
@@ -210,12 +210,17 @@ public class Sistema {
             ManejadorEmail manejadorEmail) {
         String asunto = "Pedido realizado";
         String cuerpo = String.format(
-                "El cliente %s %s ha realizado un pedido con código %s el día %s.\n\n" +
-                        "Producto: %s\n" +
-                        "Cantidad: %d\n" +
-                        "Valor pagado: $%.2f\n" +
-                        "Estado inicial: %s\n\n" +
-                        "Gracias por su compra. Recibirá actualizaciones del estado de su pedido por este medio.",
+                "<html><body>"+"El/La cliente <strong>%s %s</strong> ha realizado un pedido con código <strong>%s</strong> el día <strong>%s</strong>."+
+                        "<br><br>"+
+                        "Producto: <strong>%s</strong>"+
+                        "<br>"+
+                        "Cantidad: <strong>%d</strong>"+
+                        "<br>"+
+                        "Valor pagado: <strong>$%.2f</strong>"+
+                        "<br>"+
+                        "Estado inicial: <strong>%s</strong>"+
+                        "<br><br>"+
+                        "Gracias por su compra. Recibirá actualizaciones del estado de su pedido por este medio."+"</body></html>",
                 cliente.getNombre(),
                 cliente.getApellido(),
                 pedidoRealizado.getCodigoPedido(),
@@ -224,7 +229,7 @@ public class Sistema {
                 pedidoRealizado.getCantidadProducto(),
                 pedidoRealizado.getTotalPagado(),
                 pedidoRealizado.getEstadoPedido());
-        System.out.println("Enviando correo a " + cliente.getCorreo());
+        System.out.println("Enviando correo al "+Rol.CLIENTE+" "+cliente.getCorreo());
         manejadorEmail.enviarCorreo(cliente.getCorreo(), asunto, cuerpo);
     }
 
@@ -242,14 +247,20 @@ public class Sistema {
             ManejadorEmail manejadorEmail) {
         String asunto = "Nuevo pedido asignado";
         String cuerpo = String.format(
-                "Estimado/a %s %s,\n\n" +
-                        "Se le ha asignado un nuevo pedido con los siguientes detalles:\n\n" +
-                        "Código del pedido: %s\n" +
-                        "Fecha del pedido: %s\n" +
-                        "Cliente: %s %s\n" +
-                        "Estado actual: %s\n\n" +
-                        "Por favor, prepare la logística necesaria para la entrega.\n\n" +
-                        "Gracias por su trabajo.",
+                "<html><body>"+"Estimado/a <strong>%s %s</strong>,"+
+                "<br>"+
+                        "Se le ha asignado un nuevo pedido con los siguientes detalles:"+
+                        "<br><br>"+
+                        "Código del pedido: <strong>%s</strong>"+
+                        "<br>"+
+                        "Fecha del pedido: <strong>%s</strong>"+
+                        "<br>"+
+                        "Cliente: <strong>%s %s</strong>,"+
+                        "<br>"+ 
+                        "Estado actual: <strong>%s</strong>"+
+                        "<br><br>"+
+                        "Por favor, prepare la logística necesaria para la entrega." +
+                        "Gracias por su trabajo."+"</body></html>",
                 repartidor.getNombre(),
                 repartidor.getApellido(),
                 pedidoAsignado.getCodigoPedido(),
@@ -257,7 +268,7 @@ public class Sistema {
                 pedidoAsignado.getCliente().getNombre(),
                 pedidoAsignado.getCliente().getApellido(),
                 pedidoAsignado.getEstadoPedido());
-        System.out.println("Enviando correo a " + repartidor.getCorreo());
+        System.out.println("Enviando correo al "+Rol.REPARTIDOR+" "+repartidor.getCorreo());
         manejadorEmail.enviarCorreo(repartidor.getCorreo(), asunto, cuerpo);
     }
 
@@ -277,18 +288,23 @@ public class Sistema {
             ManejadorEmail manejadorEmail) {
         String asunto = "Actualización del estado de su pedido";
         String cuerpo = String.format(
-                "Estimado/a %s %s,\n\n" +
-                        "Le informamos que el estado de su pedido con código %s ha cambiado a: %s.\n\n" +
-                        "Fecha del pedido: %s\n" +
-                        "Producto: %s\n" +
-                        "Repartidor asignado: %s\n\n" +
-                        "Gracias por confiar en nosotros.",
+                "<html><body>"+"Estimado/a <strong>%s %s</strong>,"+
+                "<br>"+
+                        "Le informamos que el estado de su pedido con código <strong>%s</strong> ha cambiado a: <strong>%s</strong>."+
+                        "<br><br>"+
+                        "Fecha del pedido: <strong>%s</strong>"+
+                        "<br>"+
+                        "Producto: <strong>%s</strong>"+
+                        "<br>"+
+                        "Repartidor asignado: <strong>%s</strong>"+
+                        "<br>"+
+                        "Gracias por confiar en nosotros."+"</body></html>",
                 cliente.getNombre(), cliente.getApellido(),
                 pedido.getCodigoPedido(), nuevoEstado,
                 pedido.getFechaPedido(),
                 pedido.getProducto().getCodigo(),
                 pedido.getRepartidor().getCodigoUnico());
-        System.out.println("Enviando correo a " + cliente.getCorreo());
+        System.out.println("Enviando correo al "+Rol.CLIENTE+" "+cliente.getCorreo());
         manejadorEmail.enviarCorreo(cliente.getCorreo(), asunto, cuerpo);
     }
 }
