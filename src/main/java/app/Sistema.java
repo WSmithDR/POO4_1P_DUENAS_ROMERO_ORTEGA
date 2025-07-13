@@ -8,18 +8,15 @@ import model.Roles.Usuario;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import services.archivos.ManejadorPedido;
-import services.archivos.ManejadorProducto;
 import services.archivos.ManejadorUsuario;
 import services.email.ManejadorEmail;
-import model.Producto;
 import model.Enums.EstadoPedido;
 import model.Enums.Rol;
 
 public class Sistema {
     private static ArrayList<Usuario> usuarios = new ArrayList<>();
-    private static ArrayList<Producto> productos = new ArrayList<>();
-    private static ArrayList<Pedido> pedidos = new ArrayList<>();
+    //private static ArrayList<Producto> productos = new ArrayList<>();
+    //private static ArrayList<Pedido> pedidos = new ArrayList<>();
 
     /**
      * Inicia el sistema: carga usuarios, productos
@@ -28,9 +25,9 @@ public class Sistema {
      * @param scanner Scanner para leer la entrada del usuario desde la consola
      */
     public static void iniciar(Scanner scanner) {
-        usuarios = ManejadorUsuario.cargarUsuarios(usuarios);
-        productos = ManejadorProducto.cargarProductos();
-        pedidos = ManejadorPedido.cargarPedidos(usuarios, productos);
+        usuarios = ManejadorUsuario.cargarUsuarios();
+        //productos = ManejadorProducto.cargarProductos();
+        //pedidos = ManejadorPedido.cargarPedidos(usuarios, productos);
 
         boolean salir = false;
         while (!salir) {
@@ -92,7 +89,7 @@ public class Sistema {
                             sesionIniciada = true;
                         }
                     } else if (u instanceof Repartidor r) {
-                        System.out.println("Rol detectado: REPARTIDOR");
+                        System.out.println("Rol detectado: "+Rol.REPARTIDOR);
                         System.out.println("Bienvenido, " + r.getNombre() + " " + r.getApellido());
                         System.out.println("Empresa asignada: " + r.getNombreEmpresa());
                         System.out.print("¿Esta empresa es correcta? (S/N): ");
@@ -142,10 +139,10 @@ public class Sistema {
 
             switch (opcion) {
                 case "1":
-                    cliente.realizarCompra(productos, usuarios, pedidos, scanner);
+                    cliente.realizarCompra(usuarios, scanner);
                     break;
                 case "2":
-                    cliente.gestionarPedido(pedidos, scanner);
+                    cliente.gestionarPedido( scanner);
                     break;
                 case "3":
                     System.out.println("Cerrando sesión...");
@@ -179,10 +176,10 @@ public class Sistema {
 
             switch (opcion) {
                 case "1":
-                    repartidor.gestionarPedido(pedidos, scanner);
+                    repartidor.gestionarPedido( scanner);
                     break;
                 case "2":
-                    repartidor.consultarPedidosAsignados(pedidos);
+                    repartidor.consultarPedidosAsignados();
                     break;
                 case "3":
                     System.out.println("Cerrando sesión...");

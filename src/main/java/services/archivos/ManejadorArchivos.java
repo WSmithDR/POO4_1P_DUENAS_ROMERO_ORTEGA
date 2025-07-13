@@ -1,4 +1,4 @@
-package persistence;
+package services.archivos;
 
 
 import java.io.BufferedReader;
@@ -10,7 +10,7 @@ import java.io.FileWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
-public class ManejoArchivos {
+public class ManejadorArchivos {
     /**
      * Lee todas las líneas de un archivo de texto y las retorna en un ArrayList de String.
      *

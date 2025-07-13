@@ -2,14 +2,11 @@ package services.archivos;
 
 import model.Producto;
 import model.Enums.CategoriaProducto;
-import persistence.ManejoArchivos;
 
 import java.util.ArrayList;
 import java.util.Locale;
 
-/**
- * Clase que maneja la carga, filtrado, búsqueda y actualización de productos en el sistema.
- */
+
 public class ManejadorProducto {
     private static final String PRODUCTOS_FILE = "resources/Productos.txt";
 
@@ -19,7 +16,7 @@ public class ManejadorProducto {
      * @return ArrayList con todos los productos
      */
     public static ArrayList<Producto> cargarProductos() {
-        ArrayList<String> lineas = ManejoArchivos.LeeFichero(PRODUCTOS_FILE);
+        ArrayList<String> lineas = ManejadorArchivos.LeeFichero(PRODUCTOS_FILE);
         ArrayList<Producto> productos = new ArrayList<>();
         ArrayList<String> codigosAgregados = new ArrayList<>();
 
@@ -34,7 +31,8 @@ public class ManejadorProducto {
                 String codigo = partes[0];
                 if (!codigosAgregados.contains(codigo)) {
                     CategoriaProducto categoria = CategoriaProducto.fromDescripcion(partes[1]);
-                    if (categoria == null) continue;
+                    if (categoria == null)
+                        continue;
                     String nombre = partes[2];
                     double precio = Double.parseDouble(partes[3]);
                     int stock = Integer.parseInt(partes[4]);
@@ -123,9 +121,9 @@ public class ManejadorProducto {
      * @param codigo    Código del producto a buscar
      * @return Producto encontrado o null si no existe
      */
-    public static Producto buscarProductoPorCodigo(ArrayList<Producto> productos, String codigo) {
-        for (Producto producto : productos) {
-            if (producto.getCodigo().equals(codigo)) {
+    public static Producto buscarProductoPorCodigo(String codigo) {
+        for (Producto producto : cargarProductos()) {
+            if (producto.getCodigo().equalsIgnoreCase(codigo)) {
                 return producto;
             }
         }
@@ -133,11 +131,13 @@ public class ManejadorProducto {
     }
 
     /**
-     * Actualiza el stock de un producto 
-     * en el archivo Productos.txt 
-     * agregando una nueva línea con 
+     * Actualiza el stock de un producto
+     * en el archivo Productos.txt
+     * agregando una nueva línea con
      * la información actualizada.
-     * @param productoActualizado El producto con el stock actualizado que se va a registrar en el archivo
+     * 
+     * @param productoActualizado El producto con el stock actualizado que se va a
+     *                            registrar en el archivo
      */
     public static void actualizarStockProductoEnArchivo(Producto productoActualizado) {
         String nuevaLinea = String.format(Locale.US, "%s|%s|%s|%.2f|%d",
@@ -146,6 +146,6 @@ public class ManejadorProducto {
                 productoActualizado.getNombre(),
                 productoActualizado.getPrecio(),
                 productoActualizado.getStock());
-        ManejoArchivos.EscribirArchivo(PRODUCTOS_FILE, nuevaLinea);
+        ManejadorArchivos.EscribirArchivo(PRODUCTOS_FILE, nuevaLinea);
     }
 }

@@ -1,6 +1,7 @@
 package model.Roles;
 
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Scanner;
 
 import app.Sistema;
@@ -10,7 +11,10 @@ import model.Producto;
 import model.Pedido;
 import services.archivos.ManejadorPedido;
 import services.archivos.ManejadorProducto;
+import services.archivos.ManejadorUsuario;
 import services.email.ManejadorEmail;
+import utils.ManejoFechas;
+
 import java.util.Random;
 
 public class Cliente extends Usuario {
@@ -42,6 +46,7 @@ public class Cliente extends Usuario {
 
    /**
     * Obtiene el número de celular del cliente.
+    * 
     * @return Número de celular
     */
    public String getNumeroCelular() {
@@ -50,6 +55,7 @@ public class Cliente extends Usuario {
 
    /**
     * Obtiene la dirección del cliente.
+    * 
     * @return Dirección del cliente
     */
    public String getDireccion() {
@@ -58,6 +64,7 @@ public class Cliente extends Usuario {
 
    /**
     * Establece el número de celular del cliente.
+    * 
     * @param numero_celular Número de celular
     */
    public void setNumeroCelular(String numero_celular) {
@@ -66,6 +73,7 @@ public class Cliente extends Usuario {
 
    /**
     * Establece la dirección del cliente.
+    * 
     * @param direccion Dirección del cliente
     */
    public void setDireccion(String direccion) {
@@ -73,11 +81,83 @@ public class Cliente extends Usuario {
    }
 
    /**
+    * Muestra la información detallada de un pedido
+    * 
+    * @param pedido Pedido a mostrar
+    */
+   private static void mostrarInformacionPedido(Pedido pedido) {
+      // Obtener nombre del producto
+      Producto productoPedido = ManejadorProducto.buscarProductoPorCodigo(pedido.getProducto().getCodigo());
+      String nombreProducto = null;
+      if (productoPedido != null) {
+         nombreProducto = productoPedido.getNombre();
+      } else {
+         System.out.println("WARNING: No se pudo hallar el producto del pedido");
+      }
+      
+      // Obtener nombre del repartidor
+      Repartidor repartidor = ManejadorUsuario.buscarRepartidorPorCodigoUnico(pedido.getRepartidor().getCodigoUnico());
+      String nombreRepartidor = null;
+      
+      if (repartidor != null) {
+         nombreRepartidor = String.format(
+            Locale.US,
+            "%s %s",
+            repartidor.getNombre(),
+            repartidor.getApellido());
+         }else{
+            System.out.println("WARNING: No se pudo hallar el repartidor del pedido");
+         }
+         
+      System.out.println("Fecha del pedido: " + ManejoFechas.setFechaSimple(pedido.getFechaPedido()));
+      System.out.println("Producto comprado: " + nombreProducto + " (Código: " + pedido.getProducto().getCodigo()+ ")");
+            System.out.println("Cantidad: " + pedido.getCantidadProducto());
+      System.out.println("Valor pagado: $" + String.format("%.2f", pedido.getTotalPagado()));
+      System.out.println("Estado actual: " + pedido.getEstadoPedido());
+      System.out.println("Repartidor: " + nombreRepartidor);
+      System.out.println();
+
+      // Mostrar mensaje según el estado del pedido
+      Pedido.mostrarMensajeSegunEstado(pedido.getEstadoPedido());
+   }
+
+   /**
+    * Consulta un pedido específico para un cliente
+    * 
+    * @param cliente   Cliente que consulta
+    * @param pedidos   Lista de pedidos
+    * @param codPedido Código del pedido a consultar
+    */
+   private void consultarPedidoCliente(Cliente cliente, String codPedido) {
+      boolean pedidoEncontrado = false;
+      for (Pedido pedido : ManejadorPedido.cargarPedidosCliente(cliente)) {
+         if (pedido.getCodigoPedido().equalsIgnoreCase(codPedido) &&
+               pedido.getCliente().equals(cliente)) {
+            pedidoEncontrado = true;
+            mostrarInformacionPedido(pedido);
+            break;
+         }
+      }
+      if (!pedidoEncontrado) {
+         System.out.println("No se encontró ningún pedido con el código: " + codPedido + " para este cliente.");
+      }
+   }
+
+   /**
     * Consulta el estado de los pedidos del cliente
     */
    @Override
-   public void gestionarPedido(ArrayList<Pedido> pedidos, Scanner scanner) {
-      ManejadorPedido.gestionarPedido(this, pedidos, scanner);
+   public void gestionarPedido(Scanner scanner) {
+      System.out.println("===== CONSULTA DE ESTADO DE PEDIDO =====");
+      System.out.print("Ingrese el código del pedido: ");
+      String codPedido = scanner.nextLine().trim();
+
+      if (codPedido.isEmpty()) {
+         System.out.println("El código del pedido no puede estar vacío.");
+         return;
+      }
+
+      consultarPedidoCliente(this, codPedido);
    }
 
    /**
@@ -88,8 +168,9 @@ public class Cliente extends Usuario {
     * @param pedidos   Lista de pedidos para agregar el nuevo pedido
     * @param scanner   Scanner para leer entrada del usuario
     */
-   public void realizarCompra(ArrayList<Producto> productos, ArrayList<Usuario> usuarios, ArrayList<Pedido> pedidos,
+   public void realizarCompra(ArrayList<Usuario> usuarios,
          Scanner scanner) {
+      ArrayList<Producto> productos = ManejadorProducto.cargarProductos();
       System.out.println("\n=== COMPRAR PRODUCTO ===");
 
       CategoriaProducto categoriaElegida = seleccionarCategoria(productos, scanner);
@@ -107,7 +188,7 @@ public class Cliente extends Usuario {
       if (!confirmarCompra(productoElegido, cantidad, scanner))
          return;
 
-      procesarCompra(productoElegido, cantidad, usuarios, pedidos);
+      procesarCompra(productoElegido, cantidad, usuarios);
    }
 
    /**
@@ -191,8 +272,7 @@ public class Cliente extends Usuario {
    /**
     * Hace todo el proceso final: asigna repartidor, crea pedido y actualiza stock
     */
-   private void procesarCompra(Producto producto, int cantidad, ArrayList<Usuario> usuarios,
-         ArrayList<Pedido> pedidos) {
+   private void procesarCompra(Producto producto, int cantidad, ArrayList<Usuario> usuarios) {
       // Buscar repartidor disponible
       Repartidor repartidorElegido = buscarRepartidorAleatorio(usuarios);
       if (repartidorElegido == null) {
@@ -208,7 +288,7 @@ public class Cliente extends Usuario {
       producto.reducirStock(cantidad);
       ManejadorProducto.actualizarStockProductoEnArchivo(producto);
       ManejadorPedido.guardarPedido(nuevoPedido);
-      pedidos.add(nuevoPedido);
+      // pedidos.add(nuevoPedido);
 
       // Enviar notificaciones
       enviarNotificaciones(repartidorElegido, nuevoPedido);
@@ -256,6 +336,11 @@ public class Cliente extends Usuario {
       System.out.println("¡Compra exitosa!");
       System.out.println("Repartidor: " + repartidor.getNombre() + " " + repartidor.getApellido());
       System.out.println("Código de pedido: " + pedido.getCodigoPedido());
+   }
+
+   @Override
+   public boolean equals(Object obj) {
+      return super.equals(obj);
    }
 
 }

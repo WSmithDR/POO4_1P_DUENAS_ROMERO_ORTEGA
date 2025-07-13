@@ -1,10 +1,8 @@
 package model.Roles;
-
-import java.util.ArrayList;
 import java.util.Scanner;
 
 import model.Enums.Rol;
-import model.Pedido;
+
 
 public abstract class Usuario {
     protected String codigoUnico;
@@ -162,5 +160,17 @@ public abstract class Usuario {
      * @param pedidos Lista de pedidos disponibles para gestionar
      * @param scanner scanner para poder intereacturar con la consola
      */
-    public abstract void gestionarPedido(ArrayList<Pedido> pedidos, Scanner scanner);
+    public abstract void gestionarPedido(Scanner scanner);
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this==obj) return true;
+        if(null!=obj && (this.getClass() == obj.getClass())){
+            Usuario usuario = (Usuario) obj;
+            return this.codigoUnico==usuario.codigoUnico;
+        }else{
+            return false;
+        }
+    }
 }

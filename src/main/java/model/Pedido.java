@@ -196,4 +196,41 @@ public class Pedido {
                 repartidor != null ? repartidor.getCodigoUnico() : "",
                 cliente != null ? cliente.getCodigoUnico() : "");
     }
+
+    @Override
+    public boolean equals(Object obj){
+        if(this==obj) return true;
+        if(this.getClass()==obj.getClass()){
+            Pedido pedido = (Pedido) obj;
+            return this.codigoPedido.equalsIgnoreCase(pedido.codigoPedido);
+        }else{
+            return false;
+        }
+    }
+
+        /**
+     * Muestra un mensaje personalizado según el estado del pedido
+     * @param estado Estado actual del pedido
+     */
+    public static void mostrarMensajeSegunEstado(EstadoPedido estado) {
+        if (estado == null) {
+            System.out.println("Estado del pedido: No disponible");
+            return;
+        }
+
+        switch (estado) {
+            case EN_PREPARACION:
+                System.out.println("Su pedido está siendo preparado para su envío.");
+                break;
+            case EN_CAMINO:
+                System.out.println("Su pedido está en camino hacia su dirección.");
+                break;
+            case ENTREGADO:
+                System.out.println("Su pedido ha sido entregado exitosamente.");
+                break;
+            case CANCELADO:
+                System.out.println("Su pedido ha sido cancelado.");
+                break;
+        }
+    }
 }
