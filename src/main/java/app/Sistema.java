@@ -82,7 +82,7 @@ public class Sistema {
                         Printers.printTitle("Bienvenido cliente");
                         System.out.println("Nombre: " + c.getNombre() + " " + c.getApellido());
                         System.out.println("Celular registrado: " + c.getNumeroCelular());
-                        System.out.print("¿Este número de celular es correcto? (S/N): ");
+                        System.out.print("\n¿Este número de celular es correcto? (S/N): ");
                         String verif = scanner.nextLine();
                         if (verif.equalsIgnoreCase("S")) {
                             Printers.printSuccess("¡Identidad confirmada!");
@@ -97,7 +97,7 @@ public class Sistema {
                         Printers.printTitle("Bienvenido repartidor");
                         System.out.println("Nombre: " + r.getNombre() + " " + r.getApellido());
                         System.out.println("Empresa asignada: " + r.getNombreEmpresa());
-                        System.out.print("¿Esta empresa es correcta? (S/N): ");
+                        System.out.print("\n¿Esta empresa es correcta? (S/N): ");
                         String verif = scanner.nextLine();
                         if (verif.equalsIgnoreCase("S")) {
                             Printers.printSuccess("¡Identidad confirmada!");
@@ -142,7 +142,7 @@ public class Sistema {
             System.out.println("1. Comprar");
             System.out.println("2. Gestionar pedido");
             System.out.println("3. Cerrar sesión");
-            System.out.print("Seleccione una opción: ");
+            System.out.print("\nSeleccione una opción: ");
 
             String opcion = scanner.nextLine();
 
@@ -182,7 +182,7 @@ public class Sistema {
             System.out.println("1. Gestionar pedido");
             System.out.println("2. Consultar pedidos asignados");
             System.out.println("3. Cerrar sesión");
-            System.out.print("Seleccione una opción: ");
+            System.out.print("\nSeleccione una opción: ");
 
             String opcion = scanner.nextLine();
 
@@ -222,12 +222,17 @@ public class Sistema {
             ManejadorEmail manejadorEmail) {
         String asunto = "Pedido realizado";
         String cuerpo = String.format(
-                "El cliente %s %s ha realizado un pedido con código %s el día %s.\n\n" +
-                        "Producto: %s\n" +
-                        "Cantidad: %d\n" +
-                        "Valor pagado: $%.2f\n" +
-                        "Estado inicial: %s\n\n" +
-                        "Gracias por su compra. Recibirá actualizaciones del estado de su pedido por este medio.",
+                "<html><body>"+"El/La cliente <strong>%s %s</strong> ha realizado un pedido con código <strong>%s</strong> el día <strong>%s</strong>."+
+                        "<br><br>"+
+                        "Producto: <strong>%s</strong>"+
+                        "<br>"+
+                        "Cantidad: <strong>%d</strong>"+
+                        "<br>"+
+                        "Valor pagado: <strong>$%.2f</strong>"+
+                        "<br>"+
+                        "Estado inicial: <strong>%s</strong>"+
+                        "<br><br>"+
+                        "Gracias por su compra. Recibirá actualizaciones del estado de su pedido por este medio."+"</body></html>",
                 cliente.getNombre(),
                 cliente.getApellido(),
                 pedidoRealizado.getCodigoPedido(),
@@ -236,7 +241,7 @@ public class Sistema {
                 pedidoRealizado.getCantidadProducto(),
                 pedidoRealizado.getTotalPagado(),
                 pedidoRealizado.getEstadoPedido());
-        System.out.println("Enviando correo a " + cliente.getCorreo());
+        System.out.println("Enviando correo al "+Rol.CLIENTE+" "+cliente.getCorreo());
         manejadorEmail.enviarCorreo(cliente.getCorreo(), asunto, cuerpo);
     }
 
@@ -254,14 +259,20 @@ public class Sistema {
             ManejadorEmail manejadorEmail) {
         String asunto = "Nuevo pedido asignado";
         String cuerpo = String.format(
-                "Estimado/a %s %s,\n\n" +
-                        "Se le ha asignado un nuevo pedido con los siguientes detalles:\n\n" +
-                        "Código del pedido: %s\n" +
-                        "Fecha del pedido: %s\n" +
-                        "Cliente: %s %s\n" +
-                        "Estado actual: %s\n\n" +
-                        "Por favor, prepare la logística necesaria para la entrega.\n\n" +
-                        "Gracias por su trabajo.",
+                "<html><body>"+"Estimado/a <strong>%s %s</strong>,"+
+                "<br>"+
+                        "Se le ha asignado un nuevo pedido con los siguientes detalles:"+
+                        "<br><br>"+
+                        "Código del pedido: <strong>%s</strong>"+
+                        "<br>"+
+                        "Fecha del pedido: <strong>%s</strong>"+
+                        "<br>"+
+                        "Cliente: <strong>%s %s</strong>,"+
+                        "<br>"+ 
+                        "Estado actual: <strong>%s</strong>"+
+                        "<br><br>"+
+                        "Por favor, prepare la logística necesaria para la entrega." +
+                        "Gracias por su trabajo."+"</body></html>",
                 repartidor.getNombre(),
                 repartidor.getApellido(),
                 pedidoAsignado.getCodigoPedido(),
@@ -269,7 +280,7 @@ public class Sistema {
                 pedidoAsignado.getCliente().getNombre(),
                 pedidoAsignado.getCliente().getApellido(),
                 pedidoAsignado.getEstadoPedido());
-        System.out.println("Enviando correo a " + repartidor.getCorreo());
+        System.out.println("Enviando correo al "+Rol.REPARTIDOR+" "+repartidor.getCorreo());
         manejadorEmail.enviarCorreo(repartidor.getCorreo(), asunto, cuerpo);
     }
 
@@ -289,18 +300,23 @@ public class Sistema {
             ManejadorEmail manejadorEmail) {
         String asunto = "Actualización del estado de su pedido";
         String cuerpo = String.format(
-                "Estimado/a %s %s,\n\n" +
-                        "Le informamos que el estado de su pedido con código %s ha cambiado a: %s.\n\n" +
-                        "Fecha del pedido: %s\n" +
-                        "Producto: %s\n" +
-                        "Repartidor asignado: %s\n\n" +
-                        "Gracias por confiar en nosotros.",
+                "<html><body>"+"Estimado/a <strong>%s %s</strong>,"+
+                "<br>"+
+                        "Le informamos que el estado de su pedido con código <strong>%s</strong> ha cambiado a: <strong>%s</strong>."+
+                        "<br><br>"+
+                        "Fecha del pedido: <strong>%s</strong>"+
+                        "<br>"+
+                        "Producto: <strong>%s</strong>"+
+                        "<br>"+
+                        "Repartidor asignado: <strong>%s</strong>"+
+                        "<br>"+
+                        "Gracias por confiar en nosotros."+"</body></html>",
                 cliente.getNombre(), cliente.getApellido(),
                 pedido.getCodigoPedido(), nuevoEstado,
                 pedido.getFechaPedido(),
                 pedido.getProducto().getCodigo(),
                 pedido.getRepartidor().getCodigoUnico());
-        System.out.println("Enviando correo a " + cliente.getCorreo());
+        System.out.println("Enviando correo al "+Rol.CLIENTE+" "+cliente.getCorreo());
         manejadorEmail.enviarCorreo(cliente.getCorreo(), asunto, cuerpo);
     }
 }
