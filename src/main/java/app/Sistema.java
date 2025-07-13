@@ -11,7 +11,8 @@ import java.util.Scanner;
 import services.archivos.ManejadorUsuario;
 import services.email.ManejadorEmail;
 import model.Enums.EstadoPedido;
-import model.Enums.Rol;
+
+import utils.Printers;
 
 public class Sistema {
     private static ArrayList<Usuario> usuarios = new ArrayList<>();
@@ -26,6 +27,13 @@ public class Sistema {
 
         boolean salir = false;
         while (!salir) {
+            Printers.printSeparator();
+            Printers.printTitle(String.format(
+                "BIENVENIDO/A A \n"+
+                "DUENAS_ROMERERO_ORTEGA \n"+
+                "DELIVERY SYSTEM"
+                ));
+            Printers.printSeparator();
             System.out.println("1. Iniciar sesión");
             System.out.println("2. Salir del sistema");
             System.out.print("Seleccione una opción: ");
@@ -35,10 +43,19 @@ public class Sistema {
             } else if (opcion.equals("1")) {
                 salir = iniciarSesion(scanner); // Retorna true solo si el usuario elige salir del sistema desde el login
             } else {
-                System.out.println("Opción no válida. Intente nuevamente.");
+                Printers.printError("Opción no válida. Intente nuevamente.");
             }
         }
+        Printers.printSeparator();
+        System.out.println("Apagando sistema...");
+        try {
+            Thread.sleep(1200);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        
         System.out.println("¡Hasta luego!");
+        Printers.printSeparator();
     }
 
     /**
@@ -49,7 +66,7 @@ public class Sistema {
      * @param scanner Scanner para leer la entrada del usuario
      */
     private static boolean iniciarSesion(Scanner scanner) {
-        System.out.println("===== INICIO DE SESIÓN =====");
+        Printers.printTitle("Inicio de sesión");
         boolean sesionIniciada = false;
         while (!sesionIniciada) {
             System.out.print("Usuario: ");
@@ -62,37 +79,34 @@ public class Sistema {
             for (Usuario u : usuarios) {
                 if (u.getUser_name().equals(userInput) && u.getContrasenia().equals(passInput)) {
                     usuarioEncontrado = true;
-                    System.out.println("Usuario autenticado correctamente.");
+                    Printers.printSuccess("Usuario autenticado correctamente.");
 
                     if (u instanceof Cliente c) {
-                        System.out.println(String.format("Rol detectado: %s", Rol.CLIENTE));
-                        System.out.println("Bienvenido, " + c.getNombre() + " " + c.getApellido());
+                        Printers.printTitle("Bienvenido cliente");
+                        System.out.println("Nombre: " + c.getNombre() + " " + c.getApellido());
                         System.out.println("Celular registrado: " + c.getNumeroCelular());
                         System.out.print("¿Este número de celular es correcto? (S/N): ");
                         String verif = scanner.nextLine();
                         if (verif.equalsIgnoreCase("S")) {
-                            System.out.println("¡Identidad confirmada!");
+                            Printers.printSuccess("¡Identidad confirmada!");
                             mostrarMenu(c, scanner);
                             sesionIniciada = true;
                         } else {
-                            System.out.println("Verificación fallida. Cerrando sesión.");
+                            Printers.printError("Verificación fallida. Cerrando sesión.");
                             sesionIniciada = true;
                         }
                     } else if (u instanceof Repartidor r) {
-                        System.out.println("Rol detectado: "+Rol.REPARTIDOR);
-                        System.out.println("Bienvenido, " + r.getNombre() + " " + r.getApellido());
+                        Printers.printTitle("Bienvenido repartidor");
+                        System.out.println("Nombre: " + r.getNombre() + " " + r.getApellido());
                         System.out.println("Empresa asignada: " + r.getNombreEmpresa());
                         System.out.print("¿Esta empresa es correcta? (S/N): ");
                         String verif = scanner.nextLine();
                         if (verif.equalsIgnoreCase("S")) {
-                            System.out.println("¡Identidad confirmada!");
+                            Printers.printSuccess("¡Identidad confirmada!");
                             mostrarMenu(r, scanner);
                             sesionIniciada = true;
                         } else {
-                            System.out.println("Verificación fallida");
-                            System.out.println("Por motivos de seguridad se cerrará la sesion");
-                            System.out.println();
-                            System.out.println("Cerrando sesión...");
+                            Printers.printError("Verificación fallida. Cerrando sesión...");
                             sesionIniciada = true;
                         }
                     }
@@ -101,7 +115,7 @@ public class Sistema {
             }
 
             if (!usuarioEncontrado) {
-                System.out.println("Usuario o contraseña incorrectos. Intente nuevamente.");
+                Printers.printError("Usuario o contraseña incorrectos. Intente nuevamente.");
                 System.out.print("¿Desea salir? (Escriba 'si' para salir o presione Enter para intentar de nuevo): ");
                 String respuesta = scanner.nextLine().trim();
                 if (respuesta.equalsIgnoreCase("si")) {
@@ -125,7 +139,7 @@ public class Sistema {
         boolean continuar = true;
 
         while (continuar) {
-            System.out.println("\n=== Menú Cliente ===");
+            Printers.printTitle("Menú cliente");
             System.out.println("1. Comprar");
             System.out.println("2. Gestionar pedido");
             System.out.println("3. Cerrar sesión");
@@ -138,14 +152,16 @@ public class Sistema {
                     cliente.realizarCompra(usuarios, scanner);
                     break;
                 case "2":
-                    cliente.gestionarPedido( scanner);
+                    cliente.gestionarPedido(scanner);
                     break;
                 case "3":
+                    Printers.printSeparator();
                     System.out.println("Cerrando sesión...");
+                    Printers.printSeparator();
                     continuar = false;
                     break;
                 default:
-                    System.out.println("Opción no válida. Intente nuevamente.");
+                    Printers.printError("Opción no válida. Intente nuevamente.");
                     break;
             }
         }
@@ -162,7 +178,7 @@ public class Sistema {
         boolean continuar = true;
 
         while (continuar) {
-            System.out.println("\n=== Menú Repartidor ===");
+            Printers.printTitle("Menú repartidor");
             System.out.println("1. Gestionar pedido");
             System.out.println("2. Consultar pedidos asignados");
             System.out.println("3. Cerrar sesión");
@@ -172,17 +188,19 @@ public class Sistema {
 
             switch (opcion) {
                 case "1":
-                    repartidor.gestionarPedido( scanner);
+                    repartidor.gestionarPedido(scanner);
                     break;
                 case "2":
                     repartidor.consultarPedidosAsignados();
                     break;
                 case "3":
+                    Printers.printSeparator();
                     System.out.println("Cerrando sesión...");
+                    Printers.printSeparator();
                     continuar = false;
                     break;
                 default:
-                    System.out.println("Opción no válida. Intente nuevamente.");
+                    Printers.printError("Opción no válida. Intente nuevamente.");
                     break;
             }
         }
