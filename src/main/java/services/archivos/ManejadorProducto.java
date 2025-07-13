@@ -11,7 +11,7 @@ import java.util.Locale;
  * Clase que maneja la carga, filtrado, búsqueda y actualización de productos en el sistema.
  */
 public class ManejadorProducto {
-    private static final String PRODUCTOS_FILE = "resources/Productos.txt";
+    private static final String PRODUCTOS_FILE = "PROYECTO 1P/resources/Productos.txt";
 
     /**
      * Carga todos los productos desde el archivo

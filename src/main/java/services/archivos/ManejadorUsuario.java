@@ -12,9 +12,9 @@ import persistence.ManejoArchivos;
  * Clase que maneja la carga y gestión de usuarios, clientes y repartidores desde archivos.
  */
 public class ManejadorUsuario {
-    private static final String USUARIOS_FILE = "resources/Usuarios.txt";
-    private static final String CLIENTES_FILE = "resources/Clientes.txt";
-    private static final String REPARTIDORES_FILE = "resources/Repartidores.txt";
+    private static final String USUARIOS_FILE = "PROYECTO 1P/resources/Usuarios.txt";
+    private static final String CLIENTES_FILE = "PROYECTO 1P/resources/Clientes.txt";
+    private static final String REPARTIDORES_FILE = "PROYECTO 1P/resources/Repartidores.txt";
 
     /**
      * Carga los usuarios desde el archivo de usuarios

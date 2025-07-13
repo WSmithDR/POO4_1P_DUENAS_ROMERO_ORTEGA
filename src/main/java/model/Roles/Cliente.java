@@ -6,11 +6,13 @@ import java.util.Scanner;
 import app.Sistema;
 import model.Enums.Rol;
 import model.Enums.CategoriaProducto;
+import model.Enums.EstadoPedido;
 import model.Producto;
 import model.Pedido;
 import services.archivos.ManejadorPedido;
 import services.archivos.ManejadorProducto;
 import services.email.ManejadorEmail;
+import persistence.ManejoArchivos;
 import java.util.Random;
 
 public class Cliente extends Usuario {
@@ -77,7 +79,156 @@ public class Cliente extends Usuario {
     */
    @Override
    public void gestionarPedido(ArrayList<Pedido> pedidos, Scanner scanner) {
-      ManejadorPedido.gestionarPedido(this, pedidos, scanner);
+      System.out.println("===== CONSULTA DE ESTADO DE PEDIDO =====");
+      System.out.println("Ingrese el código del pedido:");
+      String codPedido = scanner.nextLine().trim();
+
+      if (codPedido.isEmpty()) {
+         System.out.println("El código del pedido no puede estar vacío.");
+         return;
+      }
+
+      consultarPedidoDesdeArchivo(codPedido);
+   }
+
+   /**
+    * Consulta un pedido específico desde el archivo
+    * @param codPedido Código del pedido a consultar
+    */
+   private void consultarPedidoDesdeArchivo(String codPedido) {
+      String[] infoPedido = ManejadorPedido.obtenerInformacionPedidoDesdeArchivo(codPedido, this.getCodigoUnico());
+      
+      if (infoPedido == null) {
+         System.out.println("No se encontró ningún pedido con el código: " + codPedido + " para este cliente.");
+         return;
+      }
+
+      mostrarInformacionPedidoDesdeArchivo(infoPedido);
+   }
+
+   /**
+    * Muestra la información detallada de un pedido desde el archivo
+    * @param infoPedido Array con la información del pedido
+    */
+   private void mostrarInformacionPedidoDesdeArchivo(String[] infoPedido) {
+      String fecha = infoPedido[1];
+      String codigoProducto = infoPedido[2];
+      String cantidad = infoPedido[3];
+      String valorPagado = infoPedido[4];
+      String estadoStr = infoPedido[5];
+      String codigoRepartidor = infoPedido[6];
+
+      // Obtener nombre del producto
+      String nombreProducto = obtenerNombreProducto(codigoProducto);
+      
+      // Obtener nombre del repartidor
+      String nombreRepartidor = obtenerNombreRepartidor(codigoRepartidor);
+      
+      System.out.println("Fecha del pedido: " + fecha);
+      System.out.println("Producto comprado: " + nombreProducto + " (Código: " + codigoProducto + ") Cantidad: " + cantidad);
+      System.out.println("Valor pagado: $" + valorPagado);
+      System.out.println("Estado actual: " + estadoStr);
+      System.out.println("Repartidor: " + nombreRepartidor);
+      System.out.println();
+
+      // Mostrar mensaje según el estado del pedido
+      mostrarMensajeSegunEstado(EstadoPedido.valueOf(estadoStr));
+   }
+
+   /**
+    * Obtiene el nombre de un producto por su código
+    * @param codigoProducto Código del producto
+    * @return Nombre del producto o "Producto no encontrado" si no existe
+    */
+   private String obtenerNombreProducto(String codigoProducto) {
+      String archivoProductos = "PROYECTO 1P/resources/Productos.txt";
+               ArrayList<String> productos = ManejoArchivos.LeeFichero(archivoProductos);
+
+      if (productos == null || productos.isEmpty()) {
+         return "Error al leer archivo de productos";
+      }
+
+      // Buscar desde la última línea hacia la primera para obtener la versión más reciente
+      for (int i = productos.size() - 1; i > 0; i--) {
+         String linea = productos.get(i);
+         if (linea.trim().isEmpty()) {
+            continue;
+         }
+
+         String[] datosP = linea.split("\\|");
+
+         // Validar que el array tenga suficientes elementos
+         if (datosP.length < 5) {
+            continue;
+         }
+
+         // Verificar que el código coincida y retornar la posición 2 del array (nombre)
+         if (datosP[0].equalsIgnoreCase(codigoProducto)) {
+            return datosP[2];
+         }
+      }
+      return "Producto no encontrado";
+   }
+   
+   /**
+    * Obtiene el nombre de un repartidor por su código único
+    * @param codUnico código único del repartidor
+    * @return Nombre del repartidor o "Repartidor no encontrado" si no existe
+    */
+   private String obtenerNombreRepartidor(String codUnico) {
+      String archivoUsuarios = "PROYECTO 1P/resources/Usuarios.txt";
+               ArrayList<String> lineas = ManejoArchivos.LeeFichero(archivoUsuarios);
+
+      if (lineas == null || lineas.isEmpty()) {
+         return "Error al leer archivo de usuarios";
+      }
+
+      // Buscar desde la última línea hacia la primera para obtener la versión más reciente
+      for (int i = lineas.size() - 1; i > 0; i--) {
+         String linea = lineas.get(i);
+         if (linea.trim().isEmpty()) {
+            continue;
+         }
+
+            String[] datosU = linea.split("\\|");
+
+            // Validar que el array tenga suficientes elementos
+            if (datosU.length < 8) {
+               continue;
+            }
+
+         // Verificar que sea un repartidor (R) y que el codUnico coincidan
+         if (datosU[7].equals("R") && datosU[0].equals(codUnico)) {
+            return datosU[2] + " " + datosU[3]; // nombres + apellidos
+         }
+      }
+      return "Repartidor no encontrado";
+   }
+   
+   /**
+    * Muestra un mensaje personalizado según el estado del pedido
+    * @param estado Estado actual del pedido
+    */
+   private void mostrarMensajeSegunEstado(EstadoPedido estado) {
+      if (estado == null) {
+         System.out.println("Estado del pedido: No disponible");
+         return;
+      }
+
+      switch (estado) {
+         case EN_PREPARACION:
+            System.out.println("Su pedido está siendo preparado para su envío.");
+            break;
+         case EN_CAMINO:
+            System.out.println("Su pedido está en camino hacia su dirección.");
+            break;
+         case ENTREGADO:
+            System.out.println("Su pedido ha sido entregado exitosamente.");
+            break;
+         case CANCELADO:
+            System.out.println("Su pedido ha sido cancelado.");
+            break;
+      }
    }
 
    /**
