@@ -26,7 +26,17 @@ public class Sistema {
 
         boolean salir = false;
         while (!salir) {
-            salir = iniciarSesion(scanner); // Retorna true solo si el usuario elige salir del sistema
+            System.out.println("1. Iniciar sesión");
+            System.out.println("2. Salir del sistema");
+            System.out.print("Seleccione una opción: ");
+            String opcion = scanner.nextLine();
+            if (opcion.equals("2")) {
+                salir = true;
+            } else if (opcion.equals("1")) {
+                salir = iniciarSesion(scanner); // Retorna true solo si el usuario elige salir del sistema desde el login
+            } else {
+                System.out.println("Opción no válida. Intente nuevamente.");
+            }
         }
         System.out.println("¡Hasta luego!");
     }
@@ -38,26 +48,11 @@ public class Sistema {
      * 
      * @param scanner Scanner para leer la entrada del usuario
      */
-        private static boolean iniciarSesion(Scanner scanner) {
-        while (true) {
-            System.out.println("1. Iniciar sesión");
-            System.out.println("2. Salir del sistema");
-            System.out.print("Seleccione una opción: ");
-            String opcion = scanner.nextLine();
-
-            if (opcion.equals("2")) {
-                return true; // Salir del sistema
-            } else if (opcion.equals("1")) {
-                System.out.println("===== INICIO DE SESIÓN =====");
-                break; // Continuar con el login
-            } else {
-                System.out.println("Opción no válida. Intente nuevamente.");
-            }
-        }
-
-    boolean sesionIniciada = false;
-    while (!sesionIniciada) {
-        System.out.print("Usuario: ");
+    private static boolean iniciarSesion(Scanner scanner) {
+        System.out.println("===== INICIO DE SESIÓN =====");
+        boolean sesionIniciada = false;
+        while (!sesionIniciada) {
+            System.out.print("Usuario: ");
             String userInput = scanner.nextLine();
             System.out.print("Contraseña: ");
             String passInput = scanner.nextLine();
@@ -107,6 +102,12 @@ public class Sistema {
 
             if (!usuarioEncontrado) {
                 System.out.println("Usuario o contraseña incorrectos. Intente nuevamente.");
+                System.out.print("¿Desea salir? (Escriba 'si' para salir o presione Enter para intentar de nuevo): ");
+                String respuesta = scanner.nextLine().trim();
+                if (respuesta.equalsIgnoreCase("si")) {
+                    System.out.println("Regresando al menú principal...");
+                    return false;
+                }
                 System.out.println();
             }
         }
