@@ -15,9 +15,6 @@ import model.Enums.Rol;
 
 public class Sistema {
     private static ArrayList<Usuario> usuarios = new ArrayList<>();
-    //private static ArrayList<Producto> productos = new ArrayList<>();
-    //private static ArrayList<Pedido> pedidos = new ArrayList<>();
-
     /**
      * Inicia el sistema: carga usuarios, productos
      * y pedidos, y muestra la pantalla de inicio de sesión.
@@ -26,8 +23,6 @@ public class Sistema {
      */
     public static void iniciar(Scanner scanner) {
         usuarios = ManejadorUsuario.cargarUsuarios();
-        //productos = ManejadorProducto.cargarProductos();
-        //pedidos = ManejadorPedido.cargarPedidos(usuarios, productos);
 
         boolean salir = false;
         while (!salir) {
