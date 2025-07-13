@@ -5,6 +5,7 @@ import model.Enums.CategoriaProducto;
 
 import java.util.ArrayList;
 import java.util.Locale;
+import utils.Printers;
 
 
 public class ManejadorProducto {
@@ -81,15 +82,15 @@ public class ManejadorProducto {
                 categoriasDisponibles.add(categoria);
             }
         }
-        if (categoriasDisponibles.size() > 0) {
-            System.out.println("\nCategorías disponibles:");
-            // Mostrar las categorías encontradas en la consola
+        Printers.printTitle("CATEGORÍAS DISPONIBLES");
+        
+        if (categoriasDisponibles.isEmpty()) {
+            Printers.printInfo("NO hay categorias que mostrar");
+            Printers.printInfo("Todos los productos estan fuera de stock");
+        }else{
             for (int i = 0; i < categoriasDisponibles.size(); i++) {
                 System.out.println((i + 1) + ". " + categoriasDisponibles.get(i));
             }
-        } else {
-            System.out.println("NO hay categorias que mostrar");
-            System.out.println("Todos los productos estan fuera de stock");
         }
 
         return categoriasDisponibles;

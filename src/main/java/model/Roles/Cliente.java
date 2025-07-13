@@ -14,6 +14,7 @@ import services.archivos.ManejadorProducto;
 import services.archivos.ManejadorUsuario;
 import services.email.ManejadorEmail;
 import utils.ManejoFechas;
+import utils.Printers;
 
 import java.util.Random;
 
@@ -92,7 +93,7 @@ public class Cliente extends Usuario {
       if (productoPedido != null) {
          nombreProducto = productoPedido.getNombre();
       } else {
-         System.out.println("WARNING: No se pudo hallar el producto del pedido");
+         Printers.printWarning("No se pudo hallar el producto del pedido");
       }
       
       // Obtener nombre del repartidor
@@ -106,9 +107,11 @@ public class Cliente extends Usuario {
             repartidor.getNombre(),
             repartidor.getApellido());
          }else{
-            System.out.println("WARNING: No se pudo hallar el repartidor del pedido");
+            Printers.printWarning("No se pudo hallar el repartidor del pedido");
          }
          
+      Printers.printLine();
+      //System.out.println(String.format("=====PEDIDO: %s ======",pedido.getCodigoPedido()));   
       System.out.println("Fecha del pedido: " + ManejoFechas.setFechaSimple(pedido.getFechaPedido()));
       System.out.println("Producto comprado: " + nombreProducto + " (Código: " + pedido.getProducto().getCodigo()+ ")");
             System.out.println("Cantidad: " + pedido.getCantidadProducto());
@@ -116,7 +119,7 @@ public class Cliente extends Usuario {
       System.out.println("Estado actual: " + pedido.getEstadoPedido());
       System.out.println("Repartidor: " + nombreRepartidor);
       System.out.println();
-
+      Printers.printLine();
       // Mostrar mensaje según el estado del pedido
       Pedido.mostrarMensajeSegunEstado(pedido.getEstadoPedido());
    }
@@ -139,7 +142,7 @@ public class Cliente extends Usuario {
          }
       }
       if (!pedidoEncontrado) {
-         System.out.println("No se encontró ningún pedido con el código: " + codPedido + " para este cliente.");
+         Printers.printWarning("No se encontró ningún pedido con el código: " + codPedido + " para este cliente.");
       }
    }
 
@@ -148,12 +151,12 @@ public class Cliente extends Usuario {
     */
    @Override
    public void gestionarPedido(Scanner scanner) {
-      System.out.println("===== CONSULTA DE ESTADO DE PEDIDO =====");
+      Printers.printTitle("CONSULTA DE ESTADO DE PEDIDO");
       System.out.print("Ingrese el código del pedido: ");
       String codPedido = scanner.nextLine().trim();
 
       if (codPedido.isEmpty()) {
-         System.out.println("El código del pedido no puede estar vacío.");
+         Printers.printError("El código del pedido no puede estar vacío.");
          return;
       }
 
@@ -171,7 +174,7 @@ public class Cliente extends Usuario {
    public void realizarCompra(ArrayList<Usuario> usuarios,
          Scanner scanner) {
       ArrayList<Producto> productos = ManejadorProducto.cargarProductos();
-      System.out.println("\n=== COMPRAR PRODUCTO ===");
+      Printers.printTitle("COMPRAR PRODUCTO");
 
       CategoriaProducto categoriaElegida = seleccionarCategoria(productos, scanner);
       if (categoriaElegida == null)
@@ -182,8 +185,10 @@ public class Cliente extends Usuario {
          return;
 
       int cantidad = seleccionarCantidad(productoElegido, scanner);
-      if (cantidad <= 0)
+      if (cantidad <= 0) {
+         Printers.printError("Cantidad inválida");
          return;
+      }
 
       if (!confirmarCompra(productoElegido, cantidad, scanner))
          return;
@@ -201,7 +206,7 @@ public class Cliente extends Usuario {
       int opcionCategoria = Integer.parseInt(scanner.nextLine()) - 1;
 
       if (opcionCategoria < 0 || opcionCategoria >= catProdDisponibles.size()) {
-         System.out.println("Opción inválida");
+         Printers.printError("Opción inválida");
          return null;
       }
 
@@ -215,10 +220,10 @@ public class Cliente extends Usuario {
       ArrayList<Producto> productosCategoria = ManejadorProducto.obtenerProductosPorCategoria(productos, categoria);
 
       if (productosCategoria.isEmpty()) {
-         System.out.println("No hay productos en esta categoría");
+         Printers.printInfo("No hay productos en esta categoría");
          return null;
       }
-
+      Printers.printLine();
       System.out.println("\nProductos disponibles:");
       for (int i = 0; i < productosCategoria.size(); i++) {
          Producto p = productosCategoria.get(i);
@@ -229,7 +234,7 @@ public class Cliente extends Usuario {
       int opcionProducto = Integer.parseInt(scanner.nextLine()) - 1;
 
       if (opcionProducto < 0 || opcionProducto >= productosCategoria.size()) {
-         System.out.println("Opción inválida");
+         Printers.printError("Opción inválida");
          return null;
       }
 
@@ -244,7 +249,7 @@ public class Cliente extends Usuario {
       int cantidad = Integer.parseInt(scanner.nextLine());
 
       if (cantidad <= 0 || cantidad > producto.getStock()) {
-         System.out.println("Cantidad inválida");
+         Printers.printError("Cantidad inválida");
          return -1;
       }
 
@@ -262,7 +267,7 @@ public class Cliente extends Usuario {
       String confirmar = scanner.nextLine().toLowerCase();
 
       if (!confirmar.equals("s") && !confirmar.equals("si")) {
-         System.out.println("Compra cancelada");
+         Printers.printInfo("Compra cancelada");
          return false;
       }
 
@@ -276,7 +281,7 @@ public class Cliente extends Usuario {
       // Buscar repartidor disponible
       Repartidor repartidorElegido = buscarRepartidorAleatorio(usuarios);
       if (repartidorElegido == null) {
-         System.out.println("No hay repartidores disponibles");
+         Printers.printInfo("No hay repartidores disponibles");
          return;
       }
 

@@ -10,6 +10,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import services.env.EnvReader;
+import utils.Printers;
 
 /**
  * Clase que gestiona el envío de correos electrónicos utilizando SMTP y credenciales del sistema.
@@ -65,7 +66,7 @@ public class ManejadorEmail {
             System.out.println("Correo enviado a " + mailTo);
             return true;
         } catch (Exception e) {
-            System.err.println("Error enviando correo: " + e.getMessage());
+            Printers.printError("Error enviando correo: " + e.getMessage());
             return false;
         }
     }

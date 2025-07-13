@@ -13,6 +13,7 @@ import services.email.ManejadorEmail;
 import model.Enums.EstadoPedido;
 
 import utils.Printers;
+import utils.Time;
 
 public class Sistema {
     private static ArrayList<Usuario> usuarios = new ArrayList<>();
@@ -47,14 +48,10 @@ public class Sistema {
             }
         }
         Printers.printSeparator();
-        System.out.println("Apagando sistema...");
-        try {
-            Thread.sleep(1200);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
+        Printers.printInfo("Apagando sistema...");
+        Time.sleep();
         
-        System.out.println("¡Hasta luego!");
+        Printers.printInfo("¡Hasta luego!");
         Printers.printSeparator();
     }
 
@@ -93,6 +90,7 @@ public class Sistema {
                             sesionIniciada = true;
                         } else {
                             Printers.printError("Verificación fallida. Cerrando sesión.");
+                            Time.sleep();
                             sesionIniciada = true;
                         }
                     } else if (u instanceof Repartidor r) {
@@ -107,6 +105,7 @@ public class Sistema {
                             sesionIniciada = true;
                         } else {
                             Printers.printError("Verificación fallida. Cerrando sesión...");
+                            Time.sleep();
                             sesionIniciada = true;
                         }
                     }
@@ -119,7 +118,7 @@ public class Sistema {
                 System.out.print("¿Desea salir? (Escriba 'si' para salir o presione Enter para intentar de nuevo): ");
                 String respuesta = scanner.nextLine().trim();
                 if (respuesta.equalsIgnoreCase("si")) {
-                    System.out.println("Regresando al menú principal...");
+                    Printers.printInfo("Regresando al menú principal...");
                     return false;
                 }
                 System.out.println();
@@ -156,8 +155,9 @@ public class Sistema {
                     break;
                 case "3":
                     Printers.printSeparator();
-                    System.out.println("Cerrando sesión...");
+                    Printers.printInfo("Cerrando sesión...");
                     Printers.printSeparator();
+                    Time.sleep();
                     continuar = false;
                     break;
                 default:
@@ -195,8 +195,9 @@ public class Sistema {
                     break;
                 case "3":
                     Printers.printSeparator();
-                    System.out.println("Cerrando sesión...");
+                    Printers.printInfo("Cerrando sesión...");
                     Printers.printSeparator();
+                    Time.sleep();
                     continuar = false;
                     break;
                 default:

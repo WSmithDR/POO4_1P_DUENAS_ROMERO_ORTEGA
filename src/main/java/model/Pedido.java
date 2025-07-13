@@ -7,6 +7,7 @@ import model.Roles.Repartidor;
 import services.archivos.ManejadorPedido;
 import utils.ManejoFechas;
 import java.util.Locale;
+import utils.Printers;
 
 /**
  * Clase que representa un pedido en el sistema
@@ -66,15 +67,6 @@ public class Pedido {
     public String obtenerCodigo() {
         return this.codigoPedido;
     }
-
-    /**
-     * Obtiene la fecha del pedido en formato simple (dd/MM/yyyy).
-     * 
-     * @return Fecha del pedido en formato String
-     */
-    /*public String getFechaSimple() {
-        return ManejoFechas.getFechaSimple(this.fechaPedido);
-    }*/
 
     /**
      * Obtiene la fecha del pedido.
@@ -214,22 +206,22 @@ public class Pedido {
      */
     public static void mostrarMensajeSegunEstado(EstadoPedido estado) {
         if (estado == null) {
-            System.out.println("Estado del pedido: No disponible");
+            Printers.printInfo("Estado del pedido: No disponible");
             return;
         }
 
         switch (estado) {
             case EN_PREPARACION:
-                System.out.println("Su pedido está siendo preparado para su envío.");
+                Printers.printInfo("Su pedido está siendo preparado para su envío.");
                 break;
             case EN_CAMINO:
-                System.out.println("Su pedido está en camino hacia su dirección.");
+                Printers.printInfo("Su pedido está en camino hacia su dirección.");
                 break;
             case ENTREGADO:
-                System.out.println("Su pedido ha sido entregado exitosamente.");
+                Printers.printSuccess("Su pedido ha sido entregado exitosamente.");
                 break;
             case CANCELADO:
-                System.out.println("Su pedido ha sido cancelado.");
+                Printers.printInfo("Su pedido ha sido cancelado.");
                 break;
         }
     }

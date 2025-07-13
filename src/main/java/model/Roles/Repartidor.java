@@ -10,6 +10,8 @@ import services.archivos.ManejadorPedido;
 import services.email.ManejadorEmail;
 import utils.ManejoFechas;
 import model.Pedido;
+import utils.Printers;
+import utils.Time;
 
 public class Repartidor extends Usuario {
     private String nombreEmpresa;
@@ -60,9 +62,10 @@ public class Repartidor extends Usuario {
      * @param pedidos    Lista de todos los pedidos
      */
     public void consultarPedidosAsignados() {
-        System.out.println("\n===== PEDIDOS ASIGNADOS =====");
-        System.out.println("Buscando pedidos asignados no entregados...\n");
-
+        Printers.printTitle("PEDIDOS ASIGNADOS");
+        Printers.printLine();
+        Printers.printInfo("Buscando pedidos asignados no entregados...\n");
+        Time.sleep();
         ArrayList<Pedido> pedidosAsignados = new ArrayList<>();
 
         // Buscar pedidos asignados a este repartidor que no estén entregados
@@ -74,11 +77,11 @@ public class Repartidor extends Usuario {
         }
 
         if (pedidosAsignados.isEmpty()) {
-            System.out.println("No tienes pedidos asignados pendientes.");
+            Printers.printInfo("No tienes pedidos asignados pendientes.");
             return;
         }
-
-        System.out.println("Pedidos encontrados:\n");
+        Printers.printSuccess("Pedidos encontrados:");
+        Printers.printLine();
 
         // Mostrar cada pedido
         for (int i = 0; i < pedidosAsignados.size(); i++) {
@@ -104,38 +107,38 @@ public class Repartidor extends Usuario {
         EstadoPedido estadoActual = pedido.getEstadoPedido();
         ManejadorEmail manejadorEmail = new ManejadorEmail();
         if (estadoActual == EstadoPedido.EN_PREPARACION) {
-            System.out.println("\nSeleccione el nuevo estado:");
+            Printers.printTitle("Seleccione el nuevo estado del pedido");
             System.out.println("1. " + EstadoPedido.EN_CAMINO.getDescripcion());
             System.out.println("2. " + EstadoPedido.ENTREGADO.getDescripcion());
             System.out.print("Opción: ");
             int opcion = Integer.parseInt(scanner.nextLine());
             if (opcion == 1) {
                 pedido.setEstadoPedido(EstadoPedido.EN_CAMINO);
-                System.out.println("Estado actualizado correctamente a " + EstadoPedido.EN_CAMINO.getDescripcion() + ".");
+                Printers.printSuccess("Estado actualizado correctamente a " + EstadoPedido.EN_CAMINO.getDescripcion() + ".");
                 Sistema.notificar(pedido.getCliente(), pedido, EstadoPedido.EN_CAMINO, manejadorEmail);
                 services.archivos.ManejadorPedido.guardarPedido(pedido);
             } else if (opcion == 2) {
-                System.out.println("\nError: No puede cambiar directamente de " + EstadoPedido.EN_PREPARACION.getDescripcion() + " a " + EstadoPedido.ENTREGADO.getDescripcion() + ". Debe cambiar primero a " + EstadoPedido.EN_CAMINO.getDescripcion() + ".");
+                Printers.printError("No puede cambiar directamente de " + EstadoPedido.EN_PREPARACION.getDescripcion() + " a " + EstadoPedido.ENTREGADO.getDescripcion() + ". Debe cambiar primero a " + EstadoPedido.EN_CAMINO.getDescripcion() + ".");
                 mostrarOpcionesEstado(pedido, scanner); 
                 // Mostrar opciones nuevamente aplicando recursividad
             } else {
-                System.out.println("Opción inválida.");
+                Printers.printError("Opción inválida.");
             }
         } else if (estadoActual == EstadoPedido.EN_CAMINO) {
-            System.out.println("\nSeleccione el nuevo estado:");
+            Printers.printTitle("Seleccione el nuevo estado");
             System.out.println("1. " + EstadoPedido.ENTREGADO.getDescripcion());
             System.out.print("Opción: ");
             int opcion = Integer.parseInt(scanner.nextLine());
             if (opcion == 1) {
                 pedido.setEstadoPedido(EstadoPedido.ENTREGADO);
-                System.out.println("Estado actualizado correctamente a " + EstadoPedido.ENTREGADO.getDescripcion() + ".");
+                Printers.printSuccess("Estado actualizado correctamente a " + EstadoPedido.ENTREGADO.getDescripcion() + ".");
                 Sistema.notificar(pedido.getCliente(), pedido, EstadoPedido.ENTREGADO, manejadorEmail);
                 services.archivos.ManejadorPedido.guardarPedido(pedido);
             } else {
-                System.out.println("Opción inválida.");
+                Printers.printError("Opción inválida.");
             }
         } else {
-            System.out.println("No se pueden realizar cambios en el estado actual: " + estadoActual.getDescripcion());
+            Printers.printWarning("No se pueden realizar cambios en el estado actual: " + estadoActual.getDescripcion());
         }
     }
 
@@ -161,31 +164,27 @@ public class Repartidor extends Usuario {
      * @param scanner    Scanner para leer entrada
      */
     private void cambiarEstadoPedido(Repartidor repartidor, Scanner scanner) {
-        System.out.println("===== GESTIONAR ESTADO DE PEDIDO =====");
+        Printers.printTitle("GESTIONAR ESTADO DE PEDIDO");
+        Printers.printLine();
         boolean continuar = true;
         while (continuar) {
-            System.out.println("Ingrese el código del pedido que desea gestionar");
-            System.out.println("O escriba \"salir\" para cancelar la operacion");
             System.out.print("Codigo: ");
             String codigoPedido = scanner.nextLine().trim();
             if (codigoPedido.equalsIgnoreCase("salir")) {
-                System.out.println("Operación cancelada.");
+                Printers.printInfo("Operación cancelada.");
                 continuar = false;
                 continue;
             }
             // Buscar el pedido (no case sensitive)
             Pedido pedidoAModificar = buscarPedidoPorCodigo(codigoPedido);
             if (pedidoAModificar == null) {
-                System.out.println("Código no válido.");
-                System.out.print("¿Desea salir? (Escriba 'si' para salir o presione Enter para intentar de nuevo): ");
-                String respuesta = scanner.nextLine().trim();
-                if (respuesta.equalsIgnoreCase("si")) {
-                    System.out.println("Operación cancelada.");
-                    continuar = false;
-                }
-                // Si no, el ciclo continúa
+                Printers.printError("Código no válido.");
+                System.out.println("Oprima ENTER para continuar intentandolo");
+                scanner.nextLine();
+                continue;
             } else {
-                System.out.println("\nPedido encontrado:");
+                Printers.printSuccess("Pedido encontrado:");
+                Printers.printLine();
                 System.out
                         .println("Fecha del pedido: " + ManejoFechas.setFechaSimple(pedidoAModificar.getFechaPedido()) +
                                 " \nCódigo del producto: " + pedidoAModificar.getProducto().getCodigo() +
@@ -205,9 +204,10 @@ public class Repartidor extends Usuario {
      */
     @Override
     public void gestionarPedido(Scanner scanner) {
-        System.out.println("\n===== GESTIÓN DE PEDIDOS - REPARTIDOR =====");
-        System.out.println("Repartidor: " + this.getNombre() + " " + this.getApellido());
-        System.out.println("Empresa: " + this.getNombreEmpresa());
+        Printers.printTitle("GESTIÓN DE PEDIDOS - REPARTIDOR");
+        Printers.printInfo("Repartidor: " + this.getNombre() + " " + this.getApellido());
+        Printers.printInfo("Empresa: " + this.getNombreEmpresa());
+        Printers.printLine();
 
         
         boolean continuar = true;
@@ -222,10 +222,9 @@ public class Repartidor extends Usuario {
                 continuar = false;
             }
             else {
-                System.out.println("!Escriba una respuesta valida!");
-                System.out.println("O escriba \"salir\" para cancelar");
-                System.out.println("Oprima ENTER para continuar intentandolo");
-                System.out.print("Tu respuesta: ");
+                Printers.printInfo("!Escriba una respuesta valida!");
+                Printers.printInfo("O escriba \"salir\" para cancelar");
+                Printers.printInfo("Oprima ENTER para continuar intentandolo");
                 String salir = scanner.nextLine().trim();
                 if(salir.equalsIgnoreCase("salir")){
                     continuar = false;

@@ -6,6 +6,7 @@ import model.Enums.Rol;
 import model.Roles.Cliente;
 import model.Roles.Repartidor;
 import model.Roles.Usuario;
+import utils.Printers;
 
 /**
  * Clase que maneja la carga y gestión de usuarios, clientes y repartidores desde archivos.
@@ -75,7 +76,7 @@ public class ManejadorUsuario {
                 }
             }
         } catch (Exception e) {
-            System.out.println("Error cargando usuarios: " + e.getMessage());
+            Printers.printError("Error cargando usuarios: " + e.getMessage());
         }
         return usuarios;
     }

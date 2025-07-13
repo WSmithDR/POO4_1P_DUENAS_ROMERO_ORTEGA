@@ -5,6 +5,7 @@ import model.Producto;
 import model.Roles.Cliente;
 import model.Roles.Repartidor;
 import utils.ManejoFechas;
+import utils.Printers;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -45,7 +46,7 @@ public class ManejadorPedido {
             String lineaPedido = pedido.toFileFormat();
             ManejadorArchivos.EscribirArchivo(PEDIDOS_FILE, lineaPedido);
         } catch (Exception e) {
-            System.out.println("Error guardando pedido: " + e.getMessage());
+            Printers.printError("Error guardando pedido: " + e.getMessage());
         }
     }
 
@@ -87,7 +88,7 @@ public class ManejadorPedido {
                 }
             }
         } catch (Exception e) {
-            System.out.println("Error cargando pedidos: " + e.getMessage());
+            Printers.printError("Error cargando pedidos: " + e.getMessage());
         }
         return pedidos;
     }
@@ -129,7 +130,7 @@ public class ManejadorPedido {
                 }
             }
         } catch (Exception e) {
-            System.out.println("Error cargando pedidos del cliente: " + e.getMessage());
+            Printers.printError("Error cargando pedidos del cliente: " + e.getMessage());
         }
         return pedidosCliente;
     }

@@ -1,5 +1,6 @@
 package model.Enums;
 
+import utils.Printers;
 
 public enum CategoriaProducto {
     TECNOLOGIA("Tecnología"),
@@ -37,7 +38,7 @@ public enum CategoriaProducto {
                 return categoria;
             }
         }
-        System.out.println("[ADVERTENCIA] No se encontró una categoría para la descripción: " + descripcion);
+        Printers.printInfo("No se encontró una categoría para la descripción: " + descripcion);
         return null;
     }
 
