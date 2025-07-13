@@ -61,7 +61,7 @@ public class Repartidor extends Usuario {
      * @param repartidor Repartidor que consulta
      * @param pedidos    Lista de todos los pedidos
      */
-    public void consultarPedidosAsignados() {
+    public boolean consultarPedidosAsignados() {
         Printers.printTitle("PEDIDOS ASIGNADOS");
         Printers.printLine();
         Printers.printInfo("Buscando pedidos asignados no entregados...\n");
@@ -78,7 +78,7 @@ public class Repartidor extends Usuario {
 
         if (pedidosAsignados.isEmpty()) {
             Printers.printInfo("No tienes pedidos asignados pendientes.");
-            return;
+            return false;
         }
         Printers.printSuccess("Pedidos encontrados:");
         Printers.printLine();
@@ -95,6 +95,7 @@ public class Repartidor extends Usuario {
         System.out.println("Total de pedidos pendientes: " + pedidosAsignados.size());
         System.out.println("Recuerde que solo puede gestionar los pedidos que se encuentren "
                 + EstadoPedido.EN_PREPARACION.getDescripcion() + " o " + EstadoPedido.EN_CAMINO.getDescripcion() + ".");
+                return true;
     }
 
     /**
@@ -209,29 +210,30 @@ public class Repartidor extends Usuario {
         Printers.printInfo("Empresa: " + this.getNombreEmpresa());
         Printers.printLine();
 
-        
         boolean continuar = true;
         do {
-            consultarPedidosAsignados();
-            // Opción para cambiar estado de pedidos
-            System.out.print("\n¿Desea cambiar el estado de algún pedido? (s/n): ");
-            String respuesta = scanner.nextLine().toLowerCase().trim();
-            if (respuesta.equals("s") || respuesta.equals("si")) {
-                cambiarEstadoPedido(this, scanner);
-            }else if(respuesta.equalsIgnoreCase("n") || respuesta.equalsIgnoreCase("no")){
+            boolean tienePedidos = consultarPedidosAsignados();
+            // Solo mostrar la opción si hay pedidos asignados
+            if (tienePedidos) {
+                System.out.print("\n¿Desea cambiar el estado de algún pedido? (s/n): ");
+                String respuesta = scanner.nextLine().toLowerCase().trim();
+                if (respuesta.equals("s") || respuesta.equals("si")) {
+                    cambiarEstadoPedido(this, scanner);
+                } else if (respuesta.equalsIgnoreCase("n") || respuesta.equalsIgnoreCase("no")) {
+                    continuar = false;
+                } else {
+                    Printers.printInfo("!Escriba una respuesta valida!");
+                    Printers.printInfo("O escriba \"salir\" para cancelar");
+                    Printers.printInfo("Oprima ENTER para continuar intentandolo");
+                    String salir = scanner.nextLine().trim();
+                    if (salir.equalsIgnoreCase("salir")) {
+                        continuar = false;
+                    }
+                }
+            } else {
                 continuar = false;
             }
-            else {
-                Printers.printInfo("!Escriba una respuesta valida!");
-                Printers.printInfo("O escriba \"salir\" para cancelar");
-                Printers.printInfo("Oprima ENTER para continuar intentandolo");
-                String salir = scanner.nextLine().trim();
-                if(salir.equalsIgnoreCase("salir")){
-                    continuar = false;
-                }
-            }
         } while (continuar);
-
     }
 
     @Override

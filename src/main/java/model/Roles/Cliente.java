@@ -147,11 +147,32 @@ public class Cliente extends Usuario {
    }
 
    /**
-    * Consulta el estado de los pedidos del cliente
+    * Muestra la lista de pedidos del cliente con formato similar al repartidor
     */
+   private void mostrarListaPedidos() {
+      ArrayList<Pedido> pedidos = services.archivos.ManejadorPedido.cargarPedidosCliente(this);
+      if (pedidos.isEmpty()) {
+         Printers.printInfo("No tienes pedidos registrados.");
+         return;
+      }
+      Printers.printTitle("TUS PEDIDOS");
+      for (int i = 0; i < pedidos.size(); i++) {
+         Pedido pedido = pedidos.get(i);
+         System.out.println((i + 1) + ". Código: " + pedido.getCodigoPedido());
+         System.out.println("   Fecha: " + utils.ManejoFechas.setFechaSimple(pedido.getFechaPedido()));
+         System.out.println("   Estado: " + pedido.getEstadoPedido());
+         Printers.printLine();
+      }
+   }
+
    @Override
    public void gestionarPedido(Scanner scanner) {
       Printers.printTitle("CONSULTA DE ESTADO DE PEDIDO");
+      mostrarListaPedidos();
+      ArrayList<Pedido> pedidos = services.archivos.ManejadorPedido.cargarPedidosCliente(this);
+      if (pedidos.isEmpty()) {
+         return;
+      }
       System.out.print("Ingrese el código del pedido: ");
       String codPedido = scanner.nextLine().trim();
 
