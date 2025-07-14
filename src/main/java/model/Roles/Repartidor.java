@@ -94,7 +94,7 @@ public class Repartidor extends Usuario {
 
         System.out.println("Total de pedidos pendientes: " + pedidosAsignados.size());
         System.out.println("Recuerde que solo puede gestionar los pedidos que se encuentren "
-                + EstadoPedido.EN_PREPARACION.getDescripcion() + " o " + EstadoPedido.EN_CAMINO.getDescripcion() + ".");
+                + EstadoPedido.EN_PREPARACION + " o " + EstadoPedido.EN_CAMINO + ".");
                 return true;
     }
 
@@ -109,17 +109,17 @@ public class Repartidor extends Usuario {
         ManejadorEmail manejadorEmail = new ManejadorEmail();
         if (estadoActual == EstadoPedido.EN_PREPARACION) {
             Printers.printTitle("Seleccione el nuevo estado del pedido");
-            System.out.println("1. " + EstadoPedido.EN_CAMINO.getDescripcion());
-            System.out.println("2. " + EstadoPedido.ENTREGADO.getDescripcion());
+            System.out.println("1. " + EstadoPedido.EN_CAMINO);
+            System.out.println("2. " + EstadoPedido.ENTREGADO);
             System.out.print("Opción: ");
             int opcion = Integer.parseInt(scanner.nextLine());
             if (opcion == 1) {
                 pedido.setEstadoPedido(EstadoPedido.EN_CAMINO);
-                Printers.printSuccess("Estado actualizado correctamente a " + EstadoPedido.EN_CAMINO.getDescripcion() + ".");
+                Printers.printSuccess("Estado actualizado correctamente a " + EstadoPedido.EN_CAMINO + ".");
                 Sistema.notificar(pedido, EstadoPedido.EN_CAMINO, manejadorEmail);
-                services.archivos.ManejadorPedido.guardarPedido(pedido);
+                ManejadorPedido.guardarPedido(pedido);
             } else if (opcion == 2) {
-                Printers.printError("No puede cambiar directamente de " + EstadoPedido.EN_PREPARACION.getDescripcion() + " a " + EstadoPedido.ENTREGADO.getDescripcion() + ". Debe cambiar primero a " + EstadoPedido.EN_CAMINO.getDescripcion() + ".");
+                Printers.printError("No puede cambiar directamente de " + EstadoPedido.EN_PREPARACION + " a " + EstadoPedido.ENTREGADO + ". Debe cambiar primero a " + EstadoPedido.EN_CAMINO + ".");
                 mostrarOpcionesEstado(pedido, scanner); 
                 // Mostrar opciones nuevamente aplicando recursividad
             } else {
@@ -127,19 +127,19 @@ public class Repartidor extends Usuario {
             }
         } else if (estadoActual == EstadoPedido.EN_CAMINO) {
             Printers.printTitle("Seleccione el nuevo estado");
-            System.out.println("1. " + EstadoPedido.ENTREGADO.getDescripcion());
+            System.out.println("1. " + EstadoPedido.ENTREGADO);
             System.out.print("Opción: ");
             int opcion = Integer.parseInt(scanner.nextLine());
             if (opcion == 1) {
                 pedido.setEstadoPedido(EstadoPedido.ENTREGADO);
-                Printers.printSuccess("Estado actualizado correctamente a " + EstadoPedido.ENTREGADO.getDescripcion() + ".");
+                Printers.printSuccess("Estado actualizado correctamente a " + EstadoPedido.ENTREGADO + ".");
                 Sistema.notificar(pedido, EstadoPedido.ENTREGADO, manejadorEmail);
-                services.archivos.ManejadorPedido.guardarPedido(pedido);
+                ManejadorPedido.guardarPedido(pedido);
             } else {
                 Printers.printError("Opción inválida.");
             }
         } else {
-            Printers.printWarning("No se pueden realizar cambios en el estado actual: " + estadoActual.getDescripcion());
+            Printers.printWarning("No se pueden realizar cambios en el estado actual: " + estadoActual);
         }
     }
 
@@ -166,6 +166,7 @@ public class Repartidor extends Usuario {
      */
     private void cambiarEstadoPedido(Repartidor repartidor, Scanner scanner) {
         Printers.printTitle("GESTIONAR ESTADO DE PEDIDO");
+        System.out.println("Ingrese el codigo de alguno de los pedidos presentados");
         Printers.printLine();
         boolean continuar = true;
         while (continuar) {
