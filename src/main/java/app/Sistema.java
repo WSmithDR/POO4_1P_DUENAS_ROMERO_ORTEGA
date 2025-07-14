@@ -220,7 +220,8 @@ public class Sistema {
     public static void notificar(
             Cliente cliente,
             Pedido pedidoRealizado,
-            ManejadorEmail manejadorEmail) {
+            ManejadorEmail manejadorEmail
+            ) {
         String asunto = "Pedido realizado";
         String cuerpo = String.format(
                 "<html><body>"
@@ -241,7 +242,7 @@ public class Sistema {
                 cliente.getApellido(),
                 pedidoRealizado.getCodigoPedido(),
                 pedidoRealizado.getFechaPedido(),
-                pedidoRealizado.getProducto().getCodigo(),
+                pedidoRealizado.getCodProducto(),
                 pedidoRealizado.getCantidadProducto(),
                 pedidoRealizado.getTotalPagado(),
                 pedidoRealizado.getEstadoPedido());
@@ -261,6 +262,7 @@ public class Sistema {
             Repartidor repartidor,
             Pedido pedidoAsignado,
             ManejadorEmail manejadorEmail) {
+        Cliente cliente = ManejadorUsuario.buscarClientePorCodigoUnico(pedidoAsignado.getCodCliente());       
         String asunto = "Nuevo pedido asignado";
         String cuerpo = String.format(
                 "<html><body>" + "Estimado/a <strong>%s %s</strong>," +
@@ -281,10 +283,10 @@ public class Sistema {
                 repartidor.getApellido(),
                 pedidoAsignado.getCodigoPedido(),
                 pedidoAsignado.getFechaPedido(),
-                pedidoAsignado.getCliente().getNombre(),
-                pedidoAsignado.getCliente().getApellido(),
+                cliente.getNombre(),
+                cliente.getApellido(),
                 pedidoAsignado.getEstadoPedido());
-        System.out.println("Enviando correo al " + Rol.REPARTIDOR + " " + repartidor.getCorreo());
+        System.out.println("Enviando correo al " + Rol.REPARTIDOR + ": " + repartidor.getCorreo());
         manejadorEmail.enviarCorreo(repartidor.getCorreo(), asunto, cuerpo);
     }
 
@@ -319,9 +321,9 @@ public class Sistema {
                 cliente.getNombre(), cliente.getApellido(),
                 pedido.getCodigoPedido(), nuevoEstado,
                 pedido.getFechaPedido(),
-                pedido.getProducto().getCodigo(),
-                pedido.getRepartidor().getCodigoUnico());
-        System.out.println("Enviando correo al " + Rol.CLIENTE + " " + cliente.getCorreo());
+                pedido.getCodProducto(),
+                pedido.getCodRepartidor());
+        System.out.println("Enviando correo al " + Rol.CLIENTE + ": " + cliente.getCorreo());
         manejadorEmail.enviarCorreo(cliente.getCorreo(), asunto, cuerpo);
     }
 }

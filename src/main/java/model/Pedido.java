@@ -2,8 +2,6 @@ package model;
 
 import java.util.Date;
 import model.Enums.EstadoPedido;
-import model.Roles.Cliente;
-import model.Roles.Repartidor;
 import services.archivos.ManejadorPedido;
 import utils.ManejoFechas;
 import java.util.Locale;
@@ -14,13 +12,13 @@ import utils.Printers;
  */
 public class Pedido {
     private Date fechaPedido;
-    private Producto producto;
+    private String codProducto;
     private double totalPagado;
     private int cantidadProducto;
-    private Repartidor repartidor;
+    private String codRepartidor;
     private EstadoPedido estadoPedido;
     private String codigoPedido;
-    private Cliente cliente;
+    private String codCliente;
 
 
     /** Contador estático para generar códigos únicos de pedidos */
@@ -37,15 +35,15 @@ public class Pedido {
      * @param cantidad Cantidad de productos solicitados
      * @param total Monto total a pagar
      */
-    public Pedido(Cliente cliente, Repartidor repartidor, Producto producto, int cantidad, double total) {
+    public Pedido(String codCliente, String codRepartidor, String codProducto, int cantidad, double total) {
         this.fechaPedido = new Date();
-        this.producto = producto;
+        this.codProducto = codProducto;
         this.totalPagado = total;
         this.cantidadProducto = cantidad;
-        this.repartidor = repartidor;
+        this.codRepartidor = codRepartidor;
         this.estadoPedido = EstadoPedido.EN_PREPARACION;
         this.codigoPedido = generarCodigoPedido();
-        this.cliente = cliente;
+        this.codCliente = codCliente;
     }
 
     /**
@@ -107,30 +105,13 @@ public class Pedido {
     public String getCodigoPedido() {
         return this.codigoPedido;
     }
+    
+    public String getCodProducto() { return codProducto; }
 
-    /**
-     * Obtiene el cliente que realizó el pedido.
-     * @return Cliente del pedido
-     */
-    public Cliente getCliente() {
-        return this.cliente;
-    }
+    public String getCodRepartidor() { return codRepartidor; }
 
-    /**
-     * Obtiene el repartidor asignado al pedido.
-     * @return Repartidor del pedido
-     */
-    public Repartidor getRepartidor(){
-        return this.repartidor;
-    }
-
-    /**
-     * Obtiene el producto solicitado en el pedido.
-     * @return Producto del pedido
-     */
-    public Producto getProducto(){
-        return this.producto;
-    }
+    public String getCodCliente() { return codCliente; }
+    
 
     /**
      * Establece la fecha del pedido.
@@ -181,12 +162,12 @@ public class Pedido {
         return String.format(Locale.US, "%s|%s|%s|%d|%.2f|%s|%s|%s",
                 codigoPedido,
                 ManejoFechas.setFechaSimple(fechaPedido),
-                producto.getCodigo(),
+                codProducto,
                 cantidadProducto,   
                 totalPagado,
                 estadoPedido.name(),
-                repartidor != null ? repartidor.getCodigoUnico() : "",
-                cliente != null ? cliente.getCodigoUnico() : "");
+                codRepartidor != null ? codRepartidor : "",
+                codCliente != null ? codCliente : "");
     }
 
     @Override

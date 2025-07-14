@@ -75,7 +75,7 @@ public class ManejadorPedido {
                     Cliente cliente = ManejadorUsuario.buscarClientePorCodigoUnico(codigoUnicoCliente);
 
                     if (producto != null && repartidor != null && cliente != null) {
-                        Pedido pedido = new Pedido(cliente, repartidor, producto, cantidad, valorPagado);
+                        Pedido pedido = new Pedido(codigoUnicoCliente, codigoRepartidor, codigoProducto, cantidad, valorPagado);
                         pedido.setCodigoPedido(codigoPedido);
                         pedido.setFechaPedido(ManejoFechas.parseFechaSimple(fecha));
                         pedido.setEstadoPedido(Enum.valueOf(model.Enums.EstadoPedido.class, estadoStr));
@@ -95,7 +95,7 @@ public class ManejadorPedido {
      * @param cliente Cliente a buscar
      * @return Lista de pedidos de ese cliente
      */
-    public static ArrayList<Pedido> cargarPedidosCliente(Cliente cliente) {
+    public static ArrayList<Pedido> cargarPedidosCliente(String codigoCliente) {
         ArrayList<Pedido> pedidosCliente = new ArrayList<>();
         try {
             ArrayList<String> lineas = ManejadorArchivos.LeeFichero(PEDIDOS_FILE);
@@ -104,8 +104,8 @@ public class ManejadorPedido {
                 String linea = lineas.get(i);
                 String[] partes = linea.split("\\|");
                 String codigoPedido = partes[0];
-                String codigoCliente = partes[7];
-                if (!codigosAgregados.contains(codigoPedido) && cliente.getCodigoUnico().equals(codigoCliente)) {
+                String codigoClienteArchivo = partes[7];
+                if (!codigosAgregados.contains(codigoPedido) && codigoCliente.equals(codigoClienteArchivo)) {
                     String fecha = partes[1];
                     String codigoProducto = partes[2];
                     int cantidad = Integer.parseInt(partes[3]);
@@ -113,17 +113,13 @@ public class ManejadorPedido {
                     String estadoStr = partes[5];
                     String codigoRepartidor = partes[6];
 
-                    Producto producto = ManejadorProducto.buscarProductoPorCodigo(codigoProducto);
-                    Repartidor repartidor = ManejadorUsuario.buscarRepartidorPorCodigoUnico(codigoRepartidor);
 
-                    if (producto != null && cliente != null && repartidor!=null) {
-                        Pedido pedido = new Pedido(cliente, repartidor, producto, cantidad, valorPagado);
-                        pedido.setCodigoPedido(codigoPedido);
-                        pedido.setFechaPedido(ManejoFechas.parseFechaSimple(fecha));
-                        pedido.setEstadoPedido(Enum.valueOf(model.Enums.EstadoPedido.class, estadoStr));
-                        pedidosCliente.add(pedido);
-                        codigosAgregados.add(codigoPedido);
-                    }
+                    Pedido pedido = new Pedido(codigoCliente, codigoRepartidor, codigoProducto, cantidad, valorPagado);
+                    pedido.setCodigoPedido(codigoPedido);
+                    pedido.setFechaPedido(ManejoFechas.parseFechaSimple(fecha));
+                    pedido.setEstadoPedido(Enum.valueOf(model.Enums.EstadoPedido.class, estadoStr));
+                    pedidosCliente.add(pedido);
+                    codigosAgregados.add(codigoPedido);
                 }
             }
         } catch (Exception e) {

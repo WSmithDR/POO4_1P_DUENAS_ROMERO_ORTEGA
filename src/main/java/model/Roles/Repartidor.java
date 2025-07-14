@@ -7,6 +7,7 @@ import app.Sistema;
 import model.Enums.EstadoPedido;
 import model.Enums.Rol;
 import services.archivos.ManejadorPedido;
+import services.archivos.ManejadorUsuario;
 import services.email.ManejadorEmail;
 import utils.ManejoFechas;
 import model.Pedido;
@@ -107,6 +108,7 @@ public class Repartidor extends Usuario {
     private static void mostrarOpcionesEstado(Pedido pedido, Scanner scanner) {
         EstadoPedido estadoActual = pedido.getEstadoPedido();
         ManejadorEmail manejadorEmail = new ManejadorEmail();
+        Cliente cliente = ManejadorUsuario.buscarClientePorCodigoUnico(pedido.getCodCliente());
         if (estadoActual == EstadoPedido.EN_PREPARACION) {
             Printers.printTitle("Seleccione el nuevo estado del pedido");
             System.out.println("1. " + EstadoPedido.EN_CAMINO.getDescripcion());
@@ -116,7 +118,7 @@ public class Repartidor extends Usuario {
             if (opcion == 1) {
                 pedido.setEstadoPedido(EstadoPedido.EN_CAMINO);
                 Printers.printSuccess("Estado actualizado correctamente a " + EstadoPedido.EN_CAMINO.getDescripcion() + ".");
-                Sistema.notificar(pedido.getCliente(), pedido, EstadoPedido.EN_CAMINO, manejadorEmail);
+                Sistema.notificar(cliente, pedido, EstadoPedido.EN_CAMINO, manejadorEmail);
                 services.archivos.ManejadorPedido.guardarPedido(pedido);
             } else if (opcion == 2) {
                 Printers.printError("No puede cambiar directamente de " + EstadoPedido.EN_PREPARACION.getDescripcion() + " a " + EstadoPedido.ENTREGADO.getDescripcion() + ". Debe cambiar primero a " + EstadoPedido.EN_CAMINO.getDescripcion() + ".");
@@ -133,7 +135,7 @@ public class Repartidor extends Usuario {
             if (opcion == 1) {
                 pedido.setEstadoPedido(EstadoPedido.ENTREGADO);
                 Printers.printSuccess("Estado actualizado correctamente a " + EstadoPedido.ENTREGADO.getDescripcion() + ".");
-                Sistema.notificar(pedido.getCliente(), pedido, EstadoPedido.ENTREGADO, manejadorEmail);
+                Sistema.notificar(cliente, pedido, EstadoPedido.ENTREGADO, manejadorEmail);
                 services.archivos.ManejadorPedido.guardarPedido(pedido);
             } else {
                 Printers.printError("Opción inválida.");
@@ -188,7 +190,7 @@ public class Repartidor extends Usuario {
                 Printers.printLine();
                 System.out
                         .println("Fecha del pedido: " + ManejoFechas.setFechaSimple(pedidoAModificar.getFechaPedido()) +
-                                " \nCódigo del producto: " + pedidoAModificar.getProducto().getCodigo() +
+                                " \nCódigo del producto: " + pedidoAModificar.getCodProducto() +
                                 " \nEstado actual: " + pedidoAModificar.getEstadoPedido());
                 // Mostrar opciones según el estado actual
                 mostrarOpcionesEstado(pedidoAModificar, scanner);
