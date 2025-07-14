@@ -31,7 +31,7 @@ public class ManejadorProducto {
             if (partes.length >= 5) {
                 String codigo = partes[0];
                 if (!codigosAgregados.contains(codigo)) {
-                    CategoriaProducto categoria = CategoriaProducto.fromDescripcion(partes[1]);
+                    CategoriaProducto categoria = CategoriaProducto.valueOf(partes[1]);
                     if (categoria == null)
                         continue;
                     String nombre = partes[2];
@@ -143,7 +143,7 @@ public class ManejadorProducto {
     public static void actualizarStockProductoEnArchivo(Producto productoActualizado) {
         String nuevaLinea = String.format(Locale.US, "%s|%s|%s|%.2f|%d",
                 productoActualizado.getCodigo(),
-                productoActualizado.getCategoriaProducto().getDescripcion(),
+                productoActualizado.getCategoriaProducto(),
                 productoActualizado.getNombre(),
                 productoActualizado.getPrecio(),
                 productoActualizado.getStock());
