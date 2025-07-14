@@ -6,26 +6,25 @@ import model.Enums.Rol;
 import model.Roles.Cliente;
 import model.Roles.Repartidor;
 import model.Roles.Usuario;
-import persistence.ManejoArchivos;
+import utils.Printers;
 
 /**
  * Clase que maneja la carga y gestión de usuarios, clientes y repartidores desde archivos.
  */
 public class ManejadorUsuario {
-    private static final String USUARIOS_FILE = "resources/Usuarios.txt";
-    private static final String CLIENTES_FILE = "resources/Clientes.txt";
-    private static final String REPARTIDORES_FILE = "resources/Repartidores.txt";
+    private static final String USUARIOS_FILE = "database/Usuarios.txt";
+    private static final String CLIENTES_FILE = "database/Clientes.txt";
+    private static final String REPARTIDORES_FILE = "database/Repartidores.txt";
 
     /**
-     * Carga los usuarios desde el archivo de usuarios
-     * 
-     * @param usuarios ArrayList de usuarios
-     * @return ArrayList de usuarios
+     * Carga los usuarios desde el archivo de usuarios.
+     * @return Lista de usuarios cargados
      */
-    public static ArrayList<Usuario> cargarUsuarios(ArrayList<Usuario> usuarios) {
+    public static ArrayList<Usuario> cargarUsuarios() {
+        ArrayList<Usuario> usuarios = new ArrayList<>();
 
         try {
-            ArrayList<String> lineas = ManejoArchivos.LeeFichero(USUARIOS_FILE);
+            ArrayList<String> lineas = ManejadorArchivos.LeeFichero(USUARIOS_FILE);
 
             for (int i = 1; i < lineas.size(); i++) {
                 String linea = lineas.get(i);
@@ -75,7 +74,7 @@ public class ManejadorUsuario {
                 }
             }
         } catch (Exception e) {
-            System.out.println("Error cargando usuarios: " + e.getMessage());
+            Printers.printError("Error cargando usuarios: " + e.getMessage());
         }
         return usuarios;
     }
@@ -100,7 +99,7 @@ public class ManejadorUsuario {
             String correo,
             String contrasenia) {
 
-        ArrayList<String> lineas = ManejoArchivos.LeeFichero(CLIENTES_FILE);
+        ArrayList<String> lineas = ManejadorArchivos.LeeFichero(CLIENTES_FILE);
         Cliente clienteEncontrado = null;
         for (int i = 1; i < lineas.size(); i++) {
             String linea = lineas.get(i);
@@ -133,7 +132,7 @@ public class ManejadorUsuario {
             String apellido,
             String username,
             String correo, String contrasenia) {
-        ArrayList<String> lineas = ManejoArchivos.LeeFichero(REPARTIDORES_FILE);
+        ArrayList<String> lineas = ManejadorArchivos.LeeFichero(REPARTIDORES_FILE);
         Repartidor repartidorEncontrado = null;
 
         for (int i = 1; i < lineas.size(); i++) {
@@ -146,6 +145,29 @@ public class ManejadorUsuario {
             }
         }
         return repartidorEncontrado;
+    }
+
+       /**
+     * Busca un cliente por código único.
+     * @param codigoUnico Código único del cliente
+     * @return Cliente encontrado o null
+     */
+    public static Cliente buscarClientePorCodigoUnico(String codigoUnico) {
+        for (Usuario usuario : ManejadorUsuario.cargarUsuarios()) {
+            if (usuario instanceof Cliente && usuario.getCodigoUnico().equals(codigoUnico)) {
+                return (Cliente) usuario;
+            }
+        }
+        return null;
+    }
+
+    public static Repartidor buscarRepartidorPorCodigoUnico(String codigoUnico) {
+        for (Usuario usuario : ManejadorUsuario.cargarUsuarios()) {
+            if (usuario instanceof Repartidor && usuario.getCodigoUnico().equals(codigoUnico)) {
+                return (Repartidor) usuario;
+            }
+        }
+        return null;
     }
 
 }

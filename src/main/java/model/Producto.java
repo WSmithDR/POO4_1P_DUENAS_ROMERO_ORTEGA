@@ -99,7 +99,7 @@ public class Producto {
     }
 
     /**
-     * Reduce el stock del producto
+     * Reduce el stock del producto si hay suficiente cantidad disponible.
      * @param cantidad Cantidad a reducir
      * @return true si se pudo reducir, false si no hay suficiente stock
      */

@@ -2,55 +2,41 @@ package model;
 
 import java.util.Date;
 import model.Enums.EstadoPedido;
-import model.Roles.Cliente;
-import model.Roles.Repartidor;
 import services.archivos.ManejadorPedido;
 import utils.ManejoFechas;
 import java.util.Locale;
+import utils.Printers;
 
-/**
- * Clase que representa un pedido en el sistema
- */
+
 public class Pedido {
     private Date fechaPedido;
-    private Producto producto;
+    private String codProducto;
     private double totalPagado;
     private int cantidadProducto;
-    private Repartidor repartidor;
+    private String codRepartidor;
     private EstadoPedido estadoPedido;
     private String codigoPedido;
-    private Cliente cliente;
+    private String codCliente;
 
 
     /** Contador estático para generar códigos únicos de pedidos */
-    public static int contadorPedido = ManejadorPedido.cantidadRegistroPedidos();
+    public static int contadorPedido = ManejadorPedido.obtenerUltimoNumeroPedido();
 
-    /**
-     * Constructor de la clase Pedido.
-     * Crea un nuevo pedido con los datos proporcionados y establece el estado inicial
-     * como EN_PREPARACION.
-     * 
-     * @param cliente Cliente que realiza el pedido
-     * @param repartidor Repartidor asignado para la entrega
-     * @param producto Producto solicitado
-     * @param cantidad Cantidad de productos solicitados
-     * @param total Monto total a pagar
-     */
-    public Pedido(Cliente cliente, Repartidor repartidor, Producto producto, int cantidad, double total) {
+ 
+    public Pedido(String codCliente, String codRepartidor, String codProducto, int cantidad, double total) {
         this.fechaPedido = new Date();
-        this.producto = producto;
+        this.codProducto = codProducto;
         this.totalPagado = total;
         this.cantidadProducto = cantidad;
-        this.repartidor = repartidor;
+        this.codRepartidor = codRepartidor;
         this.estadoPedido = EstadoPedido.EN_PREPARACION;
         this.codigoPedido = generarCodigoPedido();
-        this.cliente = cliente;
+        this.codCliente = codCliente;
     }
 
     /**
      * Genera un código único para el pedido.
      * Incrementa el contador estático y retorna un código en formato "PED" + número.
-     * 
      * @return Código único del pedido en formato String
      */
     public String generarCodigoPedido() {
@@ -60,21 +46,11 @@ public class Pedido {
     
     /**
      * Obtiene el código actual del pedido sin generar uno nuevo.
-     * 
      * @return Código actual del pedido
      */
     public String obtenerCodigo() {
         return this.codigoPedido;
     }
-
-    /**
-     * Obtiene la fecha del pedido en formato simple (dd/MM/yyyy).
-     * 
-     * @return Fecha del pedido en formato String
-     */
-    /*public String getFechaSimple() {
-        return ManejoFechas.getFechaSimple(this.fechaPedido);
-    }*/
 
     /**
      * Obtiene la fecha del pedido.
@@ -115,30 +91,25 @@ public class Pedido {
     public String getCodigoPedido() {
         return this.codigoPedido;
     }
+    
+    /**
+     * Obtiene el código del producto asociado a este pedido.
+     * @return Código del producto
+     */
+    public String getCodProducto() { return codProducto; }
 
     /**
-     * Obtiene el cliente que realizó el pedido.
-     * @return Cliente del pedido
+     * Obtiene el código del repartidor asignado a este pedido.
+     * @return Código del repartidor
      */
-    public Cliente getCliente() {
-        return this.cliente;
-    }
+    public String getCodRepartidor() { return codRepartidor; }
 
     /**
-     * Obtiene el repartidor asignado al pedido.
-     * @return Repartidor del pedido
+     * Obtiene el código del cliente que realizó este pedido.
+     * @return Código del cliente
      */
-    public Repartidor getRepartidor(){
-        return this.repartidor;
-    }
-
-    /**
-     * Obtiene el producto solicitado en el pedido.
-     * @return Producto del pedido
-     */
-    public Producto getProducto(){
-        return this.producto;
-    }
+    public String getCodCliente() { return codCliente; }
+    
 
     /**
      * Establece la fecha del pedido.
@@ -189,11 +160,53 @@ public class Pedido {
         return String.format(Locale.US, "%s|%s|%s|%d|%.2f|%s|%s|%s",
                 codigoPedido,
                 ManejoFechas.setFechaSimple(fechaPedido),
-                producto.getCodigo(),
+                codProducto,
                 cantidadProducto,   
                 totalPagado,
                 estadoPedido.name(),
-                repartidor != null ? repartidor.getCodigoUnico() : "",
-                cliente != null ? cliente.getCodigoUnico() : "");
+                codRepartidor != null ? codRepartidor : "",
+                codCliente != null ? codCliente : "");
+    }
+
+    /**
+     * Compara si dos pedidos son iguales según su código de pedido (ignorando mayúsculas/minúsculas).
+     * @param obj Objeto a comparar
+     * @return true si los códigos de pedido son iguales, false en caso contrario
+     */
+    @Override
+    public boolean equals(Object obj){
+        if(this==obj) return true;
+        if(this.getClass()==obj.getClass()){
+            Pedido pedido = (Pedido) obj;
+            return this.codigoPedido.equalsIgnoreCase(pedido.codigoPedido);
+        }else{
+            return false;
+        }
+    }
+
+        /**
+     * Muestra un mensaje personalizado según el estado del pedido.
+     * @param estado Estado actual del pedido
+     */
+    public static void mostrarMensajeSegunEstado(EstadoPedido estado) {
+        if (estado == null) {
+            Printers.printInfo("Estado del pedido: No disponible");
+            return;
+        }
+
+        switch (estado) {
+            case EN_PREPARACION:
+                Printers.printInfo("Su pedido está siendo preparado para su envío.");
+                break;
+            case EN_CAMINO:
+                Printers.printInfo("Su pedido está en camino hacia su dirección.");
+                break;
+            case ENTREGADO:
+                Printers.printSuccess("Su pedido ha sido entregado exitosamente.");
+                break;
+            case CANCELADO:
+                Printers.printInfo("Su pedido ha sido cancelado.");
+                break;
+        }
     }
 }

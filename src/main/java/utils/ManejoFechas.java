@@ -6,7 +6,7 @@ import java.util.Date;
 
 public class ManejoFechas {
     /**
-     * Obtiene la fecha del pedido en formato yyyy-MM-dd
+     * Convierte una fecha a formato yyyy-MM-dd.
      * @param fecha Fecha a formatear
      * @return String con la fecha formateada
      */

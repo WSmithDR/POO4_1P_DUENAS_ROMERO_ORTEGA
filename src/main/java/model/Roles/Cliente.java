@@ -1,6 +1,7 @@
 package model.Roles;
 
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Scanner;
 
 import app.Sistema;
@@ -10,13 +11,32 @@ import model.Producto;
 import model.Pedido;
 import services.archivos.ManejadorPedido;
 import services.archivos.ManejadorProducto;
+import services.archivos.ManejadorUsuario;
 import services.email.ManejadorEmail;
+import utils.ManejoFechas;
+import utils.Printers;
+
 import java.util.Random;
 
+/**
+ * Clase que representa a un cliente del sistema.
+ */
 public class Cliente extends Usuario {
    private String numero_celular;
    private String direccion;
 
+   /**
+    * Constructor de la clase Cliente.
+    * @param codigoUnico Código único del cliente
+    * @param cedula Cédula del cliente
+    * @param nombre Nombre del cliente
+    * @param apellido Apellido del cliente
+    * @param user_name Nombre de usuario
+    * @param correo Correo electrónico
+    * @param contrasenia Contraseña
+    * @param numero_celular Número de celular
+    * @param direccion Dirección del cliente
+    */
    public Cliente(
          String codigoUnico,
          String cedula,
@@ -42,6 +62,7 @@ public class Cliente extends Usuario {
 
    /**
     * Obtiene el número de celular del cliente.
+    * 
     * @return Número de celular
     */
    public String getNumeroCelular() {
@@ -50,6 +71,7 @@ public class Cliente extends Usuario {
 
    /**
     * Obtiene la dirección del cliente.
+    * 
     * @return Dirección del cliente
     */
    public String getDireccion() {
@@ -58,6 +80,7 @@ public class Cliente extends Usuario {
 
    /**
     * Establece el número de celular del cliente.
+    * 
     * @param numero_celular Número de celular
     */
    public void setNumeroCelular(String numero_celular) {
@@ -66,6 +89,7 @@ public class Cliente extends Usuario {
 
    /**
     * Establece la dirección del cliente.
+    * 
     * @param direccion Dirección del cliente
     */
    public void setDireccion(String direccion) {
@@ -73,24 +97,114 @@ public class Cliente extends Usuario {
    }
 
    /**
-    * Consulta el estado de los pedidos del cliente
+    * Muestra la información detallada de un pedido.
+    * @param pedido Pedido a mostrar
     */
-   @Override
-   public void gestionarPedido(ArrayList<Pedido> pedidos, Scanner scanner) {
-      ManejadorPedido.gestionarPedido(this, pedidos, scanner);
+   private static void mostrarInformacionPedido(Pedido pedido) {
+      // Obtener nombre del producto
+      Producto productoPedido = ManejadorProducto.buscarProductoPorCodigo(pedido.getCodProducto());
+      String nombreProducto = null;
+      if (productoPedido != null) {
+         nombreProducto = productoPedido.getNombre();
+      } else {
+         Printers.printInfo("No se pudo hallar el producto del pedido");
+      }
+      // Obtener nombre del repartidor
+      Repartidor repartidor = ManejadorUsuario.buscarRepartidorPorCodigoUnico(pedido.getCodRepartidor());
+      String nombreRepartidor = null;
+      
+      if (repartidor != null) {
+         nombreRepartidor = String.format(
+            Locale.US,
+            "%s %s",
+            repartidor.getNombre(),
+            repartidor.getApellido());
+      } else {
+         Printers.printInfo("No se pudo hallar el repartidor del pedido");
+      }
+      Printers.printLine();
+      System.out.println("Fecha del pedido: " + ManejoFechas.setFechaSimple(pedido.getFechaPedido()));
+      System.out.println("Producto comprado: " + (nombreProducto != null ? nombreProducto : "-") + " (Código: " + pedido.getCodProducto() + ")");
+      System.out.println("Cantidad: " + pedido.getCantidadProducto());
+      System.out.println("Valor pagado: $" + String.format("%.2f", pedido.getTotalPagado()));
+      System.out.println("Estado actual: " + pedido.getEstadoPedido());
+      System.out.println("Repartidor: " + (nombreRepartidor != null ? nombreRepartidor : "-") + " (Código: " + pedido.getCodRepartidor() + ")");
+      System.out.println();
+      Printers.printLine();
+      // Mostrar mensaje según el estado del pedido
+      Pedido.mostrarMensajeSegunEstado(pedido.getEstadoPedido());
    }
 
    /**
-    * Realiza el proceso de compra para el cliente
-    * 
-    * @param productos Lista de productos disponibles
-    * @param usuarios  Lista de usuarios para buscar repartidores
-    * @param pedidos   Lista de pedidos para agregar el nuevo pedido
-    * @param scanner   Scanner para leer entrada del usuario
+    * Consulta un pedido específico para un cliente.
+    * @param codCliente Código único del cliente
+    * @param codPedido Código del pedido a consultar
     */
-   public void realizarCompra(ArrayList<Producto> productos, ArrayList<Usuario> usuarios, ArrayList<Pedido> pedidos,
+   private void consultarPedidoCliente(String codCliente, String codPedido) {
+      boolean pedidoEncontrado = false;
+      for (Pedido pedido : ManejadorPedido.cargarPedidosCliente(codCliente)) {
+         if (pedido.getCodigoPedido().equalsIgnoreCase(codPedido)) {
+            pedidoEncontrado = true;
+            mostrarInformacionPedido(pedido);
+            break;
+         }
+      }
+      if (!pedidoEncontrado) {
+         Printers.printInfo("No se encontró ningún pedido con el código: " + codPedido + " para este cliente.");
+      }
+   }
+
+   /**
+    * Muestra la lista de pedidos del cliente con formato similar al repartidor.
+    */
+   private void mostrarListaPedidos() {
+      ArrayList<Pedido> pedidos = ManejadorPedido.cargarPedidosCliente(this.getCodigoUnico());
+      if (pedidos.isEmpty()) {
+         Printers.printInfo("No tienes pedidos registrados.");
+         return;
+      }
+      Printers.printTitle("TUS PEDIDOS");
+      for (int i = 0; i < pedidos.size(); i++) {
+         Pedido pedido = pedidos.get(i);
+         System.out.println((i + 1) + ". Código: " + pedido.getCodigoPedido());
+         System.out.println("   Fecha: " + utils.ManejoFechas.setFechaSimple(pedido.getFechaPedido()));
+         System.out.println("   Estado: " + pedido.getEstadoPedido());
+         Printers.printLine();
+      }
+   }
+
+   /**
+    * Gestiona la consulta de estado de pedidos del cliente.
+    * @param scanner Scanner para leer la entrada del usuario
+    */
+   @Override
+   public void gestionarPedido(Scanner scanner) {
+      Printers.printTitle("CONSULTA DE ESTADO DE PEDIDO");
+      mostrarListaPedidos();
+      ArrayList<Pedido> pedidos = ManejadorPedido.cargarPedidosCliente(this.getCodigoUnico());
+      if (pedidos.isEmpty()) {
+         return;
+      }
+      System.out.print("Ingrese el código del pedido: ");
+      String codPedido = scanner.nextLine().trim();
+
+      if (codPedido.isEmpty()) {
+         Printers.printError("El código del pedido no puede estar vacío.");
+         return;
+      }
+
+      consultarPedidoCliente(this.getCodigoUnico(), codPedido);
+   }
+
+   /**
+    * Realiza el proceso de compra para el cliente.
+    * @param usuarios Lista de usuarios para buscar repartidores
+    * @param scanner Scanner para leer entrada del usuario
+    */
+   public void realizarCompra(ArrayList<Usuario> usuarios,
          Scanner scanner) {
-      System.out.println("\n=== COMPRAR PRODUCTO ===");
+      ArrayList<Producto> productos = ManejadorProducto.cargarProductos();
+      Printers.printTitle("COMPRAR PRODUCTO");
 
       CategoriaProducto categoriaElegida = seleccionarCategoria(productos, scanner);
       if (categoriaElegida == null)
@@ -101,17 +215,22 @@ public class Cliente extends Usuario {
          return;
 
       int cantidad = seleccionarCantidad(productoElegido, scanner);
-      if (cantidad <= 0)
+      if (cantidad <= 0) {
+         Printers.printError("Cantidad inválida");
          return;
+      }
 
       if (!confirmarCompra(productoElegido, cantidad, scanner))
          return;
 
-      procesarCompra(productoElegido, cantidad, usuarios, pedidos);
+      procesarCompra(productoElegido, cantidad, usuarios);
    }
 
    /**
-    * Le pide al cliente que elija una categoría
+    * Le pide al cliente que elija una categoría de producto.
+    * @param productos Lista de productos disponibles
+    * @param scanner Scanner para leer entrada del usuario
+    * @return Categoría seleccionada o null si no es válida
     */
    private CategoriaProducto seleccionarCategoria(ArrayList<Producto> productos, Scanner scanner) {
       ArrayList<CategoriaProducto> catProdDisponibles = ManejadorProducto.mostrarCategoriasDisponibles();
@@ -120,7 +239,7 @@ public class Cliente extends Usuario {
       int opcionCategoria = Integer.parseInt(scanner.nextLine()) - 1;
 
       if (opcionCategoria < 0 || opcionCategoria >= catProdDisponibles.size()) {
-         System.out.println("Opción inválida");
+         Printers.printError("Opción inválida");
          return null;
       }
 
@@ -128,16 +247,20 @@ public class Cliente extends Usuario {
    }
 
    /**
-    * Le pide al cliente que elija un producto de esa categoría
+    * Le pide al cliente que elija un producto de una categoría.
+    * @param productos Lista de productos disponibles
+    * @param categoria Categoría seleccionada
+    * @param scanner Scanner para leer entrada del usuario
+    * @return Producto seleccionado o null si no es válido
     */
    private Producto seleccionarProducto(ArrayList<Producto> productos, CategoriaProducto categoria, Scanner scanner) {
       ArrayList<Producto> productosCategoria = ManejadorProducto.obtenerProductosPorCategoria(productos, categoria);
 
       if (productosCategoria.isEmpty()) {
-         System.out.println("No hay productos en esta categoría");
+         Printers.printInfo("No hay productos en esta categoría");
          return null;
       }
-
+      Printers.printLine();
       System.out.println("\nProductos disponibles:");
       for (int i = 0; i < productosCategoria.size(); i++) {
          Producto p = productosCategoria.get(i);
@@ -148,7 +271,7 @@ public class Cliente extends Usuario {
       int opcionProducto = Integer.parseInt(scanner.nextLine()) - 1;
 
       if (opcionProducto < 0 || opcionProducto >= productosCategoria.size()) {
-         System.out.println("Opción inválida");
+         Printers.printError("Opción inválida");
          return null;
       }
 
@@ -156,14 +279,17 @@ public class Cliente extends Usuario {
    }
 
    /**
-    * Le pide al cliente cuántos quiere comprar
+    * Le pide al cliente que ingrese la cantidad de productos a comprar.
+    * @param producto Producto seleccionado
+    * @param scanner Scanner para leer entrada del usuario
+    * @return Cantidad seleccionada
     */
    private int seleccionarCantidad(Producto producto, Scanner scanner) {
       System.out.print("¿Cuántos quieres comprar? (máximo " + producto.getStock() + "): ");
       int cantidad = Integer.parseInt(scanner.nextLine());
 
       if (cantidad <= 0 || cantidad > producto.getStock()) {
-         System.out.println("Cantidad inválida");
+         Printers.printError("Cantidad inválida");
          return -1;
       }
 
@@ -171,7 +297,11 @@ public class Cliente extends Usuario {
    }
 
    /**
-    * Le pregunta al cliente si confirma la compra
+    * Confirma la compra con el cliente antes de procesarla.
+    * @param producto Producto seleccionado
+    * @param cantidad Cantidad seleccionada
+    * @param scanner Scanner para leer entrada del usuario
+    * @return true si el cliente confirma la compra, false en caso contrario
     */
    private boolean confirmarCompra(Producto producto, int cantidad, Scanner scanner) {
       double total = producto.getPrecio() * cantidad;
@@ -181,7 +311,7 @@ public class Cliente extends Usuario {
       String confirmar = scanner.nextLine().toLowerCase();
 
       if (!confirmar.equals("s") && !confirmar.equals("si")) {
-         System.out.println("Compra cancelada");
+         Printers.printInfo("Compra cancelada");
          return false;
       }
 
@@ -189,14 +319,16 @@ public class Cliente extends Usuario {
    }
 
    /**
-    * Hace todo el proceso final: asigna repartidor, crea pedido y actualiza stock
+    * Procesa la compra: asigna repartidor, crea pedido y actualiza stock.
+    * @param producto Producto seleccionado
+    * @param cantidad Cantidad seleccionada
+    * @param usuarios Lista de usuarios para buscar repartidores
     */
-   private void procesarCompra(Producto producto, int cantidad, ArrayList<Usuario> usuarios,
-         ArrayList<Pedido> pedidos) {
+   private void procesarCompra(Producto producto, int cantidad, ArrayList<Usuario> usuarios) {
       // Buscar repartidor disponible
       Repartidor repartidorElegido = buscarRepartidorAleatorio(usuarios);
       if (repartidorElegido == null) {
-         System.out.println("No hay repartidores disponibles");
+         Printers.printInfo("No hay repartidores disponibles");
          return;
       }
 
@@ -204,11 +336,11 @@ public class Cliente extends Usuario {
       double total = producto.getPrecio() * cantidad;
 
       // Crear y guardar pedido
-      Pedido nuevoPedido = new Pedido(this, repartidorElegido, producto, cantidad, total);
+      Pedido nuevoPedido = new Pedido(this.getCodigoUnico(), repartidorElegido.getCodigoUnico(), producto.getCodigo(), cantidad, total);
       producto.reducirStock(cantidad);
       ManejadorProducto.actualizarStockProductoEnArchivo(producto);
       ManejadorPedido.guardarPedido(nuevoPedido);
-      pedidos.add(nuevoPedido);
+      // pedidos.add(nuevoPedido);
 
       // Enviar notificaciones
       enviarNotificaciones(repartidorElegido, nuevoPedido);
@@ -218,7 +350,9 @@ public class Cliente extends Usuario {
    }
 
    /**
-    * Busca un repartidor al azar de la lista
+    * Busca un repartidor al azar de la lista de usuarios.
+    * @param usuarios Lista de usuarios
+    * @return Repartidor seleccionado o null si no hay disponibles
     */
    private Repartidor buscarRepartidorAleatorio(ArrayList<Usuario> usuarios) {
       ArrayList<Repartidor> repartidores = new ArrayList<>();
@@ -239,7 +373,9 @@ public class Cliente extends Usuario {
    }
 
    /**
-    * Manda los emails al cliente y repartidor
+    * Envía notificaciones por email al cliente y repartidor sobre el pedido.
+    * @param repartidor Repartidor asignado
+    * @param pedido Pedido realizado
     */
    private void enviarNotificaciones(Repartidor repartidor, Pedido pedido) {
       ManejadorEmail manejadorEmail = new ManejadorEmail();
@@ -250,12 +386,24 @@ public class Cliente extends Usuario {
    }
 
    /**
-    * Le dice al cliente que la compra fue exitosa
+    * Muestra la confirmación de compra al cliente.
+    * @param repartidor Repartidor asignado
+    * @param pedido Pedido realizado
     */
    private void mostrarConfirmacionCompra(Repartidor repartidor, Pedido pedido) {
       System.out.println("¡Compra exitosa!");
       System.out.println("Repartidor: " + repartidor.getNombre() + " " + repartidor.getApellido());
       System.out.println("Código de pedido: " + pedido.getCodigoPedido());
+   }
+
+   /**
+    * Compara si dos clientes son iguales según la lógica de la superclase.
+    * @param obj Objeto a comparar
+    * @return true si son iguales, false en caso contrario
+    */
+   @Override
+   public boolean equals(Object obj) {
+      return super.equals(obj);
    }
 
 }

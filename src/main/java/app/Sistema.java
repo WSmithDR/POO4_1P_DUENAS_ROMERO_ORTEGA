@@ -8,64 +8,62 @@ import model.Roles.Usuario;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import services.archivos.ManejadorPedido;
-import services.archivos.ManejadorProducto;
 import services.archivos.ManejadorUsuario;
 import services.email.ManejadorEmail;
-import model.Producto;
 import model.Enums.EstadoPedido;
 import model.Enums.Rol;
+import utils.Printers;
+import utils.Time;
 
 public class Sistema {
     private static ArrayList<Usuario> usuarios = new ArrayList<>();
-    private static ArrayList<Producto> productos = new ArrayList<>();
-    private static ArrayList<Pedido> pedidos = new ArrayList<>();
 
     /**
-     * Inicia el sistema: carga usuarios, productos
-     * y pedidos, y muestra la pantalla de inicio de sesión.
-     * 
+     * Inicia el sistema: carga usuarios, productos y pedidos, y muestra la pantalla de inicio de sesión.
      * @param scanner Scanner para leer la entrada del usuario desde la consola
      */
     public static void iniciar(Scanner scanner) {
-        usuarios = ManejadorUsuario.cargarUsuarios(usuarios);
-        productos = ManejadorProducto.cargarProductos();
-        pedidos = ManejadorPedido.cargarPedidos(usuarios, productos);
+        usuarios = ManejadorUsuario.cargarUsuarios();
 
         boolean salir = false;
         while (!salir) {
-            salir = iniciarSesion(scanner); // Retorna true solo si el usuario elige salir del sistema
-        }
-        System.out.println("¡Hasta luego!");
-    }
-
-    /**
-     * Maneja el proceso de inicio de sesión del usuario,
-     * solicitando credenciales
-     * y autenticando según el rol.
-     * 
-     * @param scanner Scanner para leer la entrada del usuario
-     */
-        private static boolean iniciarSesion(Scanner scanner) {
-        while (true) {
-            System.out.println("\n1. Iniciar sesión");
+            Printers.printSeparator();
+            Printers.printTitle(String.format(
+                    "BIENVENIDO/A A \n" +
+                            "DUENAS_ROMERO_ORTEGA \n" +
+                            "DELIVERY SYSTEM"));
+            Printers.printSeparator();
+            System.out.println("1. Iniciar sesión");
             System.out.println("2. Salir del sistema");
             System.out.print("Seleccione una opción: ");
             String opcion = scanner.nextLine();
-
             if (opcion.equals("2")) {
-                return true; // Salir del sistema
+                salir = true;
             } else if (opcion.equals("1")) {
-                System.out.println("\n===== INICIO DE SESIÓN =====");
-                break; // Continuar con el login
+                salir = iniciarSesion(scanner); // Retorna true solo si el usuario elige salir del sistema desde el
+                                                // login
             } else {
-                System.out.println("Opción no válida. Intente nuevamente.");
+                Printers.printError("Opción no válida. Intente nuevamente.");
             }
         }
+        Printers.printSeparator();
+        Printers.printInfo("Apagando sistema...");
+        Time.sleep();
 
-    boolean sesionIniciada = false;
-    while (!sesionIniciada) {
-        System.out.print("Usuario: ");
+        Printers.printInfo("¡Hasta luego!");
+        Printers.printSeparator();
+    }
+
+    /**
+     * Maneja el proceso de inicio de sesión del usuario, solicitando credenciales y autenticando según el rol.
+     * @param scanner Scanner para leer la entrada del usuario
+     * @return true si el usuario elige salir del sistema, false para volver al login
+     */
+    private static boolean iniciarSesion(Scanner scanner) {
+        Printers.printTitle("Inicio de sesión");
+        boolean sesionIniciada = false;
+        while (!sesionIniciada) {
+            System.out.print("Usuario: ");
             String userInput = scanner.nextLine();
             System.out.print("Contraseña: ");
             String passInput = scanner.nextLine();
@@ -75,37 +73,36 @@ public class Sistema {
             for (Usuario u : usuarios) {
                 if (u.getUser_name().equals(userInput) && u.getContrasenia().equals(passInput)) {
                     usuarioEncontrado = true;
-                    System.out.println("\nUsuario autenticado correctamente.");
+                    Printers.printSuccess("Usuario autenticado correctamente.");
 
                     if (u instanceof Cliente c) {
-                        System.out.println(String.format("\nRol detectado: %s", Rol.CLIENTE));
-                        System.out.println("\nBienvenido, " + c.getNombre() + " " + c.getApellido());
+                        Printers.printTitle("Bienvenido cliente");
+                        System.out.println("Nombre: " + c.getNombre() + " " + c.getApellido());
                         System.out.println("Celular registrado: " + c.getNumeroCelular());
                         System.out.print("\n¿Este número de celular es correcto? (S/N): ");
                         String verif = scanner.nextLine();
                         if (verif.equalsIgnoreCase("S")) {
-                            System.out.println("\n¡Identidad confirmada!");
+                            Printers.printSuccess("¡Identidad confirmada!");
                             mostrarMenu(c, scanner);
                             sesionIniciada = true;
                         } else {
-                            System.out.println("\nVerificación fallida. Cerrando sesión.");
+                            Printers.printError("Verificación fallida. Cerrando sesión.");
+                            Time.sleep();
                             sesionIniciada = true;
                         }
                     } else if (u instanceof Repartidor r) {
-                        System.out.println("\nRol detectado: REPARTIDOR");
-                        System.out.println("\nBienvenido, " + r.getNombre() + " " + r.getApellido());
+                        Printers.printTitle("Bienvenido repartidor");
+                        System.out.println("Nombre: " + r.getNombre() + " " + r.getApellido());
                         System.out.println("Empresa asignada: " + r.getNombreEmpresa());
                         System.out.print("\n¿Esta empresa es correcta? (S/N): ");
                         String verif = scanner.nextLine();
                         if (verif.equalsIgnoreCase("S")) {
-                            System.out.println("\n¡Identidad confirmada!");
+                            Printers.printSuccess("¡Identidad confirmada!");
                             mostrarMenu(r, scanner);
                             sesionIniciada = true;
                         } else {
-                            System.out.println("\nVerificación fallida");
-                            System.out.println("Por motivos de seguridad se cerrará la sesion");
-                            System.out.println();
-                            System.out.println("\nCerrando sesión...");
+                            Printers.printError("Verificación fallida. Cerrando sesión...");
+                            Time.sleep();
                             sesionIniciada = true;
                         }
                     }
@@ -114,7 +111,13 @@ public class Sistema {
             }
 
             if (!usuarioEncontrado) {
-                System.out.println("\nUsuario o contraseña incorrectos. Intente nuevamente.");
+                Printers.printError("Usuario o contraseña incorrectos. Intente nuevamente.");
+                System.out.print("¿Desea salir? (Escriba 'si' para salir o presione Enter para intentar de nuevo): ");
+                String respuesta = scanner.nextLine().trim();
+                if (respuesta.equalsIgnoreCase("si")) {
+                    Printers.printInfo("Regresando al menú principal...");
+                    return false;
+                }
                 System.out.println();
             }
         }
@@ -124,7 +127,6 @@ public class Sistema {
     /**
      * Muestra y maneja el menú principal para usuarios con rol de Cliente.
      * Permite al cliente realizar compras y gestionar pedidos.
-     * 
      * @param cliente El objeto Cliente autenticado
      * @param scanner Scanner para leer la entrada del usuario
      */
@@ -132,7 +134,7 @@ public class Sistema {
         boolean continuar = true;
 
         while (continuar) {
-            System.out.println("\n=== Menú Cliente ===");
+            Printers.printTitle("Menú cliente");
             System.out.println("1. Comprar");
             System.out.println("2. Gestionar pedido");
             System.out.println("3. Cerrar sesión");
@@ -142,17 +144,20 @@ public class Sistema {
 
             switch (opcion) {
                 case "1":
-                    cliente.realizarCompra(productos, usuarios, pedidos, scanner);
+                    cliente.realizarCompra(usuarios, scanner);
                     break;
                 case "2":
-                    cliente.gestionarPedido(pedidos, scanner);
+                    cliente.gestionarPedido(scanner);
                     break;
                 case "3":
-                    System.out.println("\nCerrando sesión...");
+                    Printers.printSeparator();
+                    Printers.printInfo("Cerrando sesión...");
+                    Printers.printSeparator();
+                    Time.sleep();
                     continuar = false;
                     break;
                 default:
-                    System.out.println("\nOpción no válida. Intente nuevamente.");
+                    Printers.printError("Opción no válida. Intente nuevamente.");
                     break;
             }
         }
@@ -161,15 +166,14 @@ public class Sistema {
     /**
      * Muestra y maneja el menú principal para usuarios con rol de Repartidor.
      * Permite al repartidor gestionar pedidos y consultar asignaciones.
-     * 
      * @param repartidor El objeto Repartidor autenticado
-     * @param scanner    Scanner para leer la entrada del usuario
+     * @param scanner Scanner para leer la entrada del usuario
      */
     private static void mostrarMenu(Repartidor repartidor, Scanner scanner) {
         boolean continuar = true;
 
         while (continuar) {
-            System.out.println("\n=== Menú Repartidor ===");
+            Printers.printTitle("Menú repartidor");
             System.out.println("1. Gestionar pedido");
             System.out.println("2. Consultar pedidos asignados");
             System.out.println("3. Cerrar sesión");
@@ -179,30 +183,30 @@ public class Sistema {
 
             switch (opcion) {
                 case "1":
-                    repartidor.gestionarPedido(pedidos, scanner);
+                    repartidor.gestionarPedido(scanner);
                     break;
                 case "2":
-                    repartidor.consultarPedidosAsignados(pedidos);
+                    repartidor.consultarPedidosAsignados();
                     break;
                 case "3":
-                    System.out.println("\nCerrando sesión...");
+                    Printers.printSeparator();
+                    Printers.printInfo("Cerrando sesión...");
+                    Printers.printSeparator();
+                    Time.sleep();
                     continuar = false;
                     break;
                 default:
-                    System.out.println("\nOpción no válida. Intente nuevamente.");
+                    Printers.printError("Opción no válida. Intente nuevamente.");
                     break;
             }
         }
     }
 
     /**
-     * Notifica al cliente cuando este realiza un pedido, enviando un correo
-     * electrónico con los detalles del pedido realizado.
-     * 
-     * @param cliente         El objeto Cliente que realiza el pedido
-     * @param pedidoRealizado Contiene la información del pedido que realizó el
-     *                        cliente
-     * @param manejadorEmail  Instancia de ManejadorEmail para enviar el correo
+     * Notifica al cliente cuando este realiza un pedido, enviando un correo electrónico con los detalles del pedido realizado.
+     * @param cliente El objeto Cliente que realiza el pedido
+     * @param pedidoRealizado Contiene la información del pedido que realizó el cliente
+     * @param manejadorEmail Instancia de ManejadorEmail para enviar el correo
      */
     public static void notificar(
             Cliente cliente,
@@ -210,34 +214,35 @@ public class Sistema {
             ManejadorEmail manejadorEmail) {
         String asunto = "Pedido realizado";
         String cuerpo = String.format(
-                "<html><body>"+"El/La cliente <strong>%s %s</strong> ha realizado un pedido con código <strong>%s</strong> el día <strong>%s</strong>."+
-                        "<br><br>"+
-                        "Producto: <strong>%s</strong>"+
-                        "<br>"+
-                        "Cantidad: <strong>%d</strong>"+
-                        "<br>"+
-                        "Valor pagado: <strong>$%.2f</strong>"+
-                        "<br>"+
-                        "Estado inicial: <strong>%s</strong>"+
-                        "<br><br>"+
-                        "Gracias por su compra. Recibirá actualizaciones del estado de su pedido por este medio."+"</body></html>",
+                "<html><body>"
+                        + "El/La cliente <strong>%s %s</strong> ha realizado un pedido con código <strong>%s</strong> el día <strong>%s</strong>."
+                        +
+                        "<br><br>" +
+                        "Producto: <strong>%s</strong>" +
+                        "<br>" +
+                        "Cantidad: <strong>%d</strong>" +
+                        "<br>" +
+                        "Valor pagado: <strong>$%.2f</strong>" +
+                        "<br>" +
+                        "Estado inicial: <strong>%s</strong>" +
+                        "<br><br>" +
+                        "Gracias por su compra. Recibirá actualizaciones del estado de su pedido por este medio."
+                        + "</body></html>",
                 cliente.getNombre(),
                 cliente.getApellido(),
                 pedidoRealizado.getCodigoPedido(),
                 pedidoRealizado.getFechaPedido(),
-                pedidoRealizado.getProducto().getCodigo(),
+                pedidoRealizado.getCodProducto(),
                 pedidoRealizado.getCantidadProducto(),
                 pedidoRealizado.getTotalPagado(),
                 pedidoRealizado.getEstadoPedido());
-        System.out.println("Enviando correo al "+Rol.CLIENTE+" "+cliente.getCorreo());
+        System.out.println("Enviando correo al " + Rol.CLIENTE + " " + cliente.getCorreo());
         manejadorEmail.enviarCorreo(cliente.getCorreo(), asunto, cuerpo);
     }
 
     /**
-     * Notifica al repartidor cuando se le asigna un nuevo pedido, enviando un
-     * correo electrónico con los detalles del pedido asignado.
-     * 
-     * @param repartidor     El repartidor al que se le asigna el pedido
+     * Notifica al repartidor cuando se le asigna un nuevo pedido, enviando un correo electrónico con los detalles del pedido asignado.
+     * @param repartidor El repartidor al que se le asigna el pedido
      * @param pedidoAsignado El pedido que ha sido asignado
      * @param manejadorEmail Instancia de ManejadorEmail para enviar el correo
      */
@@ -245,66 +250,65 @@ public class Sistema {
             Repartidor repartidor,
             Pedido pedidoAsignado,
             ManejadorEmail manejadorEmail) {
+        Cliente cliente = ManejadorUsuario.buscarClientePorCodigoUnico(pedidoAsignado.getCodCliente());
         String asunto = "Nuevo pedido asignado";
         String cuerpo = String.format(
-                "<html><body>"+"Estimado/a <strong>%s %s</strong>,"+
-                "<br>"+
-                        "Se le ha asignado un nuevo pedido con los siguientes detalles:"+
-                        "<br><br>"+
-                        "Código del pedido: <strong>%s</strong>"+
-                        "<br>"+
-                        "Fecha del pedido: <strong>%s</strong>"+
-                        "<br>"+
-                        "Cliente: <strong>%s %s</strong>,"+
-                        "<br>"+ 
-                        "Estado actual: <strong>%s</strong>"+
-                        "<br><br>"+
+                "<html><body>" + "Estimado/a <strong>%s %s</strong>," +
+                        "<br>" +
+                        "Se le ha asignado un nuevo pedido con los siguientes detalles:" +
+                        "<br><br>" +
+                        "Código del pedido: <strong>%s</strong>" +
+                        "<br>" +
+                        "Fecha del pedido: <strong>%s</strong>" +
+                        "<br>" +
+                        "Cliente: <strong>%s %s</strong>," +
+                        "<br>" +
+                        "Estado actual: <strong>%s</strong>" +
+                        "<br><br>" +
                         "Por favor, prepare la logística necesaria para la entrega." +
-                        "Gracias por su trabajo."+"</body></html>",
+                        "Gracias por su trabajo." + "</body></html>",
                 repartidor.getNombre(),
                 repartidor.getApellido(),
                 pedidoAsignado.getCodigoPedido(),
                 pedidoAsignado.getFechaPedido(),
-                pedidoAsignado.getCliente().getNombre(),
-                pedidoAsignado.getCliente().getApellido(),
+                cliente.getNombre(),
+                cliente.getApellido(),
                 pedidoAsignado.getEstadoPedido());
-        System.out.println("Enviando correo al "+Rol.REPARTIDOR+" "+repartidor.getCorreo());
+        System.out.println("Enviando correo al " + Rol.REPARTIDOR + ": " + repartidor.getCorreo());
         manejadorEmail.enviarCorreo(repartidor.getCorreo(), asunto, cuerpo);
     }
 
     /**
-     * Notifica al cliente sobre un cambio en el estado de su pedido, enviando un
-     * correo electrónico informando el nuevo estado del pedido.
-     * 
-     * @param cliente        El cliente al que se le notifica
-     * @param pedido         El pedido cuyo estado ha cambiado
-     * @param nuevoEstado    El nuevo estado del pedido
+     * Notifica al cliente sobre un cambio en el estado de su pedido, enviando un correo electrónico informando el nuevo estado del pedido.
+     * @param pedido El pedido cuyo estado ha cambiado
+     * @param nuevoEstado El nuevo estado del pedido
      * @param manejadorEmail Instancia de ManejadorEmail para enviar el correo
      */
     public static void notificar(
-            Cliente cliente,
             Pedido pedido,
             EstadoPedido nuevoEstado,
             ManejadorEmail manejadorEmail) {
+        Cliente cliente = ManejadorUsuario.buscarClientePorCodigoUnico(pedido.getCodCliente());
         String asunto = "Actualización del estado de su pedido";
         String cuerpo = String.format(
-                "<html><body>"+"Estimado/a <strong>%s %s</strong>,"+
-                "<br>"+
-                        "Le informamos que el estado de su pedido con código <strong>%s</strong> ha cambiado a: <strong>%s</strong>."+
-                        "<br><br>"+
-                        "Fecha del pedido: <strong>%s</strong>"+
-                        "<br>"+
-                        "Producto: <strong>%s</strong>"+
-                        "<br>"+
-                        "Repartidor asignado: <strong>%s</strong>"+
-                        "<br>"+
-                        "Gracias por confiar en nosotros."+"</body></html>",
+                "<html><body>" + "Estimado/a <strong>%s %s</strong>," +
+                        "<br>" +
+                        "Le informamos que el estado de su pedido con código <strong>%s</strong> ha cambiado a: <strong>%s</strong>."
+                        +
+                        "<br><br>" +
+                        "Fecha del pedido: <strong>%s</strong>" +
+                        "<br>" +
+                        "Producto: <strong>%s</strong>" +
+                        "<br>" +
+                        "Repartidor asignado: <strong>%s</strong>" +
+                        "<br><br>" +
+                        "Gracias por confiar en nosotros." + "</body></html>",
                 cliente.getNombre(), cliente.getApellido(),
                 pedido.getCodigoPedido(), nuevoEstado,
                 pedido.getFechaPedido(),
-                pedido.getProducto().getCodigo(),
-                pedido.getRepartidor().getCodigoUnico());
-        System.out.println("Enviando correo al "+Rol.CLIENTE+" "+cliente.getCorreo());
+                pedido.getCodProducto(),
+                pedido.getCodRepartidor());
+        System.out.println("Enviando correo al " + Rol.CLIENTE + ": " + cliente.getCorreo());
         manejadorEmail.enviarCorreo(cliente.getCorreo(), asunto, cuerpo);
     }
 }

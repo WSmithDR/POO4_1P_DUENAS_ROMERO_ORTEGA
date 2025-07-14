@@ -17,9 +17,9 @@ https://www.youtube.com/watch?v=Ngpe7LyELIY
 ## Tablero de Tareas (Jira)
 [Jira - Tablero de Tareas del Proyecto](https://espol-team-i8r9u34a.atlassian.net/jira/software/projects/OPS/boards/1?jql=assignee%20%3D%20712020%3A81ed6eb9-98e6-4f22-8d8f-1ee229fb5124)
 
-## ¡OJO! Carpeta resources
+## ¡OJO! Carpeta database
 
-Para que el sistema funcione bien, tienes que copiar la carpeta `resources para copiar` que está dentro de `PROYECTO 1P/resources` y pegarla en la raíz de este proyecto como `resources`.
+Para que el sistema funcione bien, hay que copiar la carpeta `database para copiar` que está dentro de la carpeta `PROYECTO 1P` y pegarla en la raíz de este proyecto como `database` y asegurarse de que este siendo ignorada por git para evitar conflictos a la hora de mergear lso cambios.
 
 ## Cómo habilitar el envío de correos desde Gmail
 
