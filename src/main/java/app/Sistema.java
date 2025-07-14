@@ -32,7 +32,7 @@ public class Sistema {
             Printers.printSeparator();
             Printers.printTitle(String.format(
                     "BIENVENIDO/A A \n" +
-                            "DUENAS_ROMERERO_ORTEGA \n" +
+                            "DUENAS_ROMERO_ORTEGA \n" +
                             "DELIVERY SYSTEM"));
             Printers.printSeparator();
             System.out.println("1. Iniciar sesión");
@@ -220,8 +220,7 @@ public class Sistema {
     public static void notificar(
             Cliente cliente,
             Pedido pedidoRealizado,
-            ManejadorEmail manejadorEmail
-            ) {
+            ManejadorEmail manejadorEmail) {
         String asunto = "Pedido realizado";
         String cuerpo = String.format(
                 "<html><body>"
@@ -262,7 +261,7 @@ public class Sistema {
             Repartidor repartidor,
             Pedido pedidoAsignado,
             ManejadorEmail manejadorEmail) {
-        Cliente cliente = ManejadorUsuario.buscarClientePorCodigoUnico(pedidoAsignado.getCodCliente());       
+        Cliente cliente = ManejadorUsuario.buscarClientePorCodigoUnico(pedidoAsignado.getCodCliente());
         String asunto = "Nuevo pedido asignado";
         String cuerpo = String.format(
                 "<html><body>" + "Estimado/a <strong>%s %s</strong>," +
@@ -300,10 +299,10 @@ public class Sistema {
      * @param manejadorEmail Instancia de ManejadorEmail para enviar el correo
      */
     public static void notificar(
-            Cliente cliente,
             Pedido pedido,
             EstadoPedido nuevoEstado,
             ManejadorEmail manejadorEmail) {
+        Cliente cliente = ManejadorUsuario.buscarClientePorCodigoUnico(pedido.getCodCliente());
         String asunto = "Actualización del estado de su pedido";
         String cuerpo = String.format(
                 "<html><body>" + "Estimado/a <strong>%s %s</strong>," +
