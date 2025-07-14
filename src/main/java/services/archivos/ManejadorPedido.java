@@ -127,17 +127,27 @@ public class ManejadorPedido {
         }
         return pedidosCliente;
     }
-    
 
     /**
-     * Retorna la cantidad de registros de pedidos almacenados en el archivo.
-     * @return Número de pedidos registrados
+     * Obtiene el mayor número de pedido registrado en el archivo.
+     * @return El número más grande encontrado en los códigos de pedido (PEDn)
      */
-    public static int cantidadRegistroPedidos() {
+    public static int obtenerUltimoNumeroPedido() {
         ArrayList<String> lineas = ManejadorArchivos.LeeFichero(PEDIDOS_FILE);
-        if (lineas == null || lineas.size() <= 1) {
-            return 0;
+        int max = 0;
+        if (lineas != null && lineas.size() > 1) {
+            for (int i = 1; i < lineas.size(); i++) {
+                String[] partes = lineas.get(i).split("\\|");
+                String codigo = partes[0]; // Ejemplo: PED12
+                if (codigo.startsWith("PED")) {
+                        int num = Integer.parseInt(codigo.substring(3));
+                        if (num > max) max = num;
+
+                }else{
+                    Printers.printError("Error de logica en el cotador de pedidos");
+                }
+            }
         }
-        return lineas.size() - 1;
+        return max;
     }
 }

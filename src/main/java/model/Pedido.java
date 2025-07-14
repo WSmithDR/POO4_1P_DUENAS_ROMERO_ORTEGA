@@ -22,7 +22,7 @@ public class Pedido {
 
 
     /** Contador estático para generar códigos únicos de pedidos */
-    public static int contadorPedido = ManejadorPedido.cantidadRegistroPedidos();
+    public static int contadorPedido = ManejadorPedido.obtenerUltimoNumeroPedido();
 
     /**
      * Constructor de la clase Pedido.
