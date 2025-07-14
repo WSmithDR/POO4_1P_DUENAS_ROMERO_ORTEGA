@@ -16,9 +16,9 @@ public class ManejadorPedido {
     private static final String PEDIDOS_FILE = "database/Pedidos.txt";
 
     /**
-     * Asigna un repartidor aleatorio de la lista
+     * Asigna un repartidor aleatorio de la lista de repartidores disponibles.
      * @param repartidores Lista de repartidores disponibles
-     * @return Repartidor seleccionado aleatoriamente
+     * @return Repartidor seleccionado aleatoriamente, o null si la lista está vacía
      */
     public static Repartidor asignarRepartidorAleatorio(ArrayList<Repartidor> repartidores) {
         if (repartidores.isEmpty()) {
@@ -31,7 +31,7 @@ public class ManejadorPedido {
     }
 
     /**
-     * Guarda un pedido en el archivo
+     * Guarda un pedido en el archivo de pedidos. Si el archivo no existe, lo crea con encabezado.
      * @param pedido Pedido a guardar
      */
     public static void guardarPedido(Pedido pedido) {
@@ -48,9 +48,9 @@ public class ManejadorPedido {
     }
 
     /**
-     * Carga todos los pedidos desde el archivo
-     * @param repartidor 
-     * @return ArrayList con todos los pedidos asignados al repartirdor
+     * Carga todos los pedidos asignados a un repartidor específico desde el archivo.
+     * @param repartidor Repartidor cuyos pedidos se desean cargar
+     * @return Lista de pedidos asignados a ese repartidor
      */
     public static ArrayList<Pedido> cargarPedidosRepartidor(Repartidor repartidor) {
         ArrayList<Pedido> pedidos = new ArrayList<>();
@@ -91,8 +91,8 @@ public class ManejadorPedido {
     }
     
     /**
-     * Carga todos los pedidos de un cliente específico
-     * @param cliente Cliente a buscar
+     * Carga todos los pedidos de un cliente específico desde el archivo.
+     * @param codigoCliente Código único del cliente
      * @return Lista de pedidos de ese cliente
      */
     public static ArrayList<Pedido> cargarPedidosCliente(String codigoCliente) {
@@ -129,7 +129,7 @@ public class ManejadorPedido {
     }
 
     /**
-     * Obtiene el mayor número de pedido registrado en el archivo.
+     * Obtiene el mayor número de pedido registrado en el archivo, para generar el siguiente código único.
      * @return El número más grande encontrado en los códigos de pedido (PEDn)
      */
     public static int obtenerUltimoNumeroPedido() {

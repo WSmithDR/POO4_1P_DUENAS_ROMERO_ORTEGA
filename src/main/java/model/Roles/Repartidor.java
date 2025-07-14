@@ -56,10 +56,8 @@ public class Repartidor extends Usuario {
     }
 
     /**
-     * Consulta los pedidos asignados a un repartidor
-     * 
-     * @param repartidor Repartidor que consulta
-     * @param pedidos    Lista de todos los pedidos
+     * Consulta los pedidos asignados a este repartidor que no han sido entregados ni cancelados.
+     * @return true si hay pedidos asignados pendientes, false si no hay
      */
     public boolean consultarPedidosAsignados() {
         Printers.printTitle("PEDIDOS ASIGNADOS");
@@ -99,9 +97,8 @@ public class Repartidor extends Usuario {
     }
 
     /**
-     * Muestra las opciones de estado disponibles según el estado actual
-     * 
-     * @param pedido  Pedido a modificar
+     * Muestra las opciones de estado disponibles según el estado actual del pedido.
+     * @param pedido Pedido a modificar
      * @param scanner Scanner para leer entrada
      */
     private static void mostrarOpcionesEstado(Pedido pedido, Scanner scanner) {
@@ -144,8 +141,7 @@ public class Repartidor extends Usuario {
     }
 
     /**
-     * Busca un pedido asignado a este repartidor por su código (no case sensitive)
-     * 
+     * Busca un pedido asignado a este repartidor por su código (no distingue mayúsculas/minúsculas).
      * @param codigoPedido Código del pedido a buscar
      * @return El pedido encontrado o null si no existe
      */
@@ -159,10 +155,9 @@ public class Repartidor extends Usuario {
     }
 
     /**
-     * Permite al repartidor cambiar el estado de un pedido
-     * 
+     * Permite al repartidor cambiar el estado de un pedido asignado.
      * @param repartidor Repartidor que cambia el estado
-     * @param scanner    Scanner para leer entrada
+     * @param scanner Scanner para leer entrada
      */
     private void cambiarEstadoPedido(Repartidor repartidor, Scanner scanner) {
         Printers.printTitle("GESTIONAR ESTADO DE PEDIDO");
@@ -199,10 +194,9 @@ public class Repartidor extends Usuario {
     }
 
     /**
-     * Implementación del método abstracto de Usuario
-     * Permite al repartidor gestionar sus pedidos asignados
-     * 
-     * @param pedidos Lista de todos los pedidos del sistema
+     * Implementación del método abstracto de Usuario.
+     * Permite al repartidor gestionar sus pedidos asignados.
+     * @param scanner Scanner para leer la entrada del usuario
      */
     @Override
     public void gestionarPedido(Scanner scanner) {
@@ -237,6 +231,11 @@ public class Repartidor extends Usuario {
         } while (continuar);
     }
 
+    /**
+     * Compara si dos repartidores son iguales según la lógica de la superclase.
+     * @param obj Objeto a comparar
+     * @return true si son iguales, false en caso contrario
+     */
     @Override
     public boolean equals(Object obj) {
         return super.equals(obj);

@@ -23,9 +23,6 @@ public class ManejadorEmail {
     private final Properties properties;
     private final Authenticator auth;
 
-    /**
-     * Constructor que configura las propiedades SMTP y la autenticación para el envío de correos.
-     */
     public ManejadorEmail() {
         properties = new Properties();
         properties.put("mail.smtp.host", "smtp.gmail.com");

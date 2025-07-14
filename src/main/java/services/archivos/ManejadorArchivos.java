@@ -13,9 +13,8 @@ import java.util.ArrayList;
 public class ManejadorArchivos {
     /**
      * Lee todas las líneas de un archivo de texto y las retorna en un ArrayList de String.
-     *
      * @param nombrearchivo Nombre del archivo a leer
-     * @return ArrayList con las líneas leídas del archivo
+     * @return Lista de líneas leídas del archivo
      */
     public static ArrayList<String> LeeFichero(String nombrearchivo) {
         ArrayList<String> lineas = new ArrayList<>();
@@ -61,7 +60,6 @@ public class ManejadorArchivos {
 
     /**
      * Escribe una línea al final de un archivo de texto. Si el archivo no existe, lo crea.
-     *
      * @param nombreArchivo Nombre del archivo donde escribir
      * @param linea Línea de texto a escribir en el archivo
      */

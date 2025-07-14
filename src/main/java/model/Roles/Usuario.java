@@ -138,10 +138,18 @@ public abstract class Usuario {
         this.apellido = apellido;
     }
 
+    /**
+     * Establece la contraseña del usuario.
+     * @param contrasenia Contraseña
+     */
     protected void setContrasenia(String contrasenia) {
         this.contrasenia = contrasenia;
     }
 
+    /**
+     * Establece el correo electrónico del usuario.
+     * @param correo Correo electrónico
+     */
     protected void setCorreo(String correo) {
         this.correo = correo;
     }
@@ -155,14 +163,17 @@ public abstract class Usuario {
     }
 
     /**
-     * Método abstracto para gestionar pedidos según el rol del usuario
-     * 
-     * @param pedidos Lista de pedidos disponibles para gestionar
-     * @param scanner scanner para poder intereacturar con la consola
+     * Método abstracto para gestionar pedidos según el rol del usuario.
+     * @param scanner Scanner para interactuar con la consola
      */
     public abstract void gestionarPedido(Scanner scanner);
 
 
+    /**
+     * Compara si dos usuarios son iguales según su código único.
+     * @param obj Objeto a comparar
+     * @return true si los códigos únicos son iguales, false en caso contrario
+     */
     @Override
     public boolean equals(Object obj) {
         if(this==obj) return true;

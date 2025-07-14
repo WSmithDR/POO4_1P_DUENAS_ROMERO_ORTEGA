@@ -18,10 +18,25 @@ import utils.Printers;
 
 import java.util.Random;
 
+/**
+ * Clase que representa a un cliente del sistema.
+ */
 public class Cliente extends Usuario {
    private String numero_celular;
    private String direccion;
 
+   /**
+    * Constructor de la clase Cliente.
+    * @param codigoUnico Código único del cliente
+    * @param cedula Cédula del cliente
+    * @param nombre Nombre del cliente
+    * @param apellido Apellido del cliente
+    * @param user_name Nombre de usuario
+    * @param correo Correo electrónico
+    * @param contrasenia Contraseña
+    * @param numero_celular Número de celular
+    * @param direccion Dirección del cliente
+    */
    public Cliente(
          String codigoUnico,
          String cedula,
@@ -82,8 +97,7 @@ public class Cliente extends Usuario {
    }
 
    /**
-    * Muestra la información detallada de un pedido
-    * 
+    * Muestra la información detallada de un pedido.
     * @param pedido Pedido a mostrar
     */
    private static void mostrarInformacionPedido(Pedido pedido) {
@@ -122,10 +136,8 @@ public class Cliente extends Usuario {
    }
 
    /**
-    * Consulta un pedido específico para un cliente
-    * 
-    * @param cliente   Cliente que consulta
-    * @param pedidos   Lista de pedidos
+    * Consulta un pedido específico para un cliente.
+    * @param codCliente Código único del cliente
     * @param codPedido Código del pedido a consultar
     */
    private void consultarPedidoCliente(String codCliente, String codPedido) {
@@ -143,7 +155,7 @@ public class Cliente extends Usuario {
    }
 
    /**
-    * Muestra la lista de pedidos del cliente con formato similar al repartidor
+    * Muestra la lista de pedidos del cliente con formato similar al repartidor.
     */
    private void mostrarListaPedidos() {
       ArrayList<Pedido> pedidos = ManejadorPedido.cargarPedidosCliente(this.getCodigoUnico());
@@ -161,6 +173,10 @@ public class Cliente extends Usuario {
       }
    }
 
+   /**
+    * Gestiona la consulta de estado de pedidos del cliente.
+    * @param scanner Scanner para leer la entrada del usuario
+    */
    @Override
    public void gestionarPedido(Scanner scanner) {
       Printers.printTitle("CONSULTA DE ESTADO DE PEDIDO");
@@ -181,12 +197,9 @@ public class Cliente extends Usuario {
    }
 
    /**
-    * Realiza el proceso de compra para el cliente
-    * 
-    * @param productos Lista de productos disponibles
-    * @param usuarios  Lista de usuarios para buscar repartidores
-    * @param pedidos   Lista de pedidos para agregar el nuevo pedido
-    * @param scanner   Scanner para leer entrada del usuario
+    * Realiza el proceso de compra para el cliente.
+    * @param usuarios Lista de usuarios para buscar repartidores
+    * @param scanner Scanner para leer entrada del usuario
     */
    public void realizarCompra(ArrayList<Usuario> usuarios,
          Scanner scanner) {
@@ -214,7 +227,10 @@ public class Cliente extends Usuario {
    }
 
    /**
-    * Le pide al cliente que elija una categoría
+    * Le pide al cliente que elija una categoría de producto.
+    * @param productos Lista de productos disponibles
+    * @param scanner Scanner para leer entrada del usuario
+    * @return Categoría seleccionada o null si no es válida
     */
    private CategoriaProducto seleccionarCategoria(ArrayList<Producto> productos, Scanner scanner) {
       ArrayList<CategoriaProducto> catProdDisponibles = ManejadorProducto.mostrarCategoriasDisponibles();
@@ -231,7 +247,11 @@ public class Cliente extends Usuario {
    }
 
    /**
-    * Le pide al cliente que elija un producto de esa categoría
+    * Le pide al cliente que elija un producto de una categoría.
+    * @param productos Lista de productos disponibles
+    * @param categoria Categoría seleccionada
+    * @param scanner Scanner para leer entrada del usuario
+    * @return Producto seleccionado o null si no es válido
     */
    private Producto seleccionarProducto(ArrayList<Producto> productos, CategoriaProducto categoria, Scanner scanner) {
       ArrayList<Producto> productosCategoria = ManejadorProducto.obtenerProductosPorCategoria(productos, categoria);
@@ -259,7 +279,10 @@ public class Cliente extends Usuario {
    }
 
    /**
-    * Le pide al cliente cuántos quiere comprar
+    * Le pide al cliente que ingrese la cantidad de productos a comprar.
+    * @param producto Producto seleccionado
+    * @param scanner Scanner para leer entrada del usuario
+    * @return Cantidad seleccionada
     */
    private int seleccionarCantidad(Producto producto, Scanner scanner) {
       System.out.print("¿Cuántos quieres comprar? (máximo " + producto.getStock() + "): ");
@@ -274,7 +297,11 @@ public class Cliente extends Usuario {
    }
 
    /**
-    * Le pregunta al cliente si confirma la compra
+    * Confirma la compra con el cliente antes de procesarla.
+    * @param producto Producto seleccionado
+    * @param cantidad Cantidad seleccionada
+    * @param scanner Scanner para leer entrada del usuario
+    * @return true si el cliente confirma la compra, false en caso contrario
     */
    private boolean confirmarCompra(Producto producto, int cantidad, Scanner scanner) {
       double total = producto.getPrecio() * cantidad;
@@ -292,7 +319,10 @@ public class Cliente extends Usuario {
    }
 
    /**
-    * Hace todo el proceso final: asigna repartidor, crea pedido y actualiza stock
+    * Procesa la compra: asigna repartidor, crea pedido y actualiza stock.
+    * @param producto Producto seleccionado
+    * @param cantidad Cantidad seleccionada
+    * @param usuarios Lista de usuarios para buscar repartidores
     */
    private void procesarCompra(Producto producto, int cantidad, ArrayList<Usuario> usuarios) {
       // Buscar repartidor disponible
@@ -320,7 +350,9 @@ public class Cliente extends Usuario {
    }
 
    /**
-    * Busca un repartidor al azar de la lista
+    * Busca un repartidor al azar de la lista de usuarios.
+    * @param usuarios Lista de usuarios
+    * @return Repartidor seleccionado o null si no hay disponibles
     */
    private Repartidor buscarRepartidorAleatorio(ArrayList<Usuario> usuarios) {
       ArrayList<Repartidor> repartidores = new ArrayList<>();
@@ -341,7 +373,9 @@ public class Cliente extends Usuario {
    }
 
    /**
-    * Manda los emails al cliente y repartidor
+    * Envía notificaciones por email al cliente y repartidor sobre el pedido.
+    * @param repartidor Repartidor asignado
+    * @param pedido Pedido realizado
     */
    private void enviarNotificaciones(Repartidor repartidor, Pedido pedido) {
       ManejadorEmail manejadorEmail = new ManejadorEmail();
@@ -352,7 +386,9 @@ public class Cliente extends Usuario {
    }
 
    /**
-    * Le dice al cliente que la compra fue exitosa
+    * Muestra la confirmación de compra al cliente.
+    * @param repartidor Repartidor asignado
+    * @param pedido Pedido realizado
     */
    private void mostrarConfirmacionCompra(Repartidor repartidor, Pedido pedido) {
       System.out.println("¡Compra exitosa!");
@@ -360,6 +396,11 @@ public class Cliente extends Usuario {
       System.out.println("Código de pedido: " + pedido.getCodigoPedido());
    }
 
+   /**
+    * Compara si dos clientes son iguales según la lógica de la superclase.
+    * @param obj Objeto a comparar
+    * @return true si son iguales, false en caso contrario
+    */
    @Override
    public boolean equals(Object obj) {
       return super.equals(obj);

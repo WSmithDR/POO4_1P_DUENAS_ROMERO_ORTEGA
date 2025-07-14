@@ -7,9 +7,7 @@ import utils.ManejoFechas;
 import java.util.Locale;
 import utils.Printers;
 
-/**
- * Clase que representa un pedido en el sistema
- */
+
 public class Pedido {
     private Date fechaPedido;
     private String codProducto;
@@ -24,17 +22,7 @@ public class Pedido {
     /** Contador estático para generar códigos únicos de pedidos */
     public static int contadorPedido = ManejadorPedido.obtenerUltimoNumeroPedido();
 
-    /**
-     * Constructor de la clase Pedido.
-     * Crea un nuevo pedido con los datos proporcionados y establece el estado inicial
-     * como EN_PREPARACION.
-     * 
-     * @param cliente Cliente que realiza el pedido
-     * @param repartidor Repartidor asignado para la entrega
-     * @param producto Producto solicitado
-     * @param cantidad Cantidad de productos solicitados
-     * @param total Monto total a pagar
-     */
+ 
     public Pedido(String codCliente, String codRepartidor, String codProducto, int cantidad, double total) {
         this.fechaPedido = new Date();
         this.codProducto = codProducto;
@@ -49,7 +37,6 @@ public class Pedido {
     /**
      * Genera un código único para el pedido.
      * Incrementa el contador estático y retorna un código en formato "PED" + número.
-     * 
      * @return Código único del pedido en formato String
      */
     public String generarCodigoPedido() {
@@ -59,7 +46,6 @@ public class Pedido {
     
     /**
      * Obtiene el código actual del pedido sin generar uno nuevo.
-     * 
      * @return Código actual del pedido
      */
     public String obtenerCodigo() {
@@ -106,10 +92,22 @@ public class Pedido {
         return this.codigoPedido;
     }
     
+    /**
+     * Obtiene el código del producto asociado a este pedido.
+     * @return Código del producto
+     */
     public String getCodProducto() { return codProducto; }
 
+    /**
+     * Obtiene el código del repartidor asignado a este pedido.
+     * @return Código del repartidor
+     */
     public String getCodRepartidor() { return codRepartidor; }
 
+    /**
+     * Obtiene el código del cliente que realizó este pedido.
+     * @return Código del cliente
+     */
     public String getCodCliente() { return codCliente; }
     
 
@@ -170,6 +168,11 @@ public class Pedido {
                 codCliente != null ? codCliente : "");
     }
 
+    /**
+     * Compara si dos pedidos son iguales según su código de pedido (ignorando mayúsculas/minúsculas).
+     * @param obj Objeto a comparar
+     * @return true si los códigos de pedido son iguales, false en caso contrario
+     */
     @Override
     public boolean equals(Object obj){
         if(this==obj) return true;
@@ -182,7 +185,7 @@ public class Pedido {
     }
 
         /**
-     * Muestra un mensaje personalizado según el estado del pedido
+     * Muestra un mensaje personalizado según el estado del pedido.
      * @param estado Estado actual del pedido
      */
     public static void mostrarMensajeSegunEstado(EstadoPedido estado) {

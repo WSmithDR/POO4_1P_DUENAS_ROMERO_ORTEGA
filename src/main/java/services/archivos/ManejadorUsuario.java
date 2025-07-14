@@ -17,10 +17,8 @@ public class ManejadorUsuario {
     private static final String REPARTIDORES_FILE = "database/Repartidores.txt";
 
     /**
-     * Carga los usuarios desde el archivo de usuarios
-     * 
-     * @param usuarios ArrayList de usuarios
-     * @return ArrayList de usuarios
+     * Carga los usuarios desde el archivo de usuarios.
+     * @return Lista de usuarios cargados
      */
     public static ArrayList<Usuario> cargarUsuarios() {
         ArrayList<Usuario> usuarios = new ArrayList<>();
@@ -150,7 +148,7 @@ public class ManejadorUsuario {
     }
 
        /**
-     * Busca un cliente por código único
+     * Busca un cliente por código único.
      * @param codigoUnico Código único del cliente
      * @return Cliente encontrado o null
      */

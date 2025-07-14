@@ -12,9 +12,8 @@ public class ManejadorProducto {
     private static final String PRODUCTOS_FILE = "database/Productos.txt";
 
     /**
-     * Carga todos los productos desde el archivo
-     * 
-     * @return ArrayList con todos los productos
+     * Carga todos los productos desde el archivo de productos.
+     * @return Lista de productos cargados
      */
     public static ArrayList<Producto> cargarProductos() {
         ArrayList<String> lineas = ManejadorArchivos.LeeFichero(PRODUCTOS_FILE);
@@ -47,10 +46,9 @@ public class ManejadorProducto {
     }
 
     /**
-     * Retorna una lista de productos con stock mayor a cero de Productos.txt.
-     * 
+     * Retorna una lista de productos con stock mayor a cero.
      * @param productos Lista de productos a filtrar
-     * @return ArrayList<Producto> con stock > 0
+     * @return Lista de productos con stock > 0
      */
     public static ArrayList<Producto> filtrarProductosConStock(ArrayList<Producto> productos) {
         ArrayList<Producto> productosConStock = new ArrayList<>();
@@ -63,13 +61,8 @@ public class ManejadorProducto {
     }
 
     /**
-     * Obtiene y muestra por consola las categorías de productos que tienen al menos
-     * un producto disponible en la base de datos (Productos.txt).
-     * Solo se listan categorías que realmente tienen productos registrados con
-     * stock mayor a cero.
-     *
-     * @return ArrayList<CategoriaProducto> con las categorías disponibles
-     *         actualmente en el sistema
+     * Obtiene y muestra por consola las categorías de productos que tienen al menos un producto disponible.
+     * @return Lista de categorías disponibles actualmente en el sistema
      */
     public static ArrayList<CategoriaProducto> mostrarCategoriasDisponibles() {
         ArrayList<Producto> productosDB = cargarProductos();
@@ -97,11 +90,10 @@ public class ManejadorProducto {
     }
 
     /**
-     * Obtiene productos por categoría
-     * 
+     * Obtiene productos por categoría.
      * @param productos Lista de todos los productos
      * @param categoria Categoría a filtrar
-     * @return ArrayList con productos de la categoría especificada
+     * @return Lista de productos de la categoría especificada
      */
     public static ArrayList<Producto> obtenerProductosPorCategoria(ArrayList<Producto> productos,
             CategoriaProducto categoria) {
@@ -116,10 +108,8 @@ public class ManejadorProducto {
     }
 
     /**
-     * Busca un producto por código
-     * 
-     * @param productos Lista de productos
-     * @param codigo    Código del producto a buscar
+     * Busca un producto por código.
+     * @param codigo Código del producto a buscar
      * @return Producto encontrado o null si no existe
      */
     public static Producto buscarProductoPorCodigo(String codigo) {
@@ -132,13 +122,8 @@ public class ManejadorProducto {
     }
 
     /**
-     * Actualiza el stock de un producto
-     * en el archivo Productos.txt
-     * agregando una nueva línea con
-     * la información actualizada.
-     * 
-     * @param productoActualizado El producto con el stock actualizado que se va a
-     *                            registrar en el archivo
+     * Actualiza el stock de un producto en el archivo de productos.
+     * @param productoActualizado El producto con el stock actualizado que se va a registrar en el archivo
      */
     public static void actualizarStockProductoEnArchivo(Producto productoActualizado) {
         String nuevaLinea = String.format(Locale.US, "%s|%s|%s|%.2f|%d",
