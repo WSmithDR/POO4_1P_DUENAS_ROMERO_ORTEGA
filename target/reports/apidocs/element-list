@@ -2,7 +2,6 @@ app
 model
 model.Enums
 model.Roles
-persistence
 services.archivos
 services.email
 services.env
