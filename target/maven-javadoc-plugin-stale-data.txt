@@ -1,0 +1,58 @@
+-J-Duser.language=
+-J-Duser.country=
+@options
+@packages
+-classpath
+'/home/wagner/.m2/repository/com/sun/mail/javax.mail/1.6.2/javax.mail-1.6.2.jar:/home/wagner/.m2/repository/javax/activation/activation/1.1/activation-1.1.jar:/home/wagner/.m2/repository/io/github/cdimascio/java-dotenv/5.2.2/java-dotenv-5.2.2.jar:/home/wagner/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib/1.4.0/kotlin-stdlib-1.4.0.jar:/home/wagner/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib-common/1.4.0/kotlin-stdlib-common-1.4.0.jar:/home/wagner/.m2/repository/org/jetbrains/annotations/13.0/annotations-13.0.jar'
+-encoding
+'UTF-8'
+-protected
+-source
+'17'
+-sourcepath
+'/home/wagner/dev-projects/anki/POO4_1P_DUENAS_ROMERO_ORTEGA/src/main/java'
+-author
+-bottom
+'Copyright &#169; 2025. All rights reserved.'
+-charset
+'UTF-8'
+-d
+'/home/wagner/dev-projects/anki/POO4_1P_DUENAS_ROMERO_ORTEGA/target/reports/apidocs'
+-docencoding
+'UTF-8'
+-doctitle
+'demo 1.0-SNAPSHOT API'
+-use
+-version
+-windowtitle
+'demo 1.0-SNAPSHOT API'
+utils
+services.archivos
+services.email
+services.env
+app
+model.Roles
+model
+model.Enums
+/home/wagner/.m2/repository/com/sun/mail/javax.mail/1.6.2/javax.mail-1.6.2.jar = 1535581852000
+/home/wagner/.m2/repository/javax/activation/activation/1.1/activation-1.1.jar = 1146612027000
+/home/wagner/.m2/repository/io/github/cdimascio/java-dotenv/5.2.2/java-dotenv-5.2.2.jar = 1599521482000
+/home/wagner/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib/1.4.0/kotlin-stdlib-1.4.0.jar = 1597342884000
+/home/wagner/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib-common/1.4.0/kotlin-stdlib-common-1.4.0.jar = 1597342891000
+/home/wagner/.m2/repository/org/jetbrains/annotations/13.0/annotations-13.0.jar = 1387282242000
+/home/wagner/dev-projects/anki/POO4_1P_DUENAS_ROMERO_ORTEGA/src/main/java = 1752446480097
+/home/wagner/dev-projects/anki/POO4_1P_DUENAS_ROMERO_ORTEGA/target/reports/apidocs/allpackages-index.html = 1752455301397
+/home/wagner/dev-projects/anki/POO4_1P_DUENAS_ROMERO_ORTEGA/target/reports/apidocs/type-search-index.js = 1752455301400
+/home/wagner/dev-projects/anki/POO4_1P_DUENAS_ROMERO_ORTEGA/target/reports/apidocs/search.html = 1752455301407
+/home/wagner/dev-projects/anki/POO4_1P_DUENAS_ROMERO_ORTEGA/target/reports/apidocs/element-list = 1752455301347
+/home/wagner/dev-projects/anki/POO4_1P_DUENAS_ROMERO_ORTEGA/target/reports/apidocs/overview-tree.html = 1752455301387
+/home/wagner/dev-projects/anki/POO4_1P_DUENAS_ROMERO_ORTEGA/target/reports/apidocs/javadoc.sh = 1752336502551
+/home/wagner/dev-projects/anki/POO4_1P_DUENAS_ROMERO_ORTEGA/target/reports/apidocs/allclasses-index.html = 1752455301397
+/home/wagner/dev-projects/anki/POO4_1P_DUENAS_ROMERO_ORTEGA/target/reports/apidocs/overview-summary.html = 1752455301407
+/home/wagner/dev-projects/anki/POO4_1P_DUENAS_ROMERO_ORTEGA/target/reports/apidocs/index-all.html = 1752455301407
+/home/wagner/dev-projects/anki/POO4_1P_DUENAS_ROMERO_ORTEGA/target/reports/apidocs/tag-search-index.js = 1752455301400
+/home/wagner/dev-projects/anki/POO4_1P_DUENAS_ROMERO_ORTEGA/target/reports/apidocs/member-search-index.js = 1752455301400
+/home/wagner/dev-projects/anki/POO4_1P_DUENAS_ROMERO_ORTEGA/target/reports/apidocs/index.html = 1752455301387
+/home/wagner/dev-projects/anki/POO4_1P_DUENAS_ROMERO_ORTEGA/target/reports/apidocs/module-search-index.js = 1752455301400
+/home/wagner/dev-projects/anki/POO4_1P_DUENAS_ROMERO_ORTEGA/target/reports/apidocs/package-search-index.js = 1752455301400
+/home/wagner/dev-projects/anki/POO4_1P_DUENAS_ROMERO_ORTEGA/target/reports/apidocs/help-doc.html = 1752455301410
